@@ -1,17 +1,17 @@
-import ClipKit from "../../domain/clipkit.js";
+import ClipKit from '../../domain/clipkit.js';
 
 export const VIEWS = {
   front: [0, 0.05],
   side: [Math.PI / 2, 0.05],
   top: [0, 1.45],
-  q: [0.62, 0.2]
+  q: [0.62, 0.2],
 };
 
 export const cameraState = {
   yaw: 0.62,
   pitch: 0.2,
   dist: 4.4,
-  target: [0, 0.9, 0.3]
+  target: [0, 0.9, 0.3],
 };
 
 const listeners = new Set();
@@ -31,11 +31,7 @@ export function camBasis() {
   const sp = Math.sin(pitch);
   const cp = Math.cos(pitch);
 
-  const eye = [
-    target[0] + dist * sy * cp,
-    target[1] + dist * sp,
-    target[2] + dist * cy * cp
-  ];
+  const eye = [target[0] + dist * sy * cp, target[1] + dist * sp, target[2] + dist * cy * cp];
 
   const f = ClipKit.vnorm(ClipKit.vsub(target, eye));
   let r = ClipKit.vcross(f, [0, 1, 0]);
@@ -50,16 +46,14 @@ export function prj(p, W, H, KF, B) {
   const d = ClipKit.vsub(p, B.eye);
   const z = ClipKit.vdot(d, B.f);
   if (z < 0.05) return null;
-  return [
-    W / 2 + (ClipKit.vdot(d, B.r) / z) * KF,
-    H / 2 - (ClipKit.vdot(d, B.u) / z) * KF,
-    z
-  ];
+  return [W / 2 + (ClipKit.vdot(d, B.r) / z) * KF, H / 2 - (ClipKit.vdot(d, B.u) / z) * KF, z];
 }
 
 export function fitCamera(it) {
   if (!it || !it.res) return;
-  let mx = 0, mz = 0, ext = 0;
+  let mx = 0,
+    mz = 0,
+    ext = 0;
   for (const P of it.res.poses) {
     mx += P.root[0];
     mz += P.root[2];
@@ -81,7 +75,7 @@ export function lerpTarget(it, rig, ctx, t) {
   cameraState.target = [
     cameraState.target[0] + (h[0] - cameraState.target[0]) * 0.2,
     0.9,
-    cameraState.target[2] + (h[2] - cameraState.target[2]) * 0.2
+    cameraState.target[2] + (h[2] - cameraState.target[2]) * 0.2,
   ];
   notify();
 }

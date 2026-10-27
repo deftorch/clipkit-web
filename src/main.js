@@ -1,49 +1,39 @@
-import ClipKit from "./domain/clipkit.js";
-import VrmRig from "./infrastructure/vrm/vrm-rig-builder.js";
-import VrmView from "./infrastructure/three/three-mesh-renderer.js";
-
-import { $, fmt2 } from "./presentation/dom/h.js";
-import { C, initTheme, onThemeChange, winColor } from "./application/theme.js";
-
-import { rigState, setRig, loadVrmFile } from "./application/state/rig-store.js";
+import {
+  camBasis,
+  cameraState,
+  fitCamera,
+  lerpTarget,
+  prj,
+} from './application/state/camera-store.js';
 import {
   clipState,
-  initClips,
   curItem,
+  initClips,
   rebuild,
+  rebuildAll,
   selectClip,
-  rebuildAll
-} from "./application/state/clip-store.js";
-import {
-  playbackState,
-  setTime,
-  setPlaying
-} from "./application/state/playback-store.js";
-import {
-  cameraState,
-  camBasis,
-  prj,
-  fitCamera,
-  lerpTarget
-} from "./application/state/camera-store.js";
-
-import { drawFigure, drawFloor, floorY } from "./presentation/viewport/skeleton-renderer.js";
-import { drawTrails } from "./presentation/viewport/trail-renderer.js";
-import { initViewportController } from "./presentation/viewport/viewport-controller.js";
-
-import { drawTimeline } from "./presentation/timeline/timeline-renderer.js";
-import { initTimelineScrubber } from "./presentation/timeline/scrubber.js";
-
-import { renderPipe } from "./presentation/components/pipeline-status.js";
-import { renderClipbar } from "./presentation/components/clipbar.js";
-import { initTransport, syncPlayBtn } from "./presentation/components/transport.js";
-
-import { renderRig } from "./presentation/panels/rig-panel.js";
-import { renderValid } from "./presentation/panels/validation-panel.js";
-import { renderEditor, syncEditor } from "./presentation/panels/editor-panel.js";
-import { renderCurves, updatePlayhead } from "./presentation/panels/curves-panel.js";
-import { renderVer } from "./presentation/panels/versions-panel.js";
-import { renderAbout } from "./presentation/panels/about-panel.js";
+} from './application/state/clip-store.js';
+import { playbackState, setPlaying, setTime } from './application/state/playback-store.js';
+import { loadVrmFile, rigState, setRig } from './application/state/rig-store.js';
+import { C, initTheme, onThemeChange, winColor } from './application/theme.js';
+import ClipKit from './domain/clipkit.js';
+import VrmView from './infrastructure/three/three-mesh-renderer.js';
+import VrmRig from './infrastructure/vrm/vrm-rig-builder.js';
+import { renderClipbar } from './presentation/components/clipbar.js';
+import { renderPipe } from './presentation/components/pipeline-status.js';
+import { initTransport, syncPlayBtn } from './presentation/components/transport.js';
+import { $, fmt2 } from './presentation/dom/h.js';
+import { renderAbout } from './presentation/panels/about-panel.js';
+import { renderCurves, updatePlayhead } from './presentation/panels/curves-panel.js';
+import { renderEditor, syncEditor } from './presentation/panels/editor-panel.js';
+import { renderRig } from './presentation/panels/rig-panel.js';
+import { renderValid } from './presentation/panels/validation-panel.js';
+import { renderVer } from './presentation/panels/versions-panel.js';
+import { initTimelineScrubber } from './presentation/timeline/scrubber.js';
+import { drawTimeline } from './presentation/timeline/timeline-renderer.js';
+import { drawFigure, drawFloor, floorY } from './presentation/viewport/skeleton-renderer.js';
+import { drawTrails } from './presentation/viewport/trail-renderer.js';
+import { initViewportController } from './presentation/viewport/viewport-controller.js';
 
 // Expose modules on window for debugging & compatibility
 window.ClipKit = ClipKit;
@@ -69,9 +59,13 @@ const tlHost = $('#tl');
 const tlc = $('#tlc');
 const tg = tlc.getContext('2d');
 
-let W = 300, H = 200, DPR = 1;
-let TW = 300, TH = 170;
-let needDraw = true, tlDirty = true;
+let W = 300,
+  H = 200,
+  DPR = 1;
+let TW = 300,
+  TH = 170;
+let needDraw = true,
+  tlDirty = true;
 
 export function dirtyAll() {
   needDraw = true;
@@ -111,7 +105,7 @@ function drawScene() {
   }
 
   const B = camBasis();
-  const KF = (H / 2) / Math.tan((20 * Math.PI) / 180);
+  const KF = H / 2 / Math.tan((20 * Math.PI) / 180);
   const prjFn = (p) => prj(p, W, H, KF, B);
 
   const y = floorY(it);
@@ -133,7 +127,7 @@ function drawScene() {
       ((0.3 * rs * KF) / sh[2]) * Math.max(0.12, Math.sin(Math.max(cameraState.pitch, 0.1))),
       0,
       0,
-      7
+      7,
     );
     g.fill();
     g.globalAlpha = 1;
@@ -245,7 +239,7 @@ export function refreshAll(fromEditor = false) {
     vrmInputEl: $('#vrmIn'),
     onSelectClip: (id) => handleSelectClip(id),
     onAfterRigChange: () => handleAfterRigChange(),
-    onRefreshAll: () => refreshAll()
+    onRefreshAll: () => refreshAll(),
   });
   renderRig($('#p-rig'), $('#vrmIn'));
   renderValid($('#p-valid'));
@@ -283,13 +277,13 @@ const viewportCtrl = initViewportController({
   glCanvas,
   onDirty: dirtyAll,
   onSetTab: setTab,
-  onRefreshAll: refreshAll
+  onRefreshAll: refreshAll,
 });
 
 initTimelineScrubber({
   tlHost,
   onDirty: dirtyAll,
-  onSyncPlay: () => syncPlayBtn($('#bPlay'))
+  onSyncPlay: () => syncPlayBtn($('#bPlay')),
 });
 
 initTransport({
@@ -304,7 +298,7 @@ initTransport({
   cFollow: $('#cFollow'),
   bVrma: $('#bVrma'),
   onDirty: dirtyAll,
-  onSelectClip: handleSelectClip
+  onSelectClip: handleSelectClip,
 });
 
 // File upload input for VRM
@@ -321,7 +315,7 @@ $('#vrmIn')?.addEventListener('change', (e) => {
       () => {
         setTab('rig');
         renderRig($('#p-rig'), $('#vrmIn'));
-      }
+      },
     );
   }
   e.target.value = '';
@@ -380,7 +374,7 @@ function loop(ts) {
       C,
       winColorFn: winColor,
       style: clipState.style,
-      t: playbackState.t
+      t: playbackState.t,
     });
     updatePlayhead();
   }
@@ -402,12 +396,12 @@ requestAnimationFrame(loop);
 window.__clipkit = {
   S: {
     ...clipState,
-    ...playbackState
+    ...playbackState,
   },
   K: ClipKit,
   rebuild,
   curItem,
   refreshAll,
   rig: () => rigState.rig,
-  ctx: () => rigState.ctx
+  ctx: () => rigState.ctx,
 };

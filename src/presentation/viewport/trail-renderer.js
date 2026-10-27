@@ -1,11 +1,11 @@
-import { FPS } from "../../domain/math/vec3.js";
+import { FPS } from '../../domain/math/vec3.js';
 
 const TRAIL_POINTS = [
   ['RightHand', '--t-handR', true],
   ['LeftHand', '--t-handL', true],
   ['RightToeBase', '--t-foot', false],
   ['LeftToeBase', '--t-foot', false],
-  ['Head', '--t-head', false]
+  ['Head', '--t-head', false],
 ];
 
 export function drawTrails(g, it, t, ctx, prjFn, C, winColorFn) {

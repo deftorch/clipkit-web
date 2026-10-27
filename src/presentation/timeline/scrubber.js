@@ -1,7 +1,7 @@
-import { FPS } from "../../domain/math/vec3.js";
-import { TL } from "./timeline-renderer.js";
-import { playbackState, setPlaying } from "../../application/state/playback-store.js";
-import { curItem } from "../../application/state/clip-store.js";
+import { curItem } from '../../application/state/clip-store.js';
+import { playbackState, setPlaying } from '../../application/state/playback-store.js';
+import { FPS } from '../../domain/math/vec3.js';
+import { TL } from './timeline-renderer.js';
 
 export function initTimelineScrubber({ tlHost, onDirty, onSyncPlay }) {
   let scrubbing = false;
@@ -37,6 +37,6 @@ export function initTimelineScrubber({ tlHost, onDirty, onSyncPlay }) {
   tlHost.addEventListener('pointercancel', stopScrub);
 
   return {
-    isScrubbing: () => scrubbing
+    isScrubbing: () => scrubbing,
   };
 }

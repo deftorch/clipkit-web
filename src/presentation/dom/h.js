@@ -29,7 +29,9 @@ export function copyText(txt, btn) {
     if (!btn) return;
     const o = btn.textContent;
     btn.textContent = 'Tersalin';
-    setTimeout(() => { btn.textContent = o; }, 1200);
+    setTimeout(() => {
+      btn.textContent = o;
+    }, 1200);
   };
   const fb = () => {
     const ta = el('textarea', { style: 'position:fixed;opacity:0' });

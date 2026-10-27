@@ -1,4 +1,4 @@
-import { FPS } from "../../domain/math/vec3.js";
+import { FPS } from '../../domain/math/vec3.js';
 
 export const playbackState = {
   t: 0,
@@ -9,7 +9,7 @@ export const playbackState = {
   onion: false,
   follow: false,
   mesh: false,
-  skel: true
+  skel: true,
 };
 
 const listeners = new Set();

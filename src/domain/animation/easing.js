@@ -10,7 +10,7 @@ export const EASINGS = [
   'inSine',
   'outSine',
   'inOutSine',
-  'outBack'
+  'outBack',
 ];
 
 export function ease(name, u) {
@@ -25,13 +25,13 @@ export function ease(name, u) {
     case 'outQuad':
       return 1 - (1 - u) * (1 - u);
     case 'inOutQuad':
-      return u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
+      return u < 0.5 ? 2 * u * u : 1 - (-2 * u + 2) ** 2 / 2;
     case 'inCubic':
       return u * u * u;
     case 'outCubic':
-      return 1 - Math.pow(1 - u, 3);
+      return 1 - (1 - u) ** 3;
     case 'inOutCubic':
-      return u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;
+      return u < 0.5 ? 4 * u * u * u : 1 - (-2 * u + 2) ** 3 / 2;
     case 'inSine':
       return 1 - Math.cos((u * Math.PI) / 2);
     case 'outSine':
@@ -41,7 +41,7 @@ export function ease(name, u) {
     case 'outBack': {
       const c1 = 1.70158,
         c3 = c1 + 1;
-      return 1 + c3 * Math.pow(u - 1, 3) + c1 * Math.pow(u - 1, 2);
+      return 1 + c3 * (u - 1) ** 3 + c1 * (u - 1) ** 2;
     }
   }
   return u;

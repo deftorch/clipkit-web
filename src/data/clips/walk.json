@@ -10,329 +10,51 @@
     }
   ],
   "group": "locomotion",
-  "tags": [
-    "vrm-1.0",
-    "walk",
-    "loop"
-  ],
+  "tags": ["vrm-1.0", "walk", "loop"],
   "duration": 1,
   "loop": true,
   "channels": {
     "hip_y": [
-      [
-        0,
-        -0.015
-      ],
-      [
-        0.25,
-        0.018,
-        "inOutSine"
-      ],
-      [
-        0.5,
-        -0.015,
-        "inOutSine"
-      ],
-      [
-        0.75,
-        0.018,
-        "inOutSine"
-      ],
-      [
-        1,
-        -0.015,
-        "inOutSine"
-      ]
+      [0, -0.015],
+      [0.25, 0.018, "inOutSine"],
+      [0.5, -0.015, "inOutSine"],
+      [0.75, 0.018, "inOutSine"],
+      [1, -0.015, "inOutSine"]
     ],
-    "lean": [
-      [
-        0,
-        4
-      ],
-      [
-        1,
-        4
-      ]
-    ],
-    "twist": [
-      [
-        0,
-        -8
-      ],
-      [
-        0.5,
-        8,
-        "inOutSine"
-      ],
-      [
-        1,
-        -8,
-        "inOutSine"
-      ]
-    ],
-    "hip_twist": [
-      [
-        0,
-        8
-      ],
-      [
-        0.5,
-        -8,
-        "inOutSine"
-      ],
-      [
-        1,
-        8,
-        "inOutSine"
-      ]
-    ],
-    "hip_roll": [
-      [
-        0,
-        -3
-      ],
-      [
-        0.5,
-        3,
-        "inOutSine"
-      ],
-      [
-        1,
-        -3,
-        "inOutSine"
-      ]
-    ],
-    "armL_elev": [
-      [
-        0,
-        -72
-      ],
-      [
-        0.5,
-        -70,
-        "inOutSine"
-      ],
-      [
-        1,
-        -72,
-        "inOutSine"
-      ]
-    ],
-    "armR_elev": [
-      [
-        0,
-        -70
-      ],
-      [
-        0.5,
-        -72,
-        "inOutSine"
-      ],
-      [
-        1,
-        -70,
-        "inOutSine"
-      ]
-    ],
-    "armL_azim": [
-      [
-        0,
-        -22
-      ],
-      [
-        0.5,
-        26,
-        "inOutSine"
-      ],
-      [
-        1,
-        -22,
-        "inOutSine"
-      ]
-    ],
-    "armR_azim": [
-      [
-        0,
-        26
-      ],
-      [
-        0.5,
-        -22,
-        "inOutSine"
-      ],
-      [
-        1,
-        26,
-        "inOutSine"
-      ]
-    ],
-    "elbowL": [
-      [
-        0,
-        18
-      ],
-      [
-        0.5,
-        30,
-        "inOutSine"
-      ],
-      [
-        1,
-        18,
-        "inOutSine"
-      ]
-    ],
-    "elbowR": [
-      [
-        0,
-        30
-      ],
-      [
-        0.5,
-        18,
-        "inOutSine"
-      ],
-      [
-        1,
-        30,
-        "inOutSine"
-      ]
-    ],
-    "legL_swing": [
-      [
-        0,
-        26
-      ],
-      [
-        0.5,
-        -20,
-        "inOutSine"
-      ],
-      [
-        1,
-        26,
-        "inOutSine"
-      ]
-    ],
-    "legR_swing": [
-      [
-        0,
-        -20
-      ],
-      [
-        0.5,
-        26,
-        "inOutSine"
-      ],
-      [
-        1,
-        -20,
-        "inOutSine"
-      ]
-    ],
+    "lean": [[0, 4], [1, 4]],
+    "twist": [[0, -8], [0.5, 8, "inOutSine"], [1, -8, "inOutSine"]],
+    "hip_twist": [[0, 8], [0.5, -8, "inOutSine"], [1, 8, "inOutSine"]],
+    "hip_roll": [[0, -3], [0.5, 3, "inOutSine"], [1, -3, "inOutSine"]],
+    "armL_elev": [[0, -72], [0.5, -70, "inOutSine"], [1, -72, "inOutSine"]],
+    "armR_elev": [[0, -70], [0.5, -72, "inOutSine"], [1, -70, "inOutSine"]],
+    "armL_azim": [[0, -22], [0.5, 26, "inOutSine"], [1, -22, "inOutSine"]],
+    "armR_azim": [[0, 26], [0.5, -22, "inOutSine"], [1, 26, "inOutSine"]],
+    "elbowL": [[0, 18], [0.5, 30, "inOutSine"], [1, 18, "inOutSine"]],
+    "elbowR": [[0, 30], [0.5, 18, "inOutSine"], [1, 30, "inOutSine"]],
+    "legL_swing": [[0, 26], [0.5, -20, "inOutSine"], [1, 26, "inOutSine"]],
+    "legR_swing": [[0, -20], [0.5, 26, "inOutSine"], [1, -20, "inOutSine"]],
     "kneeL": [
-      [
-        0,
-        8
-      ],
-      [
-        0.25,
-        14,
-        "inOutSine"
-      ],
-      [
-        0.5,
-        18,
-        "inOutSine"
-      ],
-      [
-        0.75,
-        48,
-        "outSine"
-      ],
-      [
-        1,
-        8,
-        "inSine"
-      ]
+      [0, 8],
+      [0.25, 14, "inOutSine"],
+      [0.5, 18, "inOutSine"],
+      [0.75, 48, "outSine"],
+      [1, 8, "inSine"]
     ],
     "kneeR": [
-      [
-        0,
-        18
-      ],
-      [
-        0.25,
-        48,
-        "outSine"
-      ],
-      [
-        0.5,
-        8,
-        "inSine"
-      ],
-      [
-        0.75,
-        14,
-        "inOutSine"
-      ],
-      [
-        1,
-        18,
-        "inOutSine"
-      ]
+      [0, 18],
+      [0.25, 48, "outSine"],
+      [0.5, 8, "inSine"],
+      [0.75, 14, "inOutSine"],
+      [1, 18, "inOutSine"]
     ],
-    "footL_pitch": [
-      [
-        0,
-        -10
-      ],
-      [
-        0.5,
-        14,
-        "inOutSine"
-      ],
-      [
-        1,
-        -10,
-        "inOutSine"
-      ]
-    ],
-    "footR_pitch": [
-      [
-        0,
-        14
-      ],
-      [
-        0.5,
-        -10,
-        "inOutSine"
-      ],
-      [
-        1,
-        14,
-        "inOutSine"
-      ]
-    ]
+    "footL_pitch": [[0, -10], [0.5, 14, "inOutSine"], [1, -10, "inOutSine"]],
+    "footR_pitch": [[0, 14], [0.5, -10, "inOutSine"], [1, 14, "inOutSine"]]
   },
   "expressions": {
-    "happy": [
-      [
-        0,
-        0.25
-      ],
-      [
-        1,
-        0.25
-      ]
-    ]
+    "happy": [[0, 0.25], [1, 0.25]]
   },
   "move": {
-    "dir": [
-      0,
-      0,
-      1
-    ],
+    "dir": [0, 0, 1],
     "distance": 1.3,
     "t0": 0,
     "t1": 1,

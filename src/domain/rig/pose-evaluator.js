@@ -1,8 +1,8 @@
-import { vadd, vnorm, vscale } from '../math/vec3.js';
-import { D2R, qarc, qaxis, qinv, qmul, qnorm, qrot } from '../math/quat.js';
 import { rootMotion } from '../animation/root-motion.js';
-import { evalChannels } from './rig-context.js';
+import { D2R, qarc, qaxis, qinv, qmul, qnorm, qrot } from '../math/quat.js';
+import { vadd, vnorm, vscale } from '../math/vec3.js';
 import { evalExpressions } from '../validation/vrm10/expressions.js';
+import { evalChannels } from './rig-context.js';
 
 export function evalPose(rig, ctx, clip, t) {
   const cv = evalChannels(rig, ctx, clip, t),
@@ -32,7 +32,7 @@ export function evalPose(rig, ctx, clip, t) {
         const d = [
           op.lateral[0] * Math.cos(el) * Math.cos(az),
           Math.sin(el),
-          Math.cos(el) * Math.sin(az)
+          Math.cos(el) * Math.sin(az),
         ];
         const dc = vnorm(qrot(gp, d)),
           rc = vnorm(qrot(gp, op.rest_dir));

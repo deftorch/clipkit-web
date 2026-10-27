@@ -1,6 +1,14 @@
-import { el, copyText } from "../dom/h.js";
-import { clipState, curItem, fmtClip, rebuild, persist, addItem, selectClip } from "../../application/state/clip-store.js";
-import { playbackState } from "../../application/state/playback-store.js";
+import {
+  addItem,
+  clipState,
+  curItem,
+  fmtClip,
+  persist,
+  rebuild,
+  selectClip,
+} from '../../application/state/clip-store.js';
+import { playbackState } from '../../application/state/playback-store.js';
+import { copyText, el } from '../dom/h.js';
 
 let edTimer = null;
 
@@ -13,7 +21,7 @@ export function renderEditor(host, onRefreshAll, onSelectTab) {
     spellcheck: 'false',
     'aria-label': 'JSON klip',
     autocapitalize: 'off',
-    autocomplete: 'off'
+    autocomplete: 'off',
   });
   const stat = el('div', { class: 'edstat', id: 'edstat', role: 'status' });
   const row = el('div', { class: 'btnrow' });
@@ -62,7 +70,12 @@ export function renderEditor(host, onRefreshAll, onSelectTab) {
     if (onRefreshAll) onRefreshAll();
   });
 
-  const fi = el('input', { type: 'file', accept: '.json,application/json', id: 'fileIn', hidden: '' });
+  const fi = el('input', {
+    type: 'file',
+    accept: '.json,application/json',
+    id: 'fileIn',
+    hidden: '',
+  });
   fi.onchange = () => {
     const f = fi.files[0];
     if (!f) return;
@@ -89,8 +102,8 @@ export function renderEditor(host, onRefreshAll, onSelectTab) {
     stat,
     el('p', {
       class: 'note',
-      text: 'Perubahan langsung dibangun ulang dan divalidasi. Draf tersimpan di browser ini saja. Untuk membawa hasilnya ke repo, salin JSON dan simpan sebagai clipkit/clips/<nama>.json, lalu naikkan version dan changelog.'
-    })
+      text: 'Perubahan langsung dibangun ulang dan divalidasi. Draf tersimpan di browser ini saja. Untuk membawa hasilnya ke repo, salin JSON dan simpan sebagai clipkit/clips/<nama>.json, lalu naikkan version dan changelog.',
+    }),
   );
 
   ta.addEventListener('input', onInput);

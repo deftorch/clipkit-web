@@ -7,14 +7,14 @@ export function loadRigs() {
     ...vrmSamplePatch,
     rest: {
       parents: motus.rest.parents,
-      offsets: vrmSamplePatch.rest.offsets
-    }
+      offsets: vrmSamplePatch.rest.offsets,
+    },
   };
   return {
     motus,
     vrm_sample: {
       rig: vrmSample,
-      info: vrmSamplePatch.info
-    }
+      info: vrmSamplePatch.info,
+    },
   };
 }

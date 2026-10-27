@@ -3,10 +3,7 @@ import { FORMAT_VERSION } from '../vrm10/constants.js';
 export function versionIssues(version, changelog, fv = 1) {
   const out = [];
   if (fv > FORMAT_VERSION) {
-    out.push([
-      'FAIL',
-      `format_version ${fv} lebih baru dari yang didukung (${FORMAT_VERSION})`
-    ]);
+    out.push(['FAIL', `format_version ${fv} lebih baru dari yang didukung (${FORMAT_VERSION})`]);
   }
   if (!Array.isArray(changelog) || !changelog.length) {
     out.push(['WARN', `v${version} tanpa changelog`]);
@@ -21,12 +18,12 @@ export function versionIssues(version, changelog, fv = 1) {
   } else if (changelog[changelog.length - 1].v !== version) {
     out.push([
       'FAIL',
-      `version ${version} tetapi changelog berakhir di v${changelog[changelog.length - 1].v}`
+      `version ${version} tetapi changelog berakhir di v${changelog[changelog.length - 1].v}`,
     ]);
   } else {
     out.push([
       'PASS',
-      `versi v${version}, format ${fv}, changelog ${changelog.length} entri konsisten`
+      `versi v${version}, format ${fv}, changelog ${changelog.length} entri konsisten`,
     ]);
   }
   return out;

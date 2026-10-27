@@ -1,10 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import motusRig from '../src/data/rigs/motus.json';
+import { defaultClips } from '../src/data/index.js';
 import limits from '../src/data/limits.json';
 import { loadRigs } from '../src/data/load-rigs.js';
-import { defaultClips } from '../src/data/index.js';
-import { makeCtx, restPositions } from '../src/domain/rig/rig-context.js';
 import { evalPose } from '../src/domain/rig/pose-evaluator.js';
+import { makeCtx, restPositions } from '../src/domain/rig/rig-context.js';
 import { validate } from '../src/domain/validation/validator.js';
 import { checkVrm10 } from '../src/domain/validation/vrm10/check-vrm10.js';
 import { buildVrmaGlb } from '../src/domain/validation/vrm10/vrma-exporter.js';
@@ -49,7 +48,7 @@ describe('ClipKit ES Modules - Golden Tests', () => {
   });
 
   it('validate produces valid reports for all default clips', () => {
-    for (const [name, clip] of Object.entries(defaultClips)) {
+    for (const [_name, clip] of Object.entries(defaultClips)) {
       const res = validate(motus, ctxMotus, limits, clip, 'stylized');
       expect(res.lines.length).toBeGreaterThan(0);
       expect(res.poses.length).toBeGreaterThan(0);

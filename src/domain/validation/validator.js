@@ -1,10 +1,10 @@
+import { qangle, R2D } from '../math/quat.js';
 import { vcross, vdot, vnorm, vsub } from '../math/vec3.js';
-import { R2D, qangle } from '../math/quat.js';
-import { FPS } from './vrm10/constants.js';
 import { evalPose } from '../rig/pose-evaluator.js';
 import { restPositions } from '../rig/rig-context.js';
-import { versionIssues } from './rules/version.js';
 import { checkChannelRanges } from './rules/channel-ranges.js';
+import { versionIssues } from './rules/version.js';
+import { FPS } from './vrm10/constants.js';
 
 export function validate(rig, ctx, limits, clip, style = 'stylized') {
   const lim = limits.styles[style],
@@ -56,7 +56,7 @@ export function validate(rig, ctx, limits, clip, style = 'stylized') {
   else lines.push(['PASS', spTxt]);
   lines.push([
     mA > lim.ang_accel_warn ? 'WARN' : 'PASS',
-    `percepatan sudut maks ${fx(mA)} °/s² (${mAb} @${mAt.toFixed(2)}s)`
+    `percepatan sudut maks ${fx(mA)} °/s² (${mAb} @${mAt.toFixed(2)}s)`,
   ]);
 
   // 2. Loop
@@ -72,7 +72,7 @@ export function validate(rig, ctx, limits, clip, style = 'stylized') {
     }
     lines.push([
       worst > lim.loop_pose_diff_deg ? 'FAIL' : 'PASS',
-      `loop: selisih pose awal-akhir maks ${worst.toFixed(1)}° (${wb})`
+      `loop: selisih pose awal-akhir maks ${worst.toFixed(1)}° (${wb})`,
     ]);
   }
 
@@ -97,7 +97,7 @@ export function validate(rig, ctx, limits, clip, style = 'stylized') {
     }
     nMax = Math.max(
       nMax,
-      ang(vnorm(vsub(p[I.Neck], p[I.Spine2])), vnorm(vsub(p[I.Head], p[I.Neck])))
+      ang(vnorm(vsub(p[I.Neck], p[I.Spine2])), vnorm(vsub(p[I.Head], p[I.Neck]))),
     );
   }
   const kTxt = `lutut: fleksi ${fx(kMin)}° sampai ${fx(kMax)}°`;
@@ -105,9 +105,9 @@ export function validate(rig, ctx, limits, clip, style = 'stylized') {
     kMin < an.knee_flex_min || kMax > an.knee_flex_max
       ? [
           'FAIL',
-          `${kTxt} (batas ${an.knee_flex_min}..${an.knee_flex_max}, negatif = menekuk terbalik)`
+          `${kTxt} (batas ${an.knee_flex_min}..${an.knee_flex_max}, negatif = menekuk terbalik)`,
         ]
-      : ['PASS', kTxt]
+      : ['PASS', kTxt],
   );
   lines.push([eMax > an.elbow_flex_max ? 'FAIL' : 'PASS', `siku: tekuk maks ${fx(eMax)}°`]);
   lines.push([nMax > an.neck_bend_max ? 'FAIL' : 'PASS', `leher-kepala: tekuk maks ${fx(nMax)}°`]);
@@ -135,8 +135,8 @@ export function validate(rig, ctx, limits, clip, style = 'stylized') {
       pen > fl.penetration_fail_m ? 'FAIL' : 'PASS',
       `lantai: toe terendah ${(minToe - floorY).toFixed(3)} m dari lantai (penetrasi ${Math.max(
         pen,
-        0
-      ).toFixed(3)} m)`
+        0,
+      ).toFixed(3)} m)`,
     ]);
   if (vm.foot_slide !== false) {
     if (!slide.length)
@@ -148,8 +148,8 @@ export function validate(rig, ctx, limits, clip, style = 'stylized') {
       lines.push([
         p95 > fl.slide_warn_ms ? 'WARN' : 'PASS',
         `foot sliding: ${contact} frame kontak, rata-rata ${mean.toFixed(2)} m/s, p95 ${p95.toFixed(
-          2
-        )} m/s`
+          2,
+        )} m/s`,
       ]);
     }
   }
@@ -185,15 +185,15 @@ export function validate(rig, ctx, limits, clip, style = 'stylized') {
     lines.push([
       Math.abs(dist - cl.distance) <= cl.distance * tol ? 'PASS' : 'FAIL',
       `klaim jarak ${cl.distance.toFixed(2)} m (±${Math.round(tol * 100)}%): terukur ${dist.toFixed(
-        2
-      )} m`
+        2,
+      )} m`,
     ]);
   }
   if (cl.duration != null) {
     const tol = cl.tolerance ?? 0.1;
     lines.push([
       Math.abs(dur - cl.duration) <= cl.duration * tol ? 'PASS' : 'FAIL',
-      `klaim durasi ${cl.duration.toFixed(2)} s: terukur ${dur.toFixed(2)} s`
+      `klaim durasi ${cl.duration.toFixed(2)} s: terukur ${dur.toFixed(2)} s`,
     ]);
   }
 
@@ -204,7 +204,7 @@ export function validate(rig, ctx, limits, clip, style = 'stylized') {
       ok = w.length === 2 && w[0] >= 0 && w[0] < w[1] && w[1] <= dur + 1e-4;
     lines.push([
       ok ? 'PASS' : 'FAIL',
-      `jendela ${wn} [${w.join(', ')}] ${ok ? 'valid' : 'tidak valid (harus 0 <= mulai < akhir <= durasi)'}`
+      `jendela ${wn} [${w.join(', ')}] ${ok ? 'valid' : 'tidak valid (harus 0 <= mulai < akhir <= durasi)'}`,
     ]);
   }
   const hn = wins.hitbox ? 'hitbox' : wins.active ? 'active' : '';
@@ -212,9 +212,9 @@ export function validate(rig, ctx, limits, clip, style = 'stylized') {
     const ok = wins.cancel[0] >= wins[hn][1] - 1e-4;
     lines.push([
       ok ? 'PASS' : 'FAIL',
-      `urutan: cancel (${wins.cancel[0].toFixed(2)}) dimulai setelah ${hn} selesai (${wins[hn][1].toFixed(
-        2
-      )})`
+      `urutan: cancel (${wins.cancel[0].toFixed(2)}) dimulai setelah ${hn} selesai (${wins[
+        hn
+      ][1].toFixed(2)})`,
     ]);
   }
   for (const ev of clip.events || []) {

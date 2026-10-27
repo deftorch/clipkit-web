@@ -1,9 +1,9 @@
-import ClipKit from "../../domain/clipkit.js";
-import limitsData from "../../data/limits.json";
-import historyData from "../../data/history.json";
-import keysData from "../../data/keys.json";
-import { defaultClips } from "../../data/index.js";
-import { rigState } from "./rig-store.js";
+import historyData from '../../data/history.json';
+import { defaultClips } from '../../data/index.js';
+import keysData from '../../data/keys.json';
+import limitsData from '../../data/limits.json';
+import ClipKit from '../../domain/clipkit.js';
+import { rigState } from './rig-store.js';
 
 export const STORE_KEY = 'clipkit.web.v1';
 
@@ -14,7 +14,7 @@ export const clipState = {
   counter: 0,
   style: 'stylized',
   tab: 'rig',
-  selCh: null
+  selCh: null,
 };
 
 const listeners = new Set();
@@ -35,14 +35,24 @@ export function fmtClip(c) {
   keys.forEach((k, ki) => {
     const v = c[k];
     const comma = ki < keys.length - 1 ? ',' : '';
-    if (v && typeof v === 'object' && !Array.isArray(v) && ['channels','windows','claims','move','validate','expressions'].includes(k) && k !== 'move') {
+    if (
+      v &&
+      typeof v === 'object' &&
+      !Array.isArray(v) &&
+      ['channels', 'windows', 'claims', 'move', 'validate', 'expressions'].includes(k) &&
+      k !== 'move'
+    ) {
       const ks = Object.keys(v);
       lines.push(` ${J(k)}: {`);
-      ks.forEach((kk, i) => lines.push(`  ${J(kk)}: ${J(v[kk])}${i < ks.length - 1 ? ',' : ''}`));
+      ks.forEach((kk, i) => {
+        lines.push(`  ${J(kk)}: ${J(v[kk])}${i < ks.length - 1 ? ',' : ''}`);
+      });
       lines.push(` }${comma}`);
     } else if (Array.isArray(v) && v.length && typeof v[0] === 'object' && !Array.isArray(v[0])) {
       lines.push(` ${J(k)}: [`);
-      v.forEach((x, i) => lines.push(`  ${J(x)}${i < v.length - 1 ? ',' : ''}`));
+      v.forEach((x, i) => {
+        lines.push(`  ${J(x)}${i < v.length - 1 ? ',' : ''}`);
+      });
       lines.push(` ]${comma}`);
     } else {
       lines.push(` ${J(k)}: ${J(v)}${comma}`);
@@ -53,9 +63,14 @@ export function fmtClip(c) {
 
 export const stable = (o) =>
   JSON.stringify(o, (k, v) =>
-    (v && typeof v === 'object' && !Array.isArray(v))
-      ? Object.keys(v).sort().reduce((a, kk) => { a[kk] = v[kk]; return a; }, {})
-      : v
+    v && typeof v === 'object' && !Array.isArray(v)
+      ? Object.keys(v)
+          .sort()
+          .reduce((a, kk) => {
+            a[kk] = v[kk];
+            return a;
+          }, {})
+      : v,
   );
 
 export function newItem(id, base, text) {
@@ -73,24 +88,40 @@ export function snapshotLines(clip) {
     return [['FAIL', `version harus bilangan bulat >= 1, ditemukan ${JSON.stringify(ver)}`]];
   }
   if (clip.format_version == null) {
-    out.push(['FAIL', `format_version belum ada (tambahkan "format_version": ${keysData.formatVersion})`]);
+    out.push([
+      'FAIL',
+      `format_version belum ada (tambahkan "format_version": ${keysData.formatVersion})`,
+    ]);
   }
   if (!hist) {
-    out.push(['WARN', `v${ver} belum dirilis (tidak ada snapshot untuk "${name}" di riwayat contoh)`]);
+    out.push([
+      'WARN',
+      `v${ver} belum dirilis (tidak ada snapshot untuk "${name}" di riwayat contoh)`,
+    ]);
     return out;
   }
-  const vs = Object.keys(hist).map(Number).sort((a, b) => a - b);
+  const vs = Object.keys(hist)
+    .map(Number)
+    .sort((a, b) => a - b);
   for (const v of vs) {
     if (v > ver) out.push(['FAIL', `snapshot v${v} ada tetapi version klip hanya ${ver}`]);
   }
   if (vs.includes(ver)) {
     const s = hist[ver];
-    const diff = B.filter(k => stable(clip[k]) !== stable(s[k]));
-    out.push(diff.length
-      ? ['FAIL', `isi berubah dari snapshot v${ver} tanpa menaikkan version (beda: ${diff.join(', ')})`]
-      : ['PASS', `isi sama dengan snapshot v${ver}`]);
+    const diff = B.filter((k) => stable(clip[k]) !== stable(s[k]));
+    out.push(
+      diff.length
+        ? [
+            'FAIL',
+            `isi berubah dari snapshot v${ver} tanpa menaikkan version (beda: ${diff.join(', ')})`,
+          ]
+        : ['PASS', `isi sama dengan snapshot v${ver}`],
+    );
   } else {
-    out.push(['WARN', `v${ver} belum dirilis (snapshot tersimpan: ${vs.map(v => 'v' + v).join(', ')})`]);
+    out.push([
+      'WARN',
+      `v${ver} belum dirilis (snapshot tersimpan: ${vs.map((v) => 'v' + v).join(', ')})`,
+    ]);
   }
   return out;
 }
@@ -121,7 +152,11 @@ export function rebuild(it, rig = rigState.rig, ctx = rigState.ctx, style = clip
   }
   for (const k of Object.keys(c.channels || {})) {
     const a = c.channels[k];
-    if (!Array.isArray(a) || !a.length || !a.every(p => Array.isArray(p) && p.length >= 2 && isFinite(p[0]) && isFinite(p[1]))) {
+    if (
+      !Array.isArray(a) ||
+      !a.length ||
+      !a.every((p) => Array.isArray(p) && p.length >= 2 && isFinite(p[0]) && isFinite(p[1]))
+    ) {
       it.err = `channel "${k}" harus daftar key [waktu, nilai, easing?] dengan angka.`;
       return;
     }
@@ -212,14 +247,26 @@ export function newClip() {
     duration: 1.0,
     loop: false,
     channels: {
-      lean: [[0, 0], [0.5, 25, 'inOutSine'], [1, 0, 'inOutSine']],
-      armR_elev: [[0, -75], [0.5, 60, 'outQuad'], [1, -75, 'inOutSine']],
-      armR_azim: [[0, 0], [0.5, 70, 'outQuad'], [1, 0, 'inOutSine']]
+      lean: [
+        [0, 0],
+        [0.5, 25, 'inOutSine'],
+        [1, 0, 'inOutSine'],
+      ],
+      armR_elev: [
+        [0, -75],
+        [0.5, 60, 'outQuad'],
+        [1, -75, 'inOutSine'],
+      ],
+      armR_azim: [
+        [0, 0],
+        [0.5, 70, 'outQuad'],
+        [1, 0, 'inOutSine'],
+      ],
     },
     windows: { hitbox: [0.4, 0.6], cancel: [0.7, 1.0] },
     events: [{ t: 0.4, type: 'sfx', id: 'tes' }],
     claims: { duration: 1.0, tolerance: 0.1 },
-    validate: { foot_slide: false }
+    validate: { foot_slide: false },
   };
   const it = addItem(n, null, fmtClip(c), true);
   it.orig = null;
@@ -239,7 +286,12 @@ export function initClips() {
   for (const n of Object.keys(defaultClips)) {
     const sv0 = saved[n];
     const orig = fmtClip(defaultClips[n]);
-    const it = addItem(n, n, sv0 && typeof sv0.text === 'string' ? sv0.text : orig, !!(sv0 && sv0.text && sv0.text !== orig));
+    const it = addItem(
+      n,
+      n,
+      sv0 && typeof sv0.text === 'string' ? sv0.text : orig,
+      !!(sv0 && sv0.text && sv0.text !== orig),
+    );
     it.orig = orig;
   }
   for (const id of Object.keys(saved)) {

@@ -1,15 +1,32 @@
 {
   "name": "clipkit-web",
   "version": "1.0.0",
-  "private": true,
+  "description": "AI-First 3D Animation Sandbox, Linter, and Compiler for VRM 1.0 & Godot",
+  "license": "MIT",
+  "author": "ClipKit Contributors",
   "type": "module",
+  "keywords": [
+    "animation",
+    "vrm",
+    "vrma",
+    "godot",
+    "threejs",
+    "motion",
+    "ai-agent",
+    "gameplay"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "biome lint --diagnostic-level=error .",
+    "format": "biome format --write .",
+    "check": "biome check --diagnostic-level=error ."
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.6.3",
     "vite": "^6.0.0",
     "vite-plugin-singlefile": "^2.1.0",
     "vitest": "^3.0.0"

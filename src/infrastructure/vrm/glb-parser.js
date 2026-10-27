@@ -52,7 +52,7 @@ export function trs(n) {
     0,
     0,
     0,
-    1
+    1,
   ];
   for (let i = 0; i < 3; i++) {
     m[i] *= s[0];

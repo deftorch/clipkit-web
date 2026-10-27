@@ -1,11 +1,27 @@
-import ClipKit from "../../domain/clipkit.js";
+import ClipKit from '../../domain/clipkit.js';
 
 export const WIDTH = {
-  Spine: 0.12, Spine1: 0.13, Spine2: 0.13, Neck: 0.05, Head: 0.04,
-  LeftShoulder: 0.06, RightShoulder: 0.06, LeftArm: 0.05, RightArm: 0.05,
-  LeftForeArm: 0.042, RightForeArm: 0.042, LeftHand: 0.03, RightHand: 0.03,
-  LeftUpLeg: 0.09, RightUpLeg: 0.09, LeftLeg: 0.075, RightLeg: 0.075,
-  LeftFoot: 0.05, RightFoot: 0.05, LeftToeBase: 0.04, RightToeBase: 0.04
+  Spine: 0.12,
+  Spine1: 0.13,
+  Spine2: 0.13,
+  Neck: 0.05,
+  Head: 0.04,
+  LeftShoulder: 0.06,
+  RightShoulder: 0.06,
+  LeftArm: 0.05,
+  RightArm: 0.05,
+  LeftForeArm: 0.042,
+  RightForeArm: 0.042,
+  LeftHand: 0.03,
+  RightHand: 0.03,
+  LeftUpLeg: 0.09,
+  RightUpLeg: 0.09,
+  LeftLeg: 0.075,
+  RightLeg: 0.075,
+  LeftFoot: 0.05,
+  RightFoot: 0.05,
+  LeftToeBase: 0.04,
+  RightToeBase: 0.04,
 };
 
 export const sideColor = (n, C) =>
@@ -84,7 +100,10 @@ export function drawFigure(g, P, ctx, rig, alpha, thin, prjFn, C, KF) {
 }
 
 export function drawFloor(g, it, y, prjFn, C) {
-  let x0 = -3, x1 = 3, z0 = -3, z1 = 3;
+  let x0 = -3,
+    x1 = 3,
+    z0 = -3,
+    z1 = 3;
   if (it && it.res) {
     for (const P of it.res.poses) {
       const r = P.root;
@@ -119,7 +138,7 @@ export function drawFloor(g, it, y, prjFn, C) {
   }
 
   // Jalur root motion
-  if (it && it.res && it.res.poses.some(P => Math.hypot(P.root[0], P.root[2]) > 1e-3)) {
+  if (it && it.res && it.res.poses.some((P) => Math.hypot(P.root[0], P.root[2]) > 1e-3)) {
     g.strokeStyle = C['--muted'];
     g.setLineDash([5, 4]);
     g.lineWidth = 1.5;

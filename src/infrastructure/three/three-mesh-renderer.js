@@ -1,6 +1,6 @@
+import { VRMLoaderPlugin } from '@pixiv/three-vrm';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { VRMLoaderPlugin } from '@pixiv/three-vrm';
 
 let renderer = null;
 let scene = null;
@@ -13,7 +13,7 @@ export function mount(canvas) {
     canvas,
     alpha: true,
     antialias: true,
-    premultipliedAlpha: true
+    premultipliedAlpha: true,
   });
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.setClearColor(0, 0);
@@ -73,8 +73,8 @@ export function load(name, buffer) {
           vrm,
           info: {
             meshes: meshCount,
-            tris: Math.round(triangleCount)
-          }
+            tris: Math.round(triangleCount),
+          },
         };
 
         vrmCache.set(name, entry);
@@ -83,7 +83,7 @@ export function load(name, buffer) {
       },
       (err) => {
         reject(new Error('Gagal memuat mesh: ' + (err && err.message ? err.message : err)));
-      }
+      },
     );
   });
 }
@@ -126,11 +126,7 @@ export function pose(poseData, rig) {
     }
   });
 
-  currentVrmEntry.vrm.scene.position.set(
-    poseData.root[0],
-    poseData.root[1],
-    poseData.root[2]
-  );
+  currentVrmEntry.vrm.scene.position.set(poseData.root[0], poseData.root[1], poseData.root[2]);
   humanoid.update();
 
   const exprManager = currentVrmEntry.vrm.expressionManager;
@@ -177,7 +173,7 @@ export const VrmView = {
   unload,
   pose,
   render,
-  bonePos
+  bonePos,
 };
 
 export default VrmView;

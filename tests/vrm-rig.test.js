@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import motusRig from '../src/data/rigs/motus.json';
+import { MAP_M2V } from '../src/domain/validation/vrm10/constants.js';
 import { buildRig } from '../src/infrastructure/vrm/vrm-rig-builder.js';
-import { MAP_M2V, REQUIRED_VRM_BONES } from '../src/domain/validation/vrm10/constants.js';
 
 describe('VrmRig infrastructure module', () => {
   it('buildRig throws if not VRMC_vrm', () => {
@@ -34,9 +34,9 @@ describe('VrmRig infrastructure module', () => {
         VRMC_vrm: {
           specVersion: '1.0',
           humanoid: { humanBones },
-          meta: { name: 'TestAvatar' }
-        }
-      }
+          meta: { name: 'TestAvatar' },
+        },
+      },
     };
 
     const res = buildRig(gltf, motusRig, 'TestRig');

@@ -1,6 +1,6 @@
-import { FPS } from '../vrm10/constants.js';
 import { sampleKeys } from '../../animation/keyframes.js';
 import { allChannelNames, channelRange } from '../../rig/rig-context.js';
+import { FPS } from '../vrm10/constants.js';
 
 export function checkChannelRanges(rig, clip) {
   const w = [];
@@ -26,7 +26,7 @@ export function checkChannelRanges(rig, clip) {
     }
     if (worst > 0) {
       w.push(
-        `channel ${c} keluar range [${rg[0]}, ${rg[1]}] maks ${worst.toFixed(1)} di t=${wt.toFixed(2)}s`
+        `channel ${c} keluar range [${rg[0]}, ${rg[1]}] maks ${worst.toFixed(1)} di t=${wt.toFixed(2)}s`,
       );
     }
   }

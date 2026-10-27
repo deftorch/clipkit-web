@@ -11,11 +11,5 @@
     "claims",
     "validate"
   ],
-  "gameplayKeys": [
-    "duration",
-    "loop",
-    "move",
-    "windows",
-    "events"
-  ]
+  "gameplayKeys": ["duration", "loop", "move", "windows", "events"]
 }

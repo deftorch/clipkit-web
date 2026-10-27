@@ -1,8 +1,14 @@
-import ClipKit from "../../domain/clipkit.js";
-import { playbackState, togglePlay, restart, stepFrame, setPlaying } from "../../application/state/playback-store.js";
-import { clipState, curItem } from "../../application/state/clip-store.js";
-import { rigState } from "../../application/state/rig-store.js";
-import { fitCamera } from "../../application/state/camera-store.js";
+import { fitCamera } from '../../application/state/camera-store.js';
+import { clipState, curItem } from '../../application/state/clip-store.js';
+import {
+  playbackState,
+  restart,
+  setPlaying,
+  stepFrame,
+  togglePlay,
+} from '../../application/state/playback-store.js';
+import { rigState } from '../../application/state/rig-store.js';
+import ClipKit from '../../domain/clipkit.js';
 
 export function syncPlayBtn(bPlay) {
   if (bPlay) {
@@ -32,7 +38,7 @@ export function initTransport({
   cFollow,
   bVrma,
   onDirty,
-  onSelectClip
+  onSelectClip,
 }) {
   const sync = () => syncPlayBtn(bPlay);
 
@@ -129,7 +135,7 @@ export function initTransport({
       if (speedSel) {
         const i = Math.max(
           0,
-          Math.min(speedSel.options.length - 1, speedSel.selectedIndex + (e.key === ']' ? 1 : -1))
+          Math.min(speedSel.options.length - 1, speedSel.selectedIndex + (e.key === ']' ? 1 : -1)),
         );
         speedSel.selectedIndex = i;
         playbackState.speed = +speedSel.value;
@@ -144,6 +150,6 @@ export function initTransport({
 
   sync();
   return {
-    syncPlay: sync
+    syncPlay: sync,
   };
 }

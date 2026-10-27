@@ -1,7 +1,7 @@
-import ClipKit from "../../domain/clipkit.js";
-import VrmRig from "../../infrastructure/vrm/vrm-rig-builder.js";
-import VrmView from "../../infrastructure/three/three-mesh-renderer.js";
-import { loadRigs } from "../../data/load-rigs.js";
+import { loadRigs } from '../../data/load-rigs.js';
+import ClipKit from '../../domain/clipkit.js';
+import VrmView from '../../infrastructure/three/three-mesh-renderer.js';
+import VrmRig from '../../infrastructure/vrm/vrm-rig-builder.js';
 
 const { motus, vrm_sample } = loadRigs();
 
@@ -9,11 +9,11 @@ export const baseMotusRig = motus;
 
 export const RIGS = {
   motus,
-  vrm_sample: vrm_sample.rig
+  vrm_sample: vrm_sample.rig,
 };
 
 export const RIGINFO = {
-  vrm_sample: vrm_sample.info
+  vrm_sample: vrm_sample.info,
 };
 
 export const MESHBUF = {};
@@ -24,7 +24,7 @@ export const rigState = {
   ctx: ClipKit.makeCtx(RIGS.vrm_sample),
   rigErr: null,
   meshMsg: null,
-  glReady: false
+  glReady: false,
 };
 
 const listeners = new Set();
@@ -79,14 +79,14 @@ export function ensureMesh(k, glCanvas) {
   notify();
 
   VrmView.load(k, MESHBUF[k])
-    .then(inf => {
+    .then((inf) => {
       if (rigState.rigKey !== k) return;
       if (!RIGINFO[k]) RIGINFO[k] = {};
       RIGINFO[k].mesh = inf;
       rigState.meshMsg = null;
       notify();
     })
-    .catch(e => {
+    .catch((e) => {
       rigState.meshMsg = e.message;
       notify();
     });

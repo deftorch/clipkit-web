@@ -1,26 +1,20 @@
-import { el } from "../dom/h.js";
-import limitsData from "../../data/limits.json";
-import { clipState, selectClip, newClip, rebuildAll } from "../../application/state/clip-store.js";
-import { RIGS, rigState, setRig, rigLabel } from "../../application/state/rig-store.js";
+import { clipState, newClip, rebuildAll, selectClip } from '../../application/state/clip-store.js';
+import { RIGS, rigLabel, rigState, setRig } from '../../application/state/rig-store.js';
+import limitsData from '../../data/limits.json';
+import { el } from '../dom/h.js';
 
-export function renderClipbar({
-  barEl,
-  vrmInputEl,
-  onSelectClip,
-  onAfterRigChange,
-  onRefreshAll
-}) {
+export function renderClipbar({ barEl, vrmInputEl, onSelectClip, onAfterRigChange, onRefreshAll }) {
   if (!barEl) return;
   barEl.textContent = '';
 
   clipState.order.forEach((id, i) => {
     const it = clipState.items[id];
     const isSelected = id === clipState.cur;
-    const label = (i < 9 ? (i + 1) + ' ' : '') + (it.clip?.name || id) + (it.dirty ? ' •' : '');
+    const label = (i < 9 ? i + 1 + ' ' : '') + (it.clip?.name || id) + (it.dirty ? ' •' : '');
     const b = el(
       'button',
       { class: 'tab', role: 'tab', type: 'button', 'aria-selected': String(isSelected) },
-      label
+      label,
     );
     b.onclick = () => {
       selectClip(id);

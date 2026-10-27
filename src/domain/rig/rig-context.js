@@ -1,5 +1,5 @@
-import { vadd, vnorm, vscale } from '../math/vec3.js';
 import { sampleKeys } from '../animation/keyframes.js';
+import { vadd, vnorm, vscale } from '../math/vec3.js';
 
 export function allChannelNames(rig) {
   const n = Object.keys(rig.channels);
@@ -53,9 +53,7 @@ export function makeCtx(rig) {
   for (const an of Object.keys(rig.aims || {})) {
     const a = rig.aims[an];
     const rd =
-      rig.rest && idx[a.child] != null
-        ? vnorm(rig.rest.offsets[idx[a.child]])
-        : vnorm(a.lateral);
+      rig.rest && idx[a.child] != null ? vnorm(rig.rest.offsets[idx[a.child]]) : vnorm(a.lateral);
     ops[idx[a.bone]].push({ kind: 'aim', name: an, rest_dir: rd, lateral: a.lateral });
   }
 
@@ -68,7 +66,7 @@ export function makeCtx(rig) {
     parents: rig.rest.parents,
     offsets: rig.rest.offsets,
     n: names.length,
-    chNames: allChannelNames(rig)
+    chNames: allChannelNames(rig),
   };
 }
 

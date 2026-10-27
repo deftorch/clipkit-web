@@ -10,462 +10,113 @@
     }
   ],
   "group": "combat",
-  "tags": [
-    "vrm-1.0",
-    "combat",
-    "kick",
-    "axe-kick",
-    "air"
-  ],
+  "tags": ["vrm-1.0", "combat", "kick", "axe-kick", "air"],
   "duration": 1,
   "loop": false,
   "channels": {
     "hip_y": [
-      [
-        0,
-        0
-      ],
-      [
-        0.16,
-        -0.05,
-        "inOutSine"
-      ],
-      [
-        0.4,
-        0.22,
-        "outSine"
-      ],
-      [
-        0.62,
-        -0.02,
-        "inSine"
-      ],
-      [
-        1,
-        0,
-        "inOutSine"
-      ]
+      [0, 0],
+      [0.16, -0.05, "inOutSine"],
+      [0.4, 0.22, "outSine"],
+      [0.62, -0.02, "inSine"],
+      [1, 0, "inOutSine"]
     ],
     "lean": [
-      [
-        0,
-        0
-      ],
-      [
-        0.16,
-        14,
-        "inOutSine"
-      ],
-      [
-        0.4,
-        -12,
-        "inOutSine"
-      ],
-      [
-        0.62,
-        22,
-        "inOutSine"
-      ],
-      [
-        1,
-        0,
-        "inOutSine"
-      ]
+      [0, 0],
+      [0.16, 14, "inOutSine"],
+      [0.4, -12, "inOutSine"],
+      [0.62, 22, "inOutSine"],
+      [1, 0, "inOutSine"]
     ],
     "twist": [
-      [
-        0,
-        0
-      ],
-      [
-        0.16,
-        -18,
-        "inOutSine"
-      ],
-      [
-        0.4,
-        15,
-        "inOutSine"
-      ],
-      [
-        0.62,
-        22,
-        "inOutSine"
-      ],
-      [
-        1,
-        0,
-        "inOutSine"
-      ]
+      [0, 0],
+      [0.16, -18, "inOutSine"],
+      [0.4, 15, "inOutSine"],
+      [0.62, 22, "inOutSine"],
+      [1, 0, "inOutSine"]
     ],
     "hip_twist": [
-      [
-        0,
-        0
-      ],
-      [
-        0.16,
-        -15,
-        "inOutSine"
-      ],
-      [
-        0.4,
-        18,
-        "inOutSine"
-      ],
-      [
-        0.62,
-        15,
-        "inOutSine"
-      ],
-      [
-        1,
-        0,
-        "inOutSine"
-      ]
+      [0, 0],
+      [0.16, -15, "inOutSine"],
+      [0.4, 18, "inOutSine"],
+      [0.62, 15, "inOutSine"],
+      [1, 0, "inOutSine"]
     ],
     "armL_elev": [
-      [
-        0,
-        -75
-      ],
-      [
-        0.16,
-        -60,
-        "inOutSine"
-      ],
-      [
-        0.4,
-        20,
-        "inOutSine"
-      ],
-      [
-        0.62,
-        -45,
-        "inOutSine"
-      ],
-      [
-        1,
-        -75,
-        "inOutSine"
-      ]
+      [0, -75],
+      [0.16, -60, "inOutSine"],
+      [0.4, 20, "inOutSine"],
+      [0.62, -45, "inOutSine"],
+      [1, -75, "inOutSine"]
     ],
     "armR_elev": [
-      [
-        0,
-        -75
-      ],
-      [
-        0.16,
-        -60,
-        "inOutSine"
-      ],
-      [
-        0.4,
-        10,
-        "inOutSine"
-      ],
-      [
-        0.62,
-        -55,
-        "inOutSine"
-      ],
-      [
-        1,
-        -75,
-        "inOutSine"
-      ]
+      [0, -75],
+      [0.16, -60, "inOutSine"],
+      [0.4, 10, "inOutSine"],
+      [0.62, -55, "inOutSine"],
+      [1, -75, "inOutSine"]
     ],
-    "armL_azim": [
-      [
-        0,
-        0
-      ],
-      [
-        0.4,
-        45,
-        "inOutSine"
-      ],
-      [
-        0.62,
-        20,
-        "inOutSine"
-      ],
-      [
-        1,
-        0,
-        "inOutSine"
-      ]
-    ],
-    "armR_azim": [
-      [
-        0,
-        0
-      ],
-      [
-        0.4,
-        30,
-        "inOutSine"
-      ],
-      [
-        0.62,
-        -25,
-        "inOutSine"
-      ],
-      [
-        1,
-        0,
-        "inOutSine"
-      ]
-    ],
-    "elbowL": [
-      [
-        0,
-        10
-      ],
-      [
-        0.4,
-        65,
-        "inOutSine"
-      ],
-      [
-        1,
-        10,
-        "inOutSine"
-      ]
-    ],
-    "elbowR": [
-      [
-        0,
-        10
-      ],
-      [
-        0.4,
-        55,
-        "inOutSine"
-      ],
-      [
-        1,
-        10,
-        "inOutSine"
-      ]
-    ],
+    "armL_azim": [[0, 0], [0.4, 45, "inOutSine"], [0.62, 20, "inOutSine"], [1, 0, "inOutSine"]],
+    "armR_azim": [[0, 0], [0.4, 30, "inOutSine"], [0.62, -25, "inOutSine"], [1, 0, "inOutSine"]],
+    "elbowL": [[0, 10], [0.4, 65, "inOutSine"], [1, 10, "inOutSine"]],
+    "elbowR": [[0, 10], [0.4, 55, "inOutSine"], [1, 10, "inOutSine"]],
     "legR_swing": [
-      [
-        0,
-        0
-      ],
-      [
-        0.16,
-        22,
-        "inOutSine"
-      ],
-      [
-        0.4,
-        112,
-        "inOutSine"
-      ],
-      [
-        0.62,
-        22,
-        "inOutSine"
-      ],
-      [
-        1,
-        0,
-        "inOutSine"
-      ]
+      [0, 0],
+      [0.16, 22, "inOutSine"],
+      [0.4, 112, "inOutSine"],
+      [0.62, 22, "inOutSine"],
+      [1, 0, "inOutSine"]
     ],
     "kneeR": [
-      [
-        0,
-        3
-      ],
-      [
-        0.16,
-        35,
-        "inOutSine"
-      ],
-      [
-        0.4,
-        8,
-        "inOutSine"
-      ],
-      [
-        0.62,
-        25,
-        "inOutSine"
-      ],
-      [
-        1,
-        3,
-        "inOutSine"
-      ]
+      [0, 3],
+      [0.16, 35, "inOutSine"],
+      [0.4, 8, "inOutSine"],
+      [0.62, 25, "inOutSine"],
+      [1, 3, "inOutSine"]
     ],
     "footR_pitch": [
-      [
-        0,
-        0
-      ],
-      [
-        0.16,
-        -10,
-        "inOutSine"
-      ],
-      [
-        0.4,
-        -12,
-        "inOutSine"
-      ],
-      [
-        0.62,
-        -8,
-        "inOutSine"
-      ],
-      [
-        1,
-        0,
-        "inOutSine"
-      ]
+      [0, 0],
+      [0.16, -10, "inOutSine"],
+      [0.4, -12, "inOutSine"],
+      [0.62, -8, "inOutSine"],
+      [1, 0, "inOutSine"]
     ],
     "legL_swing": [
-      [
-        0,
-        0
-      ],
-      [
-        0.16,
-        26,
-        "inOutSine"
-      ],
-      [
-        0.4,
-        18,
-        "inOutSine"
-      ],
-      [
-        0.62,
-        18,
-        "inOutSine"
-      ],
-      [
-        1,
-        0,
-        "inOutSine"
-      ]
+      [0, 0],
+      [0.16, 26, "inOutSine"],
+      [0.4, 18, "inOutSine"],
+      [0.62, 18, "inOutSine"],
+      [1, 0, "inOutSine"]
     ],
     "kneeL": [
-      [
-        0,
-        3
-      ],
-      [
-        0.16,
-        42,
-        "inOutSine"
-      ],
-      [
-        0.4,
-        38,
-        "inOutSine"
-      ],
-      [
-        0.62,
-        28,
-        "inOutSine"
-      ],
-      [
-        1,
-        3,
-        "inOutSine"
-      ]
+      [0, 3],
+      [0.16, 42, "inOutSine"],
+      [0.4, 38, "inOutSine"],
+      [0.62, 28, "inOutSine"],
+      [1, 3, "inOutSine"]
     ],
     "footL_pitch": [
-      [
-        0,
-        0
-      ],
-      [
-        0.16,
-        -16,
-        "inOutSine"
-      ],
-      [
-        0.4,
-        15,
-        "inOutSine"
-      ],
-      [
-        0.62,
-        -10,
-        "inOutSine"
-      ],
-      [
-        1,
-        0,
-        "inOutSine"
-      ]
+      [0, 0],
+      [0.16, -16, "inOutSine"],
+      [0.4, 15, "inOutSine"],
+      [0.62, -10, "inOutSine"],
+      [1, 0, "inOutSine"]
     ]
   },
   "expressions": {
-    "angry": [
-      [
-        0,
-        0
-      ],
-      [
-        0.2,
-        0.95,
-        "outQuad"
-      ],
-      [
-        0.7,
-        0.95,
-        "hold"
-      ],
-      [
-        1,
-        0,
-        "inOutSine"
-      ]
-    ],
-    "aa": [
-      [
-        0,
-        0
-      ],
-      [
-        0.35,
-        0.9,
-        "outQuad"
-      ],
-      [
-        0.68,
-        0,
-        "inQuad"
-      ]
-    ]
+    "angry": [[0, 0], [0.2, 0.95, "outQuad"], [0.7, 0.95, "hold"], [1, 0, "inOutSine"]],
+    "aa": [[0, 0], [0.35, 0.9, "outQuad"], [0.68, 0, "inQuad"]]
   },
   "move": {
-    "dir": [
-      0,
-      0,
-      1
-    ],
+    "dir": [0, 0, 1],
     "distance": 1.1,
     "t0": 0.16,
     "t1": 0.62,
     "ease": "inOutSine"
   },
   "windows": {
-    "hitbox": [
-      0.42,
-      0.6
-    ],
-    "cancel": [
-      0.72,
-      1
-    ]
+    "hitbox": [0.42, 0.6],
+    "cancel": [0.72, 1]
   },
   "events": [
     {

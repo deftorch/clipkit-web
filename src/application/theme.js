@@ -1,12 +1,29 @@
 export const C = {};
 
 const THEME_KEYS = [
-  '--view', '--ink', '--muted', '--line', '--panel',
-  '--fig', '--figL', '--figR', '--grid', '--grid2',
-  '--pass', '--warn', '--fail',
-  '--w-inv', '--w-hitbox', '--w-parry', '--w-cancel',
-  '--t-handR', '--t-handL', '--t-foot', '--t-head',
-  '--accent', '--bg'
+  '--view',
+  '--ink',
+  '--muted',
+  '--line',
+  '--panel',
+  '--fig',
+  '--figL',
+  '--figR',
+  '--grid',
+  '--grid2',
+  '--pass',
+  '--warn',
+  '--fail',
+  '--w-inv',
+  '--w-hitbox',
+  '--w-parry',
+  '--w-cancel',
+  '--t-handR',
+  '--t-handL',
+  '--t-foot',
+  '--t-head',
+  '--accent',
+  '--bg',
 ];
 
 const listeners = new Set();

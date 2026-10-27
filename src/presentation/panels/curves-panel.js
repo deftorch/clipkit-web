@@ -1,10 +1,10 @@
-import { el, sv, fmt2 } from "../dom/h.js";
-import ClipKit from "../../domain/clipkit.js";
-import { FPS } from "../../domain/math/vec3.js";
-import { clipState, curItem } from "../../application/state/clip-store.js";
-import { rigState } from "../../application/state/rig-store.js";
-import { playbackState } from "../../application/state/playback-store.js";
-import { winColor } from "../../application/theme.js";
+import { clipState, curItem } from '../../application/state/clip-store.js';
+import { playbackState } from '../../application/state/playback-store.js';
+import { rigState } from '../../application/state/rig-store.js';
+import { winColor } from '../../application/theme.js';
+import ClipKit from '../../domain/clipkit.js';
+import { FPS } from '../../domain/math/vec3.js';
+import { el, fmt2, sv } from '../dom/h.js';
 
 const playheads = [];
 
@@ -17,7 +17,7 @@ export function chInfo(cn, rig = rigState.rig) {
     rg: rg || [-1, 1],
     def,
     unit: unit === 'deg' ? '°' : ' m',
-    desc: c ? c.desc : (rig.aims[cn.slice(0, cn.lastIndexOf('_'))]?.desc || '')
+    desc: c ? c.desc : rig.aims[cn.slice(0, cn.lastIndexOf('_'))]?.desc || '',
   };
 }
 
@@ -47,11 +47,17 @@ export function renderCurves(host, onDirty, onSyncPlay) {
   const rig = rigState.rig;
   const all = ClipKit.allChannelNames(rig);
   const cs = Object.keys(it.clip.channels || {}).sort(
-    (a, b) => (all.indexOf(a) < 0 ? 999 : all.indexOf(a)) - (all.indexOf(b) < 0 ? 999 : all.indexOf(b))
+    (a, b) =>
+      (all.indexOf(a) < 0 ? 999 : all.indexOf(a)) - (all.indexOf(b) < 0 ? 999 : all.indexOf(b)),
   );
 
   if (!cs.length) {
-    host.append(el('p', { class: 'note', text: 'Klip ini belum punya channel. Semua channel memakai default rig.' }));
+    host.append(
+      el('p', {
+        class: 'note',
+        text: 'Klip ini belum punya channel. Semua channel memakai default rig.',
+      }),
+    );
     return;
   }
 
@@ -75,8 +81,8 @@ export function renderCurves(host, onDirty, onSyncPlay) {
       'div',
       { class: 'cap' },
       el('span', { class: 'mono', text: cn + ' (' + info.unit.trim() + ')' }),
-      el('span', { text: info.desc })
-    )
+      el('span', { text: info.desc }),
+    ),
   );
 
   const VW = 400;
@@ -86,7 +92,7 @@ export function renderCurves(host, onDirty, onSyncPlay) {
     viewBox: `0 0 ${VW} ${VH}`,
     preserveAspectRatio: 'none',
     role: 'img',
-    'aria-label': 'Kurva channel ' + cn
+    'aria-label': 'Kurva channel ' + cn,
   });
 
   const X = (t) => pad + (t / dur) * (VW - 2 * pad);
@@ -99,8 +105,8 @@ export function renderCurves(host, onDirty, onSyncPlay) {
       width: VW - 2 * pad,
       height: Math.max(0, Y(lo0) - Y(hi0)),
       fill: 'var(--pass)',
-      opacity: 0.09
-    })
+      opacity: 0.09,
+    }),
   );
 
   svg.append(
@@ -111,8 +117,8 @@ export function renderCurves(host, onDirty, onSyncPlay) {
       y2: Y(info.def),
       stroke: 'var(--muted)',
       'stroke-dasharray': '3 3',
-      'stroke-width': 1
-    })
+      'stroke-width': 1,
+    }),
   );
 
   for (const w of Object.keys(it.clip.windows || {})) {
@@ -125,8 +131,8 @@ export function renderCurves(host, onDirty, onSyncPlay) {
           width: Math.max(1, X(a[1]) - X(a[0])),
           height: VH,
           fill: winColor(w),
-          opacity: 0.13
-        })
+          opacity: 0.13,
+        }),
       );
     }
   }
@@ -143,8 +149,8 @@ export function renderCurves(host, onDirty, onSyncPlay) {
       fill: 'none',
       stroke: 'var(--accent)',
       'stroke-width': 2,
-      'vector-effect': 'non-scaling-stroke'
-    })
+      'vector-effect': 'non-scaling-stroke',
+    }),
   );
 
   for (const k of keys) {
@@ -155,7 +161,7 @@ export function renderCurves(host, onDirty, onSyncPlay) {
       fill: 'var(--panel)',
       stroke: 'var(--accent)',
       'stroke-width': 1.6,
-      'vector-effect': 'non-scaling-stroke'
+      'vector-effect': 'non-scaling-stroke',
     });
     c.append(sv('title'));
     c.firstChild.textContent = `t=${k[0]}  nilai=${k[1]}  easing=${k[2] || 'linear'}`;
@@ -167,7 +173,7 @@ export function renderCurves(host, onDirty, onSyncPlay) {
     y2: VH,
     stroke: 'var(--ink)',
     'stroke-width': 1.5,
-    'vector-effect': 'non-scaling-stroke'
+    'vector-effect': 'non-scaling-stroke',
   });
   svg.append(ph);
   playheads.push({ kind: 'big', el: ph, X, dur });
@@ -175,7 +181,9 @@ export function renderCurves(host, onDirty, onSyncPlay) {
   const scrub = (e) => {
     const r = svg.getBoundingClientRect();
     playbackState.t =
-      Math.round(Math.min(1, Math.max(0, ((e.clientX - r.left) / r.width) * VW / VW)) * dur * FPS) / FPS;
+      Math.round(
+        Math.min(1, Math.max(0, (((e.clientX - r.left) / r.width) * VW) / VW)) * dur * FPS,
+      ) / FPS;
     playbackState.playing = false;
     if (onSyncPlay) onSyncPlay();
     if (onDirty) onDirty();
@@ -200,8 +208,8 @@ export function renderCurves(host, onDirty, onSyncPlay) {
       'div',
       { class: 'cap' },
       el('span', { class: 'mono', text: `${fmt2(lo0, 0)}..${fmt2(hi0, 0)} range rig` }),
-      el('span', { class: 'mono', id: 'bigval', text: '' })
-    )
+      el('span', { class: 'mono', id: 'bigval', text: '' }),
+    ),
   );
   host.append(big);
 
@@ -215,7 +223,7 @@ export function renderCurves(host, onDirty, onSyncPlay) {
       class: 'chrow',
       role: 'button',
       tabindex: '0',
-      'aria-selected': String(c === cn)
+      'aria-selected': String(c === cn),
     });
     const s = sv('svg', { viewBox: '0 0 160 26', preserveAspectRatio: 'none' });
     s.append(
@@ -224,8 +232,8 @@ export function renderCurves(host, onDirty, onSyncPlay) {
         fill: 'none',
         stroke: out ? 'var(--warn)' : 'var(--accent)',
         'stroke-width': 1.4,
-        'vector-effect': 'non-scaling-stroke'
-      })
+        'vector-effect': 'non-scaling-stroke',
+      }),
     );
 
     const l = sv('line', {
@@ -233,7 +241,7 @@ export function renderCurves(host, onDirty, onSyncPlay) {
       y2: 26,
       stroke: 'var(--ink)',
       'stroke-width': 1,
-      'vector-effect': 'non-scaling-stroke'
+      'vector-effect': 'non-scaling-stroke',
     });
     s.append(l);
     playheads.push({ kind: 'mini', el: l, dur, W2: 160 });
@@ -258,8 +266,8 @@ export function renderCurves(host, onDirty, onSyncPlay) {
   host.append(
     el('p', {
       class: 'note',
-      text: 'Pita hijau di grafik besar adalah range anatomi dari rig; garis putus-putus adalah nilai default. Kurva oranye berarti ada key di luar range.'
-    })
+      text: 'Pita hijau di grafik besar adalah range anatomi dari rig; garis putus-putus adalah nilai default. Kurva oranye berarti ada key di luar range.',
+    }),
   );
 
   updatePlayhead();
@@ -280,12 +288,14 @@ export function updatePlayhead() {
       p.el.setAttribute('x1', x);
       p.el.setAttribute('x2', x);
     } else if (p.kind === 'val') {
-      p.el.textContent = fmt2(ClipKit.sampleKeys(it.clip.channels[p.c], t), p.unit === ' m' ? 3 : 1) + p.unit;
+      p.el.textContent =
+        fmt2(ClipKit.sampleKeys(it.clip.channels[p.c], t), p.unit === ' m' ? 3 : 1) + p.unit;
     }
   }
 
   const bv = document.getElementById('bigval');
   if (bv && clipState.selCh && it.clip.channels[clipState.selCh]) {
-    bv.textContent = 't=' + fmt2(t) + '  ' + fmt2(ClipKit.sampleKeys(it.clip.channels[clipState.selCh], t), 2);
+    bv.textContent =
+      't=' + fmt2(t) + '  ' + fmt2(ClipKit.sampleKeys(it.clip.channels[clipState.selCh], t), 2);
   }
 }

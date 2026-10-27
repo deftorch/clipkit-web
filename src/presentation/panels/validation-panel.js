@@ -1,12 +1,12 @@
-import { el, copyText, fmt2 } from "../dom/h.js";
-import { clipState, curItem } from "../../application/state/clip-store.js";
+import { clipState, curItem } from '../../application/state/clip-store.js';
+import { copyText, el, fmt2 } from '../dom/h.js';
 
 export const GROUPS = [
   ['Gerak dan anatomi', /^(kecepatan sudut|percepatan|loop|lutut|siku|leher|channel)/],
   ['Lantai', /^(lantai|foot)/],
   ['Root motion dan klaim', /^(root|kecepatan root|klaim)/],
   ['Jendela gameplay', /^(jendela|urutan|event)/],
-  ['Kepatuhan VRM 1.0', /^VRM/]
+  ['Kepatuhan VRM 1.0', /^VRM/],
 ];
 
 export function groupOf(t) {
@@ -26,7 +26,10 @@ export function renderValid(host) {
     host.append(
       el('div', { class: 'pill fail', text: 'Build gagal' }),
       el('p', { class: 'note', text: it.err }),
-      el('p', { class: 'note', text: 'Buka tab Editor JSON untuk memperbaikinya, atau pakai Kembalikan contoh.' })
+      el('p', {
+        class: 'note',
+        text: 'Buka tab Editor JSON untuk memperbaikinya, atau pakai Kembalikan contoh.',
+      }),
     );
     return;
   }
@@ -41,7 +44,7 @@ export function renderValid(host) {
     el('span', { class: 'pill fail', text: f + ' FAIL' }),
     el('span', { class: 'pill warn', text: w + ' WARN' }),
     el('span', { class: 'pill pass', text: p + ' PASS' }),
-    el('span', { class: 'sp' })
+    el('span', { class: 'sp' }),
   );
 
   const cb = el('button', { class: 'btn sm', type: 'button', text: 'Salin laporan' });
@@ -55,14 +58,15 @@ export function renderValid(host) {
   const by = {};
   for (const l of it.lines) {
     const g = groupOf(l[1]);
-    (by[g] ||= []).push(l);
+    if (!by[g]) by[g] = [];
+    by[g].push(l);
   }
 
   for (const [n] of [...GROUPS, ['Versi dan format']]) {
     if (!by[n]) continue;
     host.append(el('div', { class: 'grp', text: n }));
     const sortedLines = by[n].sort(
-      (a, b) => ({ FAIL: 0, WARN: 1, PASS: 2 })[a[0]] - ({ FAIL: 0, WARN: 1, PASS: 2 })[b[0]]
+      (a, b) => ({ FAIL: 0, WARN: 1, PASS: 2 })[a[0]] - { FAIL: 0, WARN: 1, PASS: 2 }[b[0]],
     );
     for (const l of sortedLines) {
       host.append(
@@ -70,8 +74,8 @@ export function renderValid(host) {
           'div',
           { class: 'row' },
           el('span', { class: 'badge ' + l[0], text: l[0] }),
-          el('span', { class: 't', text: l[1] })
-        )
+          el('span', { class: 't', text: l[1] }),
+        ),
       );
     }
   }
@@ -79,7 +83,7 @@ export function renderValid(host) {
   host.append(
     el('p', {
       class: 'note',
-      text: 'WARN adalah petunjuk, bukan vonis. Foot sliding memakai tinggi sendi toe, jadi ayunan kaki ikut terhitung. Validator mengukur angka; apakah geraknya enak dilihat tetap dinilai manusia.'
-    })
+      text: 'WARN adalah petunjuk, bukan vonis. Foot sliding memakai tinggi sendi toe, jadi ayunan kaki ikut terhitung. Validator mengukur angka; apakah geraknya enak dilihat tetap dinilai manusia.',
+    }),
   );
 }

@@ -1,7 +1,7 @@
-import { cameraState, VIEWS, setPresetView } from "../../application/state/camera-store.js";
-import { playbackState } from "../../application/state/playback-store.js";
-import { rigState, loadVrmFile } from "../../application/state/rig-store.js";
-import VrmView from "../../infrastructure/three/three-mesh-renderer.js";
+import { cameraState, setPresetView, VIEWS } from '../../application/state/camera-store.js';
+import { playbackState } from '../../application/state/playback-store.js';
+import { loadVrmFile, rigState } from '../../application/state/rig-store.js';
+import VrmView from '../../infrastructure/three/three-mesh-renderer.js';
 
 export function initViewportController({
   vpEl,
@@ -9,7 +9,7 @@ export function initViewportController({
   glCanvas,
   onDirty,
   onSetTab,
-  onRefreshAll
+  onRefreshAll,
 }) {
   const ptrs = new Map();
   let pinch = 0;
@@ -30,7 +30,10 @@ export function initViewportController({
 
     if (ptrs.size === 1) {
       cameraState.yaw -= (e.clientX - p[0]) * 0.008;
-      cameraState.pitch = Math.min(1.5, Math.max(-0.25, cameraState.pitch + (e.clientY - p[1]) * 0.006));
+      cameraState.pitch = Math.min(
+        1.5,
+        Math.max(-0.25, cameraState.pitch + (e.clientY - p[1]) * 0.006),
+      );
       setViewBtn(null);
     }
     ptrs.set(e.pointerId, [e.clientX, e.clientY]);
@@ -57,10 +60,13 @@ export function initViewportController({
     'wheel',
     (e) => {
       e.preventDefault();
-      cameraState.dist = Math.min(14, Math.max(1.2, cameraState.dist * Math.exp(e.deltaY * 0.0012)));
+      cameraState.dist = Math.min(
+        14,
+        Math.max(1.2, cameraState.dist * Math.exp(e.deltaY * 0.0012)),
+      );
       onDirty();
     },
-    { passive: false }
+    { passive: false },
   );
 
   function setViewBtn(k) {
@@ -108,13 +114,18 @@ export function initViewportController({
     e.preventDefault();
     const f = e.dataTransfer.files[0];
     if (f && /\.(vrm|glb)$/i.test(f.name)) {
-      loadVrmFile(f, glCanvas, () => {
-        onSetTab('rig');
-        onRefreshAll();
-      }, () => {
-        onSetTab('rig');
-        onRefreshAll();
-      });
+      loadVrmFile(
+        f,
+        glCanvas,
+        () => {
+          onSetTab('rig');
+          onRefreshAll();
+        },
+        () => {
+          onSetTab('rig');
+          onRefreshAll();
+        },
+      );
     }
   });
 
@@ -122,6 +133,6 @@ export function initViewportController({
 
   return {
     setViewBtn,
-    syncToggles
+    syncToggles,
   };
 }

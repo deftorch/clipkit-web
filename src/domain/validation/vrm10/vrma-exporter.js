@@ -1,5 +1,5 @@
-import { FPS, VRM10_EXPRESSIONS, vn } from './constants.js';
 import { evalPose } from '../../rig/pose-evaluator.js';
+import { FPS, VRM10_EXPRESSIONS, vn } from './constants.js';
 
 export function buildVrmaGlb(rig, ctx, clip) {
   const dur = clip.duration,
@@ -14,9 +14,7 @@ export function buildVrmaGlb(rig, ctx, clip) {
   }
 
   // 22 node humanoid + node ekspresi opsional
-  const exNames = Object.keys(clip.expressions || {}).filter((n) =>
-    VRM10_EXPRESSIONS.includes(n)
-  );
+  const exNames = Object.keys(clip.expressions || {}).filter((n) => VRM10_EXPRESSIONS.includes(n));
   const nodes = [];
   const humanBones = {};
   const childrenMap = rig.animated_bones.map(() => []);
@@ -29,7 +27,7 @@ export function buildVrmaGlb(rig, ctx, clip) {
     const nd = {
       name: bname,
       translation: rig.rest.offsets[i].slice(),
-      rotation: [0, 0, 0, 1]
+      rotation: [0, 0, 0, 1],
     };
     if (childrenMap[i].length) nd.children = childrenMap[i];
     nodes.push(nd);
@@ -83,7 +81,7 @@ export function buildVrmaGlb(rig, ctx, clip) {
   samplers.push({ input: timeAcc, interpolation: 'LINEAR', output: hipsTrAcc });
   animChannels.push({
     sampler: samplers.length - 1,
-    target: { node: 0, path: 'translation' }
+    target: { node: 0, path: 'translation' },
   });
 
   // 22 Humanoid rotations
@@ -100,7 +98,7 @@ export function buildVrmaGlb(rig, ctx, clip) {
     samplers.push({ input: timeAcc, interpolation: 'LINEAR', output: rAcc });
     animChannels.push({
       sampler: samplers.length - 1,
-      target: { node: i, path: 'rotation' }
+      target: { node: i, path: 'rotation' },
     });
   }
 
@@ -114,7 +112,7 @@ export function buildVrmaGlb(rig, ctx, clip) {
     samplers.push({ input: timeAcc, interpolation: 'LINEAR', output: exAcc });
     animChannels.push({
       sampler: samplers.length - 1,
-      target: { node: exprPresetMap[en].node, path: 'translation' }
+      target: { node: exprPresetMap[en].node, path: 'translation' },
     });
   }
 
@@ -132,7 +130,7 @@ export function buildVrmaGlb(rig, ctx, clip) {
     animations: [{ name: clip.name || 'clip', samplers, channels: animChannels }],
     bufferViews,
     accessors,
-    buffers: [{ byteLength: byteOffset }]
+    buffers: [{ byteLength: byteOffset }],
   };
 
   const jsonBytes = new TextEncoder().encode(JSON.stringify(gltf));

@@ -1,24 +1,15 @@
-import { FPS } from "../../domain/math/vec3.js";
-import limitsData from "../../data/limits.json";
+import limitsData from '../../data/limits.json';
+import { FPS } from '../../domain/math/vec3.js';
 
 export const TL = { l: 54, r: 12, top: 6 };
 
 export const xOf = (t, dur, TW) => TL.l + ((TW - TL.l - TL.r) * t) / dur;
 
-export function drawTimeline({
-  tg,
-  it,
-  TW,
-  TH,
-  DPR,
-  C,
-  winColorFn,
-  style = 'stylized',
-  t = 0
-}) {
+export function drawTimeline({ tg, it, TW, TH, DPR, C, winColorFn, style = 'stylized', t = 0 }) {
   tg.setTransform(DPR, 0, 0, DPR, 0, 0);
   tg.clearRect(0, 0, TW, TH);
-  tg.font = '11px ' + (getComputedStyle(document.body).getPropertyValue('--font-mono') || 'monospace');
+  tg.font =
+    '11px ' + (getComputedStyle(document.body).getPropertyValue('--font-mono') || 'monospace');
 
   if (!it || !it.clip) return;
   const dur = it.clip.duration;
@@ -41,7 +32,7 @@ export function drawTimeline({
         xOf(a[0], dur, TW),
         y + 1,
         Math.max(2, xOf(a[1], dur, TW) - xOf(a[0], dur, TW)),
-        laneH - 2
+        laneH - 2,
       );
       tg.globalAlpha = 1;
     }
