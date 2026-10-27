@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>ClipKit Web — Gabungan (mesh 3D + VRM 1.0 / .vrma)</title>
+  <meta name="claude:viewport-fit-sides" content="cover">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="/src/styles/main.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><h1>ClipKit Web</h1><span>klip animasi sebagai JSON: pratinjau mesh 3D, validasi, ekspresi VRM 1.0, ekspor <code>.vrma</code></span></div>
+    <div class="pipe" id="pipe" aria-label="Status pipeline"></div>
+  </header>
+
+  <div class="clipbar" id="clipbar" role="tablist" aria-label="Klip"></div>
+  <input type="file" id="vrmIn" accept=".vrm,.glb,model/gltf-binary" hidden>
+
+  <div class="main">
+    <section class="stage" aria-label="Pratinjau">
+      <div class="viewport" id="vp">
+        <canvas id="cv" aria-label="Pratinjau 3D karakter"></canvas>
+        <canvas id="gl" aria-hidden="true" hidden style="pointer-events:none"></canvas>
+        <div class="hud"><div class="time" id="hudTime">t 0.00 s</div><div class="chips" id="chips"></div></div>
+        <div class="views" id="views">
+          <button data-v="front" type="button">Depan</button><button data-v="side" type="button">Samping</button>
+          <button data-v="top" type="button">Atas</button><button data-v="q" type="button">3/4</button>
+          <button data-t="mesh" type="button" aria-pressed="false" disabled title="Tersedia untuk rig dari file .vrm yang dimuat">Mesh</button><button data-t="skel" type="button" aria-pressed="true">Rangka</button>
+        </div>
+        <div class="legend"><span><i style="background:var(--figL)"></i>kiri</span><span><i style="background:var(--figR)"></i>kanan</span><span>grid 0.5 m</span></div>
+      </div>
+      <div class="transport">
+        <button class="btn primary" id="bPlay" type="button" aria-label="Putar atau jeda">Jeda</button>
+        <button class="btn" id="bPrev" type="button" aria-label="Mundur satu frame">&#8249; frame</button>
+        <button class="btn" id="bNext" type="button" aria-label="Maju satu frame">frame &#8250;</button>
+        <button class="btn" id="bRestart" type="button">Ulang</button>
+        <label>Kecepatan <select id="speed"><option value="0.1">0.1×</option><option value="0.25">0.25×</option><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label>
+        <label><input type="checkbox" id="cAuto" checked> auto-ulang</label>
+        <label><input type="checkbox" id="cTrail" checked> lintasan</label>
+        <label><input type="checkbox" id="cOnion"> bayangan</label>
+        <button class="btn sm primary" id="bVrma" type="button" title="Ekspor klip aktif sebagai .vrma (VRMC_vrm_animation-1.0)">Ekspor .vrma</button>
+        <label><input type="checkbox" id="cFollow"> ikuti pinggul</label>
+      </div>
+      <div class="timeline" id="tl"><canvas id="tlc" aria-label="Timeline jendela, event, dan kecepatan"></canvas></div>
+      <div class="hint">Seret di pratinjau untuk memutar kamera, roda atau cubit untuk zoom. Klik atau seret di timeline untuk memindah waktu. Pintasan: Spasi, koma, titik, [ ], 1-9.</div>
+    </section>
+
+    <section class="panel" aria-label="Panel">
+      <div class="tabs" role="tablist" id="ptabs">
+        <button class="ptab" role="tab" data-p="rig" type="button">Rig</button>
+        <button class="ptab" role="tab" data-p="valid" type="button">Validasi</button>
+        <button class="ptab" role="tab" data-p="edit" type="button">Editor JSON</button>
+        <button class="ptab" role="tab" data-p="curves" type="button">Kurva</button>
+        <button class="ptab" role="tab" data-p="ver" type="button">Versi</button>
+        <button class="ptab" role="tab" data-p="about" type="button">Tentang</button>
+      </div>
+      <div class="pbody" id="p-rig" role="tabpanel" hidden></div>
+      <div class="pbody" id="p-valid" role="tabpanel"></div>
+      <div class="pbody" id="p-edit" role="tabpanel" hidden></div>
+      <div class="pbody" id="p-curves" role="tabpanel" hidden></div>
+      <div class="pbody" id="p-ver" role="tabpanel" hidden></div>
+      <div class="pbody" id="p-about" role="tabpanel" hidden></div>
+    </section>
+  </div>
+</div>
+
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>

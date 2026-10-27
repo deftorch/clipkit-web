@@ -1,0 +1,459 @@
+{
+  "name": "kick_low",
+  "vrm_spec": "1.0",
+  "format_version": 1,
+  "version": 1,
+  "changelog": [
+    {
+      "v": 1,
+      "catatan": "Tendangan sapuan bawah (Low Kick / Leg Sweep) mengarah ke betis lawan dengan tumpuan kaki kiri merendah."
+    }
+  ],
+  "group": "combat",
+  "tags": [
+    "vrm-1.0",
+    "combat",
+    "kick",
+    "low-kick"
+  ],
+  "duration": 0.8,
+  "loop": false,
+  "channels": {
+    "hip_y": [
+      [
+        0,
+        0
+      ],
+      [
+        0.2,
+        -0.015,
+        "inOutSine"
+      ],
+      [
+        0.4,
+        -0.02,
+        "inOutSine"
+      ],
+      [
+        0.8,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "lean": [
+      [
+        0,
+        0
+      ],
+      [
+        0.2,
+        8,
+        "inOutSine"
+      ],
+      [
+        0.4,
+        15,
+        "inOutSine"
+      ],
+      [
+        0.8,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "side_lean": [
+      [
+        0,
+        0
+      ],
+      [
+        0.2,
+        6,
+        "inOutSine"
+      ],
+      [
+        0.4,
+        -10,
+        "inOutSine"
+      ],
+      [
+        0.8,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "twist": [
+      [
+        0,
+        0
+      ],
+      [
+        0.2,
+        -24,
+        "inOutSine"
+      ],
+      [
+        0.4,
+        28,
+        "inOutSine"
+      ],
+      [
+        0.8,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "hip_twist": [
+      [
+        0,
+        0
+      ],
+      [
+        0.2,
+        -28,
+        "inOutSine"
+      ],
+      [
+        0.4,
+        38,
+        "inOutSine"
+      ],
+      [
+        0.8,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "armL_elev": [
+      [
+        0,
+        -75
+      ],
+      [
+        0.2,
+        -40,
+        "inOutSine"
+      ],
+      [
+        0.4,
+        -30,
+        "inOutSine"
+      ],
+      [
+        0.8,
+        -75,
+        "inOutSine"
+      ]
+    ],
+    "armR_elev": [
+      [
+        0,
+        -75
+      ],
+      [
+        0.2,
+        -35,
+        "inOutSine"
+      ],
+      [
+        0.4,
+        -50,
+        "inOutSine"
+      ],
+      [
+        0.8,
+        -75,
+        "inOutSine"
+      ]
+    ],
+    "armL_azim": [
+      [
+        0,
+        0
+      ],
+      [
+        0.4,
+        50,
+        "inOutSine"
+      ],
+      [
+        0.8,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "armR_azim": [
+      [
+        0,
+        0
+      ],
+      [
+        0.2,
+        35,
+        "inOutSine"
+      ],
+      [
+        0.4,
+        -30,
+        "inOutSine"
+      ],
+      [
+        0.8,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "elbowL": [
+      [
+        0,
+        10
+      ],
+      [
+        0.4,
+        80,
+        "inOutSine"
+      ],
+      [
+        0.8,
+        10,
+        "inOutSine"
+      ]
+    ],
+    "elbowR": [
+      [
+        0,
+        10
+      ],
+      [
+        0.4,
+        45,
+        "inOutSine"
+      ],
+      [
+        0.8,
+        10,
+        "inOutSine"
+      ]
+    ],
+    "legR_swing": [
+      [
+        0,
+        0
+      ],
+      [
+        0.2,
+        -12,
+        "inOutSine"
+      ],
+      [
+        0.4,
+        42,
+        "inOutSine"
+      ],
+      [
+        0.6,
+        18,
+        "inOutSine"
+      ],
+      [
+        0.8,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "legR_abd": [
+      [
+        0,
+        0
+      ],
+      [
+        0.2,
+        18,
+        "inOutSine"
+      ],
+      [
+        0.4,
+        28,
+        "inOutSine"
+      ],
+      [
+        0.6,
+        10,
+        "inOutSine"
+      ],
+      [
+        0.8,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "kneeR": [
+      [
+        0,
+        3
+      ],
+      [
+        0.2,
+        38,
+        "inOutSine"
+      ],
+      [
+        0.4,
+        16,
+        "inOutSine"
+      ],
+      [
+        0.6,
+        30,
+        "inOutSine"
+      ],
+      [
+        0.8,
+        3,
+        "inOutSine"
+      ]
+    ],
+    "footR_pitch": [
+      [
+        0,
+        0
+      ],
+      [
+        0.4,
+        22,
+        "inOutSine"
+      ],
+      [
+        0.8,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "legL_swing": [
+      [
+        0,
+        0
+      ],
+      [
+        0.2,
+        18,
+        "inOutSine"
+      ],
+      [
+        0.4,
+        22,
+        "inOutSine"
+      ],
+      [
+        0.8,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "kneeL": [
+      [
+        0,
+        3
+      ],
+      [
+        0.2,
+        28,
+        "inOutSine"
+      ],
+      [
+        0.4,
+        34,
+        "inOutSine"
+      ],
+      [
+        0.8,
+        3,
+        "inOutSine"
+      ]
+    ],
+    "footL_pitch": [
+      [
+        0,
+        0
+      ],
+      [
+        0.2,
+        -10,
+        "inOutSine"
+      ],
+      [
+        0.4,
+        -14,
+        "inOutSine"
+      ],
+      [
+        0.8,
+        0,
+        "inOutSine"
+      ]
+    ]
+  },
+  "expressions": {
+    "angry": [
+      [
+        0,
+        0
+      ],
+      [
+        0.18,
+        0.75,
+        "outQuad"
+      ],
+      [
+        0.55,
+        0.75,
+        "hold"
+      ],
+      [
+        0.8,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "ih": [
+      [
+        0,
+        0
+      ],
+      [
+        0.3,
+        0.65,
+        "outQuad"
+      ],
+      [
+        0.52,
+        0,
+        "inQuad"
+      ]
+    ]
+  },
+  "windows": {
+    "hitbox": [
+      0.32,
+      0.45
+    ],
+    "cancel": [
+      0.55,
+      0.8
+    ]
+  },
+  "events": [
+    {
+      "t": 0.32,
+      "type": "sfx",
+      "id": "low_sweep"
+    }
+  ],
+  "claims": {
+    "duration": 0.8,
+    "tolerance": 0.1
+  },
+  "validate": {
+    "foot_slide": false
+  }
+}

@@ -1,0 +1,320 @@
+{
+  "name": "wave",
+  "vrm_spec": "1.0",
+  "format_version": 1,
+  "version": 1,
+  "changelog": [
+    {
+      "v": 1,
+      "catatan": "Emote VTuber VRM 1.0: melambaikan tangan kanan disertai senyum happy, kedipan sebelah mata, dan vokal sapaan."
+    }
+  ],
+  "group": "emote",
+  "tags": [
+    "vrm-1.0",
+    "vtuber",
+    "emote",
+    "loop"
+  ],
+  "duration": 1.6,
+  "loop": true,
+  "channels": {
+    "side_lean": [
+      [
+        0,
+        0
+      ],
+      [
+        0.4,
+        -6,
+        "inOutSine"
+      ],
+      [
+        1.2,
+        4,
+        "inOutSine"
+      ],
+      [
+        1.6,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "head_yaw": [
+      [
+        0,
+        0
+      ],
+      [
+        0.4,
+        -8,
+        "inOutSine"
+      ],
+      [
+        1.2,
+        6,
+        "inOutSine"
+      ],
+      [
+        1.6,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "head_pitch": [
+      [
+        0,
+        0
+      ],
+      [
+        0.4,
+        -5,
+        "inOutSine"
+      ],
+      [
+        1.2,
+        2,
+        "inOutSine"
+      ],
+      [
+        1.6,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "armR_elev": [
+      [
+        0,
+        -75
+      ],
+      [
+        0.3,
+        35,
+        "outQuad"
+      ],
+      [
+        1.3,
+        35,
+        "inOutSine"
+      ],
+      [
+        1.6,
+        -75,
+        "inOutSine"
+      ]
+    ],
+    "armR_azim": [
+      [
+        0,
+        0
+      ],
+      [
+        0.3,
+        30,
+        "outQuad"
+      ],
+      [
+        0.55,
+        15,
+        "inOutSine"
+      ],
+      [
+        0.8,
+        40,
+        "inOutSine"
+      ],
+      [
+        1.05,
+        15,
+        "inOutSine"
+      ],
+      [
+        1.3,
+        35,
+        "inOutSine"
+      ],
+      [
+        1.6,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "elbowR": [
+      [
+        0,
+        10
+      ],
+      [
+        0.3,
+        95,
+        "outQuad"
+      ],
+      [
+        0.55,
+        60,
+        "inOutSine"
+      ],
+      [
+        0.8,
+        105,
+        "inOutSine"
+      ],
+      [
+        1.05,
+        60,
+        "inOutSine"
+      ],
+      [
+        1.3,
+        95,
+        "inOutSine"
+      ],
+      [
+        1.6,
+        10,
+        "inOutSine"
+      ]
+    ],
+    "armL_elev": [
+      [
+        0,
+        -75
+      ],
+      [
+        0.8,
+        -68,
+        "inOutSine"
+      ],
+      [
+        1.6,
+        -75,
+        "inOutSine"
+      ]
+    ],
+    "elbowL": [
+      [
+        0,
+        10
+      ],
+      [
+        0.8,
+        22,
+        "inOutSine"
+      ],
+      [
+        1.6,
+        10,
+        "inOutSine"
+      ]
+    ],
+    "kneeL": [
+      [
+        0,
+        3
+      ],
+      [
+        1.6,
+        3
+      ]
+    ],
+    "kneeR": [
+      [
+        0,
+        3
+      ],
+      [
+        1.6,
+        3
+      ]
+    ]
+  },
+  "expressions": {
+    "happy": [
+      [
+        0,
+        0.2
+      ],
+      [
+        0.3,
+        0.95,
+        "outQuad"
+      ],
+      [
+        1.3,
+        0.95,
+        "hold"
+      ],
+      [
+        1.6,
+        0.2,
+        "inOutSine"
+      ]
+    ],
+    "aa": [
+      [
+        0,
+        0
+      ],
+      [
+        0.35,
+        0.75,
+        "outQuad"
+      ],
+      [
+        0.7,
+        0.15,
+        "inOutSine"
+      ],
+      [
+        1,
+        0.65,
+        "outQuad"
+      ],
+      [
+        1.35,
+        0,
+        "inQuad"
+      ],
+      [
+        1.6,
+        0
+      ]
+    ],
+    "blinkLeft": [
+      [
+        0,
+        0
+      ],
+      [
+        0.4,
+        1,
+        "outQuad"
+      ],
+      [
+        0.9,
+        1,
+        "hold"
+      ],
+      [
+        1.1,
+        0,
+        "inQuad"
+      ],
+      [
+        1.6,
+        0
+      ]
+    ]
+  },
+  "events": [
+    {
+      "t": 0.35,
+      "type": "voice",
+      "id": "halo_sapa"
+    }
+  ],
+  "claims": {
+    "duration": 1.6,
+    "tolerance": 0.1
+  }
+}

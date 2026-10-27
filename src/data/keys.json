@@ -1,0 +1,21 @@
+{
+  "formatVersion": 1,
+  "behaviorKeys": [
+    "duration",
+    "loop",
+    "channels",
+    "expressions",
+    "move",
+    "windows",
+    "events",
+    "claims",
+    "validate"
+  ],
+  "gameplayKeys": [
+    "duration",
+    "loop",
+    "move",
+    "windows",
+    "events"
+  ]
+}

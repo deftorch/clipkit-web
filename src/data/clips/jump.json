@@ -1,0 +1,499 @@
+{
+  "name": "jump",
+  "vrm_spec": "1.0",
+  "format_version": 1,
+  "version": 1,
+  "changelog": [
+    {
+      "v": 1,
+      "catatan": "Lompatan maju 1.5 m dengan ancang-ancang jongkok, melayang di udara, dan mendarat stabil."
+    }
+  ],
+  "group": "locomotion",
+  "tags": [
+    "vrm-1.0",
+    "jump",
+    "air"
+  ],
+  "duration": 0.9,
+  "loop": false,
+  "channels": {
+    "hip_y": [
+      [
+        0,
+        0
+      ],
+      [
+        0.18,
+        -0.105,
+        "outQuad"
+      ],
+      [
+        0.45,
+        0.34,
+        "outQuad"
+      ],
+      [
+        0.72,
+        -0.105,
+        "inQuad"
+      ],
+      [
+        0.9,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "lean": [
+      [
+        0,
+        0
+      ],
+      [
+        0.18,
+        22,
+        "outQuad"
+      ],
+      [
+        0.45,
+        -8,
+        "inOutSine"
+      ],
+      [
+        0.72,
+        22,
+        "outQuad"
+      ],
+      [
+        0.9,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "head_pitch": [
+      [
+        0,
+        0
+      ],
+      [
+        0.18,
+        10,
+        "outQuad"
+      ],
+      [
+        0.45,
+        -15,
+        "outQuad"
+      ],
+      [
+        0.72,
+        8,
+        "inQuad"
+      ],
+      [
+        0.9,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "armL_elev": [
+      [
+        0,
+        -75
+      ],
+      [
+        0.18,
+        -80,
+        "outQuad"
+      ],
+      [
+        0.45,
+        35,
+        "outQuad"
+      ],
+      [
+        0.72,
+        -55,
+        "inQuad"
+      ],
+      [
+        0.9,
+        -75,
+        "inOutSine"
+      ]
+    ],
+    "armR_elev": [
+      [
+        0,
+        -75
+      ],
+      [
+        0.18,
+        -80,
+        "outQuad"
+      ],
+      [
+        0.45,
+        35,
+        "outQuad"
+      ],
+      [
+        0.72,
+        -55,
+        "inQuad"
+      ],
+      [
+        0.9,
+        -75,
+        "inOutSine"
+      ]
+    ],
+    "armL_azim": [
+      [
+        0,
+        0
+      ],
+      [
+        0.18,
+        -25,
+        "outQuad"
+      ],
+      [
+        0.45,
+        45,
+        "outQuad"
+      ],
+      [
+        0.72,
+        15,
+        "inQuad"
+      ],
+      [
+        0.9,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "armR_azim": [
+      [
+        0,
+        0
+      ],
+      [
+        0.18,
+        -25,
+        "outQuad"
+      ],
+      [
+        0.45,
+        45,
+        "outQuad"
+      ],
+      [
+        0.72,
+        15,
+        "inQuad"
+      ],
+      [
+        0.9,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "elbowL": [
+      [
+        0,
+        10
+      ],
+      [
+        0.18,
+        35,
+        "outQuad"
+      ],
+      [
+        0.45,
+        25,
+        "outQuad"
+      ],
+      [
+        0.72,
+        45,
+        "inQuad"
+      ],
+      [
+        0.9,
+        10,
+        "inOutSine"
+      ]
+    ],
+    "elbowR": [
+      [
+        0,
+        10
+      ],
+      [
+        0.18,
+        35,
+        "outQuad"
+      ],
+      [
+        0.45,
+        25,
+        "outQuad"
+      ],
+      [
+        0.72,
+        45,
+        "inQuad"
+      ],
+      [
+        0.9,
+        10,
+        "inOutSine"
+      ]
+    ],
+    "legL_swing": [
+      [
+        0,
+        0
+      ],
+      [
+        0.18,
+        35,
+        "outQuad"
+      ],
+      [
+        0.45,
+        45,
+        "outQuad"
+      ],
+      [
+        0.72,
+        35,
+        "inQuad"
+      ],
+      [
+        0.9,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "legR_swing": [
+      [
+        0,
+        0
+      ],
+      [
+        0.18,
+        35,
+        "outQuad"
+      ],
+      [
+        0.45,
+        20,
+        "outQuad"
+      ],
+      [
+        0.72,
+        35,
+        "inQuad"
+      ],
+      [
+        0.9,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "kneeL": [
+      [
+        0,
+        3
+      ],
+      [
+        0.18,
+        55,
+        "outQuad"
+      ],
+      [
+        0.45,
+        80,
+        "outQuad"
+      ],
+      [
+        0.72,
+        55,
+        "inQuad"
+      ],
+      [
+        0.9,
+        3,
+        "inOutSine"
+      ]
+    ],
+    "kneeR": [
+      [
+        0,
+        3
+      ],
+      [
+        0.18,
+        55,
+        "outQuad"
+      ],
+      [
+        0.45,
+        45,
+        "outQuad"
+      ],
+      [
+        0.72,
+        55,
+        "inQuad"
+      ],
+      [
+        0.9,
+        3,
+        "inOutSine"
+      ]
+    ],
+    "footL_pitch": [
+      [
+        0,
+        0
+      ],
+      [
+        0.18,
+        -20,
+        "outQuad"
+      ],
+      [
+        0.45,
+        25,
+        "outQuad"
+      ],
+      [
+        0.72,
+        -20,
+        "inQuad"
+      ],
+      [
+        0.9,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "footR_pitch": [
+      [
+        0,
+        0
+      ],
+      [
+        0.18,
+        -20,
+        "outQuad"
+      ],
+      [
+        0.45,
+        25,
+        "outQuad"
+      ],
+      [
+        0.72,
+        -20,
+        "inQuad"
+      ],
+      [
+        0.9,
+        0,
+        "inOutSine"
+      ]
+    ]
+  },
+  "expressions": {
+    "surprised": [
+      [
+        0,
+        0
+      ],
+      [
+        0.2,
+        0.8,
+        "outQuad"
+      ],
+      [
+        0.65,
+        0.2,
+        "inQuad"
+      ],
+      [
+        0.9,
+        0,
+        "linear"
+      ]
+    ],
+    "aa": [
+      [
+        0,
+        0
+      ],
+      [
+        0.22,
+        0.6,
+        "outQuad"
+      ],
+      [
+        0.6,
+        0,
+        "inQuad"
+      ]
+    ],
+    "blink": [
+      [
+        0,
+        0
+      ],
+      [
+        0.7,
+        0
+      ],
+      [
+        0.76,
+        1,
+        "outQuad"
+      ],
+      [
+        0.86,
+        0,
+        "inQuad"
+      ]
+    ]
+  },
+  "move": {
+    "dir": [
+      0,
+      0,
+      1
+    ],
+    "distance": 1.5,
+    "t0": 0.18,
+    "t1": 0.72,
+    "ease": "inOutSine"
+  },
+  "events": [
+    {
+      "t": 0.18,
+      "type": "sfx",
+      "id": "jump_launch"
+    },
+    {
+      "t": 0.72,
+      "type": "vfx",
+      "id": "land_dust"
+    }
+  ],
+  "claims": {
+    "distance": 1.5,
+    "duration": 0.9,
+    "tolerance": 0.1
+  }
+}

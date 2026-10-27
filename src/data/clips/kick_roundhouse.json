@@ -1,0 +1,558 @@
+{
+  "name": "kick_roundhouse",
+  "vrm_spec": "1.0",
+  "format_version": 1,
+  "version": 1,
+  "changelog": [
+    {
+      "v": 1,
+      "catatan": "Tendangan sabit memutar (Mawashi Geri / Roundhouse Kick) dengan rotasi pinggul penuh dan ayunan kaki kanan menyamping."
+    }
+  ],
+  "group": "combat",
+  "tags": [
+    "vrm-1.0",
+    "combat",
+    "kick",
+    "roundhouse"
+  ],
+  "duration": 0.95,
+  "loop": false,
+  "channels": {
+    "hip_y": [
+      [
+        0,
+        0
+      ],
+      [
+        0.22,
+        0.02,
+        "inOutSine"
+      ],
+      [
+        0.44,
+        0.03,
+        "inOutSine"
+      ],
+      [
+        0.65,
+        0.01,
+        "inOutSine"
+      ],
+      [
+        0.95,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "lean": [
+      [
+        0,
+        0
+      ],
+      [
+        0.22,
+        6,
+        "inOutSine"
+      ],
+      [
+        0.44,
+        -14,
+        "inOutSine"
+      ],
+      [
+        0.65,
+        -5,
+        "inOutSine"
+      ],
+      [
+        0.95,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "side_lean": [
+      [
+        0,
+        0
+      ],
+      [
+        0.22,
+        -8,
+        "inOutSine"
+      ],
+      [
+        0.44,
+        -18,
+        "inOutSine"
+      ],
+      [
+        0.65,
+        -8,
+        "inOutSine"
+      ],
+      [
+        0.95,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "twist": [
+      [
+        0,
+        0
+      ],
+      [
+        0.22,
+        -22,
+        "inOutSine"
+      ],
+      [
+        0.44,
+        32,
+        "inOutSine"
+      ],
+      [
+        0.65,
+        12,
+        "inOutSine"
+      ],
+      [
+        0.95,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "hip_twist": [
+      [
+        0,
+        0
+      ],
+      [
+        0.22,
+        -25,
+        "inOutSine"
+      ],
+      [
+        0.44,
+        44,
+        "inOutSine"
+      ],
+      [
+        0.65,
+        16,
+        "inOutSine"
+      ],
+      [
+        0.95,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "hip_roll": [
+      [
+        0,
+        0
+      ],
+      [
+        0.22,
+        -6,
+        "inOutSine"
+      ],
+      [
+        0.44,
+        -12,
+        "inOutSine"
+      ],
+      [
+        0.65,
+        -4,
+        "inOutSine"
+      ],
+      [
+        0.95,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "head_yaw": [
+      [
+        0,
+        0
+      ],
+      [
+        0.22,
+        12,
+        "inOutSine"
+      ],
+      [
+        0.44,
+        -24,
+        "inOutSine"
+      ],
+      [
+        0.95,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "armL_elev": [
+      [
+        0,
+        -75
+      ],
+      [
+        0.22,
+        -30,
+        "inOutSine"
+      ],
+      [
+        0.44,
+        -20,
+        "inOutSine"
+      ],
+      [
+        0.95,
+        -75,
+        "inOutSine"
+      ]
+    ],
+    "armR_elev": [
+      [
+        0,
+        -75
+      ],
+      [
+        0.22,
+        -35,
+        "inOutSine"
+      ],
+      [
+        0.44,
+        -30,
+        "inOutSine"
+      ],
+      [
+        0.95,
+        -75,
+        "inOutSine"
+      ]
+    ],
+    "armL_azim": [
+      [
+        0,
+        0
+      ],
+      [
+        0.22,
+        40,
+        "inOutSine"
+      ],
+      [
+        0.44,
+        60,
+        "inOutSine"
+      ],
+      [
+        0.95,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "armR_azim": [
+      [
+        0,
+        0
+      ],
+      [
+        0.22,
+        30,
+        "inOutSine"
+      ],
+      [
+        0.44,
+        -35,
+        "inOutSine"
+      ],
+      [
+        0.95,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "elbowL": [
+      [
+        0,
+        10
+      ],
+      [
+        0.22,
+        85,
+        "inOutSine"
+      ],
+      [
+        0.44,
+        95,
+        "inOutSine"
+      ],
+      [
+        0.95,
+        10,
+        "inOutSine"
+      ]
+    ],
+    "elbowR": [
+      [
+        0,
+        10
+      ],
+      [
+        0.22,
+        75,
+        "inOutSine"
+      ],
+      [
+        0.44,
+        55,
+        "inOutSine"
+      ],
+      [
+        0.95,
+        10,
+        "inOutSine"
+      ]
+    ],
+    "legR_swing": [
+      [
+        0,
+        0
+      ],
+      [
+        0.22,
+        45,
+        "inOutSine"
+      ],
+      [
+        0.44,
+        78,
+        "inOutSine"
+      ],
+      [
+        0.65,
+        40,
+        "inOutSine"
+      ],
+      [
+        0.95,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "legR_abd": [
+      [
+        0,
+        0
+      ],
+      [
+        0.22,
+        34,
+        "inOutSine"
+      ],
+      [
+        0.44,
+        46,
+        "inOutSine"
+      ],
+      [
+        0.65,
+        22,
+        "inOutSine"
+      ],
+      [
+        0.95,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "kneeR": [
+      [
+        0,
+        3
+      ],
+      [
+        0.22,
+        90,
+        "inOutSine"
+      ],
+      [
+        0.44,
+        10,
+        "inOutSine"
+      ],
+      [
+        0.65,
+        75,
+        "inOutSine"
+      ],
+      [
+        0.95,
+        3,
+        "inOutSine"
+      ]
+    ],
+    "footR_pitch": [
+      [
+        0,
+        0
+      ],
+      [
+        0.22,
+        20,
+        "inOutSine"
+      ],
+      [
+        0.44,
+        35,
+        "inOutSine"
+      ],
+      [
+        0.65,
+        10,
+        "inOutSine"
+      ],
+      [
+        0.95,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "legL_swing": [
+      [
+        0,
+        0
+      ],
+      [
+        0.44,
+        14,
+        "inOutSine"
+      ],
+      [
+        0.95,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "kneeL": [
+      [
+        0,
+        3
+      ],
+      [
+        0.44,
+        16,
+        "inOutSine"
+      ],
+      [
+        0.95,
+        3,
+        "inOutSine"
+      ]
+    ],
+    "footL_pitch": [
+      [
+        0,
+        0
+      ],
+      [
+        0.44,
+        -4,
+        "inOutSine"
+      ],
+      [
+        0.95,
+        0,
+        "inOutSine"
+      ]
+    ]
+  },
+  "expressions": {
+    "angry": [
+      [
+        0,
+        0
+      ],
+      [
+        0.2,
+        0.9,
+        "outQuad"
+      ],
+      [
+        0.6,
+        0.9,
+        "hold"
+      ],
+      [
+        0.95,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "oh": [
+      [
+        0,
+        0
+      ],
+      [
+        0.34,
+        0.8,
+        "outQuad"
+      ],
+      [
+        0.58,
+        0,
+        "inQuad"
+      ]
+    ]
+  },
+  "move": {
+    "dir": [
+      0,
+      0,
+      1
+    ],
+    "distance": 0.35,
+    "t0": 0.15,
+    "t1": 0.45,
+    "ease": "inOutSine"
+  },
+  "windows": {
+    "hitbox": [
+      0.36,
+      0.5
+    ],
+    "cancel": [
+      0.65,
+      0.95
+    ]
+  },
+  "events": [
+    {
+      "t": 0.36,
+      "type": "sfx",
+      "id": "roundhouse_whoosh"
+    },
+    {
+      "t": 0.42,
+      "type": "trail",
+      "id": "leg_arc"
+    }
+  ],
+  "claims": {
+    "distance": 0.35,
+    "duration": 0.95,
+    "tolerance": 0.1
+  },
+  "validate": {
+    "foot_slide": false
+  }
+}

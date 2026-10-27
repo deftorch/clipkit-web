@@ -1,0 +1,458 @@
+{
+  "name": "kick_front",
+  "vrm_spec": "1.0",
+  "format_version": 1,
+  "version": 1,
+  "changelog": [
+    {
+      "v": 1,
+      "catatan": "Tendangan depan cepat (Mae Geri / Front Snap Kick): angkat lutut (chamber), hentak lurus ke depan, lalu tarik kembali."
+    }
+  ],
+  "group": "combat",
+  "tags": [
+    "vrm-1.0",
+    "combat",
+    "kick",
+    "front-kick"
+  ],
+  "duration": 0.85,
+  "loop": false,
+  "channels": {
+    "hip_y": [
+      [
+        0,
+        0
+      ],
+      [
+        0.2,
+        0.01,
+        "inOutSine"
+      ],
+      [
+        0.38,
+        0.02,
+        "inOutSine"
+      ],
+      [
+        0.58,
+        0.01,
+        "inOutSine"
+      ],
+      [
+        0.85,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "hip_z": [
+      [
+        0,
+        0
+      ],
+      [
+        0.2,
+        0.04,
+        "inOutSine"
+      ],
+      [
+        0.38,
+        0.12,
+        "outSine"
+      ],
+      [
+        0.58,
+        0.05,
+        "inOutSine"
+      ],
+      [
+        0.85,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "lean": [
+      [
+        0,
+        0
+      ],
+      [
+        0.2,
+        4,
+        "inOutSine"
+      ],
+      [
+        0.38,
+        -14,
+        "outSine"
+      ],
+      [
+        0.58,
+        -4,
+        "inOutSine"
+      ],
+      [
+        0.85,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "twist": [
+      [
+        0,
+        0
+      ],
+      [
+        0.2,
+        -12,
+        "inOutSine"
+      ],
+      [
+        0.38,
+        18,
+        "outSine"
+      ],
+      [
+        0.85,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "hip_twist": [
+      [
+        0,
+        0
+      ],
+      [
+        0.2,
+        -10,
+        "inOutSine"
+      ],
+      [
+        0.38,
+        16,
+        "outSine"
+      ],
+      [
+        0.85,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "armL_elev": [
+      [
+        0,
+        -75
+      ],
+      [
+        0.2,
+        -35,
+        "inOutSine"
+      ],
+      [
+        0.38,
+        -25,
+        "outSine"
+      ],
+      [
+        0.85,
+        -75,
+        "inOutSine"
+      ]
+    ],
+    "armR_elev": [
+      [
+        0,
+        -75
+      ],
+      [
+        0.2,
+        -40,
+        "inOutSine"
+      ],
+      [
+        0.38,
+        -45,
+        "outSine"
+      ],
+      [
+        0.85,
+        -75,
+        "inOutSine"
+      ]
+    ],
+    "armL_azim": [
+      [
+        0,
+        0
+      ],
+      [
+        0.2,
+        45,
+        "inOutSine"
+      ],
+      [
+        0.38,
+        55,
+        "outSine"
+      ],
+      [
+        0.85,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "armR_azim": [
+      [
+        0,
+        0
+      ],
+      [
+        0.2,
+        35,
+        "inOutSine"
+      ],
+      [
+        0.38,
+        -25,
+        "outSine"
+      ],
+      [
+        0.85,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "elbowL": [
+      [
+        0,
+        10
+      ],
+      [
+        0.2,
+        85,
+        "inOutSine"
+      ],
+      [
+        0.38,
+        90,
+        "outSine"
+      ],
+      [
+        0.85,
+        10,
+        "inOutSine"
+      ]
+    ],
+    "elbowR": [
+      [
+        0,
+        10
+      ],
+      [
+        0.2,
+        80,
+        "inOutSine"
+      ],
+      [
+        0.38,
+        65,
+        "outSine"
+      ],
+      [
+        0.85,
+        10,
+        "inOutSine"
+      ]
+    ],
+    "legR_swing": [
+      [
+        0,
+        0
+      ],
+      [
+        0.2,
+        58,
+        "inOutSine"
+      ],
+      [
+        0.38,
+        88,
+        "outSine"
+      ],
+      [
+        0.58,
+        45,
+        "inOutSine"
+      ],
+      [
+        0.85,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "kneeR": [
+      [
+        0,
+        3
+      ],
+      [
+        0.2,
+        92,
+        "inOutSine"
+      ],
+      [
+        0.38,
+        8,
+        "outSine"
+      ],
+      [
+        0.58,
+        78,
+        "inOutSine"
+      ],
+      [
+        0.85,
+        3,
+        "inOutSine"
+      ]
+    ],
+    "footR_pitch": [
+      [
+        0,
+        0
+      ],
+      [
+        0.2,
+        15,
+        "inOutSine"
+      ],
+      [
+        0.38,
+        28,
+        "outSine"
+      ],
+      [
+        0.58,
+        10,
+        "inOutSine"
+      ],
+      [
+        0.85,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "legL_swing": [
+      [
+        0,
+        0
+      ],
+      [
+        0.38,
+        12,
+        "inOutSine"
+      ],
+      [
+        0.85,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "kneeL": [
+      [
+        0,
+        3
+      ],
+      [
+        0.38,
+        14,
+        "inOutSine"
+      ],
+      [
+        0.85,
+        3,
+        "inOutSine"
+      ]
+    ],
+    "footL_pitch": [
+      [
+        0,
+        0
+      ],
+      [
+        0.38,
+        -4,
+        "inOutSine"
+      ],
+      [
+        0.85,
+        0,
+        "inOutSine"
+      ]
+    ]
+  },
+  "expressions": {
+    "angry": [
+      [
+        0,
+        0
+      ],
+      [
+        0.2,
+        0.85,
+        "outQuad"
+      ],
+      [
+        0.55,
+        0.85,
+        "hold"
+      ],
+      [
+        0.85,
+        0,
+        "inOutSine"
+      ]
+    ],
+    "aa": [
+      [
+        0,
+        0
+      ],
+      [
+        0.3,
+        0.75,
+        "outQuad"
+      ],
+      [
+        0.52,
+        0,
+        "inQuad"
+      ]
+    ]
+  },
+  "windows": {
+    "hitbox": [
+      0.32,
+      0.45
+    ],
+    "cancel": [
+      0.6,
+      0.85
+    ]
+  },
+  "events": [
+    {
+      "t": 0.32,
+      "type": "sfx",
+      "id": "front_kick_snap"
+    }
+  ],
+  "claims": {
+    "duration": 0.85,
+    "tolerance": 0.1
+  },
+  "validate": {
+    "foot_slide": false
+  }
+}
