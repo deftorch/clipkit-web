@@ -1,71 +1,84 @@
 # ClipKit Web
 
 > **AI-First 3D Animation Sandbox, Linter, & Compiler.**  
-> Lingkungan authoring dan validasi deklaratif yang menjembatani **Large Language Models (AI)** dengan **animasi karakter 3D (VRM 1.0 & Godot)**.
+> A declarative authoring and validation runtime designed to bridge **Large Language Models (LLMs)** with **3D character animation (VRM 1.0 & Godot)**.
 
 ---
 
-## 🎯 Visi & Tujuan Proyek
-
-Model AI (LLM) sangat piawai dalam menghasilkan kode dan data terstruktur berbasis teks, tetapi **mustahil menghasilkan file biner animasi 3D secara langsung** (seperti `.fbx`, `.blend`, atau `.res` Godot). Format biner terlalu padat, tidak transparan terhadap token, dan tidak menyediakan mekanisme feedback loop yang mudah dipahami model bahasa.
-
-**ClipKit Web diciptakan sebagai fasilitas runtime, linter, dan compiler untuk AI:**
-1. **Bahasa Antara (DSL Berbasis JSON)**: Format animasi deklaratif yang sangat ramah token LLM, ringkas, dan mudah dipahami konsep ruang/waktunya oleh AI.
-2. **Linter & Feedback Loop Otomatis**: Menyediakan evaluasi fisika dan anatomi instan dengan pesan galat terstruktur (`FAIL`/`WARN` beserta stempel waktu dan sendi spesifik) agar AI dapat melakukan *self-correction* secara otonom.
-3. **Deterministic FK Sandbox**: Mengevaluasi pose 22 sendi pada 30 FPS secara deterministik dalam milidetik tanpa memerlukan engine game berat atau software DCC.
-4. **Kompiler Biner ke `.vrma`**: Mengubah hasil JSON buatan AI yang telah tervalidasi menjadi file standar industri **`.vrma` (VRM Animation)** yang siap dipakai langsung oleh developer di Godot, Unity, Blender, atau Web.
+## Table of Contents
+- [Vision & Purpose](#vision--purpose)
+- [The Agentic Generation Loop](#the-agentic-generation-loop)
+- [Why This Architecture Fits AI](#why-this-architecture-fits-ai)
+- [Animation DSL Specification](#animation-dsl-specification)
+- [Automated Validation Rules Matrix](#automated-validation-rules-matrix)
+- [System Requirements & Usage](#system-requirements--usage)
+- [Programmatic & Agent Integration](#programmatic--agent-integration)
+- [Project Directory Structure](#project-directory-structure)
 
 ---
 
-## 🔄 Siklus Generasi Animasi oleh AI (Agentic Loop)
+## Vision & Purpose
+
+Large Language Models (LLMs) excel at generating structured text and code, but **cannot directly output proprietary or binary 3D animation formats** (such as `.fbx`, `.blend`, or binary engine formats). Binary 3D assets are opaque to tokenization, heavyweight, and lack clear mathematical feedback loops necessary for autonomous self-correction.
+
+**ClipKit Web was built as an execution runtime, linter, and compiler specifically designed for AI agents:**
+
+1. **Token-Friendly Intermediate DSL**: A concise, JSON-based declarative format that abstracts complex skeletal transforms into human-readable rotational channels, keyframe arrays, and gameplay windows.
+2. **Automated Linter with Structured Feedback**: A rules engine that provides exact, actionable errors (`FAIL` and `WARN` with millisecond timestamps and joint names) so an AI can self-heal hallucinations (such as joint hyperextensions, angular snapping, and foot sliding).
+3. **Deterministic Forward Kinematics Sandbox**: Evaluates 22-joint skeletal poses at 30 FPS in milliseconds without needing GPU rendering, Blender, or game engine runtimes.
+4. **Binary Compiler to `.vrma`**: Compiles verified JSON clips into industry-standard binary glTF (`.vrma` / VRM Animation) files ready for direct import into Godot, Unity, Blender, or Web avatars.
+
+---
+
+## The Agentic Generation Loop
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor User as Manusia / Game Designer
+    actor User as Human / Game Designer
     participant AI as AI Agent (LLM)
     participant CK as ClipKit Runtime & Linter
     participant Engine as Game Engine (Godot / Unity / VRM)
 
-    User->>AI: "Buat animasi tebasan pedang cepat 0.8 detik dengan window hitbox di tengah"
+    User->>AI: "Create an 0.8s fast horizontal sword slash with a hitbox active window in the middle"
     loop Agentic Feedback Loop (Self-Healing)
         AI->>CK: Generate / Update Clip JSON (DSL)
-        CK->>CK: Evaluasi FK 30 FPS & Jalankan Aturan Validasi
-        CK-->>AI: Laporan Validasi (FAIL / WARN / PASS + data metrik)
-        Note over AI,CK: Jika ada FAIL (misal: siku over-speed / sliding), AI memperbaiki keyframe
+        CK->>CK: Evaluate 30 FPS FK & Run Validation Rules
+        CK-->>AI: Validation Report (FAIL / WARN / PASS + telemetry)
+        Note over AI,CK: If FAIL exists (e.g., elbow over-speed / foot sliding), AI corrects keyframes
     end
-    CK->>Engine: Compile ke Binary .vrma (VRM 1.0 Animation)
-    CK-->>User: Pratinjau 3D real-time (Rangka & Mesh VRM)
+    CK->>Engine: Compile to Binary .vrma (VRM 1.0 Animation)
+    CK-->>User: Real-time 3D preview (Skeleton & VRM Mesh)
 ```
 
 ---
 
-## 🧩 Mengapa Arsitektur Ini Cocok untuk AI?
+## Why This Architecture Fits AI
 
-### 1. Representasi Gerak yang "Bisa Dipikirkan" oleh AI
-Alih-alih mengontrol ribuan matriks transformasi mentah per frame, ClipKit menyediakan channel semantik tingkat tinggi:
-- **Channel Rotasi Anatomi**: `lean`, `twist`, `neck_pitch`, `armR_elev`, `armR_azim`, `legL_flex`, dst.
-- **Keyframe Ber-easing**: `[waktu_detik, nilai, "inOutSine" | "outQuad" | "linear"]`.
-- **Root Motion Terarah**: Vektor arah gerak, jarak, dan jendela translasi.
-- **Jendela Mekanik Gameplay**: `hitbox`, `cancel`, `parry`, `invulnerable`.
+### 1. Motion Representations that LLMs Can Reason About
+Instead of forcing an AI to calculate thousands of raw transform matrices, ClipKit exposes semantic, high-level channels:
+- **Anatomical Rotation Channels**: `lean`, `twist`, `neck_pitch`, `armR_elev`, `armR_azim`, `legL_flex`, etc.
+- **Eased Keyframes**: `[time_seconds, value_degrees_or_meters, "inOutSine" | "outQuad" | "linear"]`.
+- **Directional Root Motion**: Explicit movement vectors `[x, y, z]`, distances, and translation intervals.
+- **Combat Mechanics Windows**: `hitbox`, `cancel`, `parry`, and `invulnerable`.
 
-### 2. Pesan Error Terstruktur sebagai Prompt Koreksi Otomatis
-Ketika AI menghasilkan gerakan yang tidak realistis, validator mengembalikan petunjuk eksplisit:
+### 2. Structured Error Messages as Self-Correction Prompts
+When an LLM produces unnatural or physically impossible movements, the validator returns precise compiler errors:
+```text
+[FAIL] angular velocity RightForeArm max 1420.5°/s at t=0.33s exceeds limit 1200.0°/s
+[WARN] foot sliding LeftToeBase detected 0.18 m while planted at t=0.40s..0.60s
+[FAIL] knee LeftLeg bent backwards (angle -12.4° at t=0.20s), anatomy forbids hyperextension
 ```
-[FAIL] kecepatan sudut RightForeArm maks 1420.5°/s di t=0.33s melebihi batas 1200.0°/s
-[WARN] foot sliding LeftToeBase terdeteksi 0.18 m saat menapak di t=0.40s s.d 0.60s
-[FAIL] lutut LeftLeg tertekuk ke depan (sudut -12.4° di t=0.20s), anatomi melarang hiperekstensi
-```
-Pesan ini berfungsi sebagai masukan *zero-shot prompt* berikutnya agar agen AI tahu persis channel apa dan detik ke berapa yang harus disesuaikan.
+These messages serve as deterministic feedback prompts for the next agent iteration, directing the AI to the exact channel, parameter, and timestamp to fix.
 
-### 3. Ekspor Langsung ke Standar Industri
-Setelah AI mencapai status `0 FAIL`, ClipKit mengompilasi data channel menjadi spesifikasi glTF biner dengan ekstensi `VRMC_vrm_animation`. Hasilnya adalah aset kelas produksi, bukan sekadar visualisasi konsep.
+### 3. Direct Compilation to Industry Standards
+Once the AI resolves all `FAIL` issues, ClipKit serializes the channel data into a compliant binary glTF container with the `VRMC_vrm_animation` extension. The result is a production-ready game asset, not an abstract mockup.
 
 ---
 
-## 📋 Spesifikasi DSL Animasi (Input untuk AI)
+## Animation DSL Specification
 
-AI menghasilkan objek JSON sesuai skema berikut:
+The AI produces a JSON object following this schema:
 
 ```json
 {
@@ -73,7 +86,7 @@ AI menghasilkan objek JSON sesuai skema berikut:
   "format_version": 1,
   "version": 1,
   "changelog": [
-    { "v": 1, "catatan": "Draft awal tebasan pedang cepat." }
+    { "v": 1, "catatan": "Initial fast sword slash draft." }
   ],
   "duration": 0.8,
   "loop": false,
@@ -100,88 +113,100 @@ AI menghasilkan objek JSON sesuai skema berikut:
 }
 ```
 
+### Parameter Reference
+- `duration`: Total duration in seconds (0 to 30s).
+- `channels`: Dictionary of named channels mapped to sorted keyframes: `[t, value, easing?]`.
+- `windows`: Active time intervals `[start_t, end_t]` for gameplay states.
+- `events`: Discrete trigger markers at specific times `t` (e.g. audio triggers, VFX spawns).
+- `move`: Directional root motion segments (`dir: [x,y,z]`, `distance`, `t0`, `t1`, `ease`).
+
 ---
 
-## 🛠️ Aturan Validasi Otomatis (Rules Matrix)
+## Automated Validation Rules Matrix
 
-ClipKit memeriksa kualitas animasi buatan AI melalui rangkaian aturan:
+ClipKit automatically tests AI-generated clips against quality and physics heuristics:
 
-| Kategori | Yang Diukur | Kriteria FAIL / WARN |
+| Category | Metric Tested | FAIL / WARN Condition |
 |---|---|---|
-| **Kecepatan Sudut** | Laju rotasi antar-frame (°/detik) | Melebihi batas gaya (*stylized* vs *realistic*) |
-| **Percepatan Sudut** | Lonjakan akselerasi rotasi | Menandakan gerakan patah (*snapping*) |
-| **Lantai & Tumpuan** | Posisi telapak & jari kaki terhadap lantai | Menembus lantai atau bergeser (*sliding*) saat bertumpu |
-| **Rentang Anatomi** | Batas gerak sendi manusia | Lutut/siku melipat terbalik, leher melintir ekstrem |
-| **Loop Continuity** | Selisih nilai frame awal vs akhir | Animasi siklis (*walk/run/idle*) tidak menyatu mulus |
-| **Root Motion** | Vektor translasi badan | Melompat terlalu jauh dalam satu interval frame |
-| **Gameplay Window** | Urutan jendela waktu | Jendela *hitbox* melebihi durasi klip atau bertabrakan |
-| **Standar VRM 1.0** | Kesesuaian T-Pose & Humanoid bones | Nama bone atau hierarki tidak sesuai spesifikasi VRM |
+| **Angular Velocity** | Inter-frame rotation rate (°/s) | Exceeds stylistic threshold (*stylized* vs *realistic*) |
+| **Angular Acceleration** | Rotation acceleration spikes | Indicates unnatural snapping or popping |
+| **Floor & Foot Contact** | Planted foot and toe joint heights | Joints penetration into floor or sliding while planted |
+| **Anatomical Limits** | Natural human range of motion | Hyperextension of knees/elbows or extreme neck twisting |
+| **Loop Continuity** | Start vs end frame pose difference | Cyclic animations (*walk*, *run*, *idle*) not blending seamlessly |
+| **Root Motion** | Translational velocity vectors | Discontinuous displacement jumping across frames |
+| **Gameplay Windows** | Action interval ordering | Overlapping or out-of-bounds combat windows |
+| **VRM 1.0 Compliance** | Standard T-Pose & Humanoid bones | Missing bones, reversed forward vectors, or invalid hierarchy |
 
 ---
 
-## 🚀 Kebutuhan Sistem & Penggunaan
+## System Requirements & Usage
 
-### Prasyarat
-- **Node.js**: Versi `>= 18` atau runtime **Bun** (`>= 1.0`).
-- **Browser Modern**: Google Chrome, Edge, Firefox, atau Safari (dengan dukungan WebGL).
+### Prerequisites
+- **Node.js**: Version `>= 18` or **Bun** runtime (`>= 1.0`).
+- **Modern Browser**: Google Chrome, Edge, Firefox, or Safari (with WebGL support).
 
-### Menjalankan Fasilitas
+### Commands
 ```bash
-# 1. Install dependensi
+# 1. Install dependencies
 npm install
 
-# 2. Jalankan sandbox web lokal
+# 2. Run local development sandbox
 npm run dev
-# Akses http://localhost:5173
+# Open http://localhost:5173
 
-# 3. Jalankan automated test suite (untuk integrasi AI/CI)
+# 3. Run unit tests (for CI/CD or automated AI integration)
 npm test
 
-# 4. Bangun versi standalone single-file HTML
+# 4. Build standalone single-file distribution
 npm run build
-# Output berada di dist/index.html (dapat berjalan tanpa server Node)
+# Produces dist/index.html (runs offline without any external assets)
 ```
 
 ---
 
-## 🕹️ Integrasi Programatik & Mode Agent
+## Programmatic & Agent Integration
 
-ClipKit mengekspos instance inti ke lingkungan runtime global (`window.ClipKit` dan `window.__clipkit`) sehingga agen AI berkemampuan browser automation (seperti Puppeteer, Playwright, atau subagent AI) dapat berinteraksi langsung:
+ClipKit exposes its core engine to the browser global scope (`window.ClipKit` and `window.__clipkit`), enabling headless automated browser agents (such as Playwright, Puppeteer, or IDE subagents) to run validation and export programmatically:
 
 ```javascript
-// Contoh bagaimana agen AI menguji klip secara programatik:
-const clipJson = { /* ... klip hasil rancangan AI ... */ };
+// Programmatic validation and export workflow:
+import ClipKit from './src/domain/clipkit.js';
 
-// 1. Evaluasi & validasi klip
+const clipJson = { /* ... AI-generated JSON clip ... */ };
+
+// 1. Evaluate & validate clip
 const res = ClipKit.validate(rig, ctx, limits, clipJson, 'stylized');
 
-if (res.lines.some(l => l[0] === 'FAIL')) {
-  console.error("AI perlu memperbaiki:", res.lines.filter(l => l[0] === 'FAIL'));
+if (res.lines.some(line => line[0] === 'FAIL')) {
+  // Feed errors back to AI prompt for self-correction:
+  const failures = res.lines.filter(line => line[0] === 'FAIL');
+  console.error("AI must correct:", failures);
 } else {
-  // 2. Jika valid, ekspor langsung ke binary .vrma
+  // 2. Once valid, compile directly to binary .vrma
   const vrmaBlob = ClipKit.buildVrmaGlb(rig, ctx, clipJson);
-  // Simpan atau kirim ke game engine
+  // Send blob to game engine or save to disk
 }
 ```
 
 ---
 
-## 📂 Struktur Repositori
+## Project Directory Structure
 
 ```
 clipkit-web/
-├── index.html                   # Shell antarmuka visualizer & editor
-├── package.json                 # Dependensi (three, @pixiv/three-vrm, vite, vitest)
+├── index.html                   # Clean HTML entry shell
+├── package.json                 # Project dependencies (three, @pixiv/three-vrm, vite, vitest)
+├── vite.config.js               # Vite configuration with single-file bundling
 ├── src/
-│   ├── domain/                  # 🧠 Pure Animation Math & Engine (Target API AI)
-│   │   ├── math/                # Vektor 3D & Quaternion
-│   │   ├── animation/           # Evaluator Easing, Keyframes, & Root Motion
-│   │   ├── rig/                 # Rig Context & Pose Evaluator (Forward Kinematics)
-│   │   ├── validation/          # Mesin Linter & Aturan Validasi (Rules Engine)
-│   │   └── clipkit.js           # Facade terpadu
-│   ├── infrastructure/          # 🔌 Driver I/O (Three.js 3D Mesh & Parser GLB)
-│   ├── application/             # ⚙️ Manajemen State & Store
-│   ├── presentation/            # 🖥️ Visualizer Viewport, Timeline, & UI Panels
-│   └── data/                    # 📚 Rig MotusMan, VRM Sample, & 14 Klip Referensi
-└── tests/                       # 🧪 Automated Golden Unit Tests
+│   ├── domain/                  # Pure math, animation & validation engine (AI target API)
+│   │   ├── math/                # 3D vectors & Quaternions
+│   │   ├── animation/           # Easing curves, keyframes, & root motion evaluators
+│   │   ├── rig/                 # Rig context & Forward Kinematics pose evaluator
+│   │   ├── validation/          # Automated linter & rule evaluation engine
+│   │   └── clipkit.js           # Unified facade export
+│   ├── infrastructure/          # I/O adapters (Three.js 3D mesh renderer & GLB parser)
+│   ├── application/             # Application stores (playback, clip, camera, rig, theme)
+│   ├── presentation/            # Canvas viewports, timeline renderer, & UI panel components
+│   └── data/                    # Default MotusMan/VRM rigs & 14 reference JSON clips
+└── tests/                       # Unit tests (golden pose evaluator & VRM parser)
 ```
