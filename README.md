@@ -1,90 +1,85 @@
 # ClipKit Web
 
-> **Platform authoring, inspeksi kurva, validasi gerak/gameplay, dan ekspor animasi karakter berbasis JSON untuk VRM 1.0 & Godot Engine.**
+> **AI-First 3D Animation Sandbox, Linter, & Compiler.**  
+> Lingkungan authoring dan validasi deklaratif yang menjembatani **Large Language Models (AI)** dengan **animasi karakter 3D (VRM 1.0 & Godot)**.
 
 ---
 
-## Daftar Isi
-- [Tentang Proyek](#tentang-proyek)
-- [Masalah yang Dipecahkan](#masalah-yang-dipecahkan)
-- [Fitur Utama](#fitur-utama)
-- [Spesifikasi & Format Animasi](#spesifikasi--format-animasi)
-- [Kebutuhan Sistem & Prasyarat](#kebutuhan-sistem--prasyarat)
-- [Panduan Penggunaan (Quickstart)](#panduan-penggunaan-quickstart)
-- [Alur Kerja (Workflow Pipeline)](#alur-kerja-workflow-pipeline)
-- [Pintasan Keyboard & Navigasi](#pintasan-keyboard--navigasi)
-- [Struktur Direktori](#struktur-direktori)
+## 🎯 Visi & Tujuan Proyek
+
+Model AI (LLM) sangat piawai dalam menghasilkan kode dan data terstruktur berbasis teks, tetapi **mustahil menghasilkan file biner animasi 3D secara langsung** (seperti `.fbx`, `.blend`, atau `.res` Godot). Format biner terlalu padat, tidak transparan terhadap token, dan tidak menyediakan mekanisme feedback loop yang mudah dipahami model bahasa.
+
+**ClipKit Web diciptakan sebagai fasilitas runtime, linter, dan compiler untuk AI:**
+1. **Bahasa Antara (DSL Berbasis JSON)**: Format animasi deklaratif yang sangat ramah token LLM, ringkas, dan mudah dipahami konsep ruang/waktunya oleh AI.
+2. **Linter & Feedback Loop Otomatis**: Menyediakan evaluasi fisika dan anatomi instan dengan pesan galat terstruktur (`FAIL`/`WARN` beserta stempel waktu dan sendi spesifik) agar AI dapat melakukan *self-correction* secara otonom.
+3. **Deterministic FK Sandbox**: Mengevaluasi pose 22 sendi pada 30 FPS secara deterministik dalam milidetik tanpa memerlukan engine game berat atau software DCC.
+4. **Kompiler Biner ke `.vrma`**: Mengubah hasil JSON buatan AI yang telah tervalidasi menjadi file standar industri **`.vrma` (VRM Animation)** yang siap dipakai langsung oleh developer di Godot, Unity, Blender, atau Web.
 
 ---
 
-## Tentang Proyek
+## 🔄 Siklus Generasi Animasi oleh AI (Agentic Loop)
 
-**ClipKit Web** adalah aplikasi web interaktif yang memungkinkan technical animator, game developer, dan desainer gameplay untuk **menulis, mengukur, memvalidasi, dan menguji klip animasi karakter secara langsung di browser**.
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as Manusia / Game Designer
+    participant AI as AI Agent (LLM)
+    participant CK as ClipKit Runtime & Linter
+    participant Engine as Game Engine (Godot / Unity / VRM)
 
-Alih-alih mengandalkan file animasi biner yang berat atau harus membuka software DCC (seperti Blender/Maya) dan game engine penuh (Godot) hanya untuk mengubah timing beberapa frame, ClipKit memperlakukan animasi sebagai **data deklaratif berbasis JSON**.
-
-Animasi dievaluasi menggunakan mesin **Forward Kinematics (FK)** 22 sendi yang deterministik pada 30 FPS, menghasilkan posisi sendi dan lintasan yang identik dengan runtime Godot Engine (selisih posisi < 0.1 mm).
-
----
-
-## Masalah yang Dipecahkan
-
-1. **Iterasi Cepat Timing Gameplay**: Mengubah durasi *windup*, *hitbox active*, atau *cancel window* pada serangan aksi tanpa proses re-bake / re-export yang lambat.
-2. **Validasi Anatomi & Kualitas Gerak Otomatis**: Memastikan animasi tidak mengalami gerakan patah (*angular velocity/acceleration spikes*), melintir di luar batas anatomi alami manusia, atau *foot sliding* saat kaki bertumpu.
-3. **Penyelarasan Multi-Karakter (Retargeting VRM 1.0)**: Klip animasi yang sama dapat langsung diterapkan ke berbagai avatar VRM 1.0 dengan proporsi tubuh berbeda, dengan penyesuaian otomatis pada skala langkah dan tinggi pinggul.
-4. **Portabilitas Aset**: Animasi dapat langsung diekspor dari browser menjadi file standar industri **`.vrma` (VRM Animation)** yang siap dimasukkan ke game engine atau aplikasi avatar VTuber.
-
----
-
-## Fitur Utama
-
-### 1. Visualizer 3D & 2D Hybrid
-- **Skeletal Stick-Figure**: Boneka rangka garis 22 sendi dengan pewarisan sisi (*Left/Right/Center*), visualisasi kepala berpenanda arah hadap, bayangan lantai dinamis, dan panah orientasi root.
-- **Render Mesh 3D VRM 1.0**: Dukungan render model 3D nyata secara langsung melalui WebGL (Three.js + `@pixiv/three-vrm`).
-- **Trails & Onion Skinning**: Jejak lintasan sendi ekstremitas (kedua tangan, kedua kaki, kepala) dengan penanda warna jendela aksi, serta pratinjau siluet *onion skin* multi-frame.
-- **Kamera Orbit Bebas**: Kontrol rotasi yaw/pitch, zoom pinch/wheel, serta tombol sudut pandang instan (*Depan*, *Samping*, *Atas*, *3/4 Prespektif*).
-
-### 2. Mesin Validasi Otomatis (Validation Engine)
-Secara otomatis mengevaluasi puluhan aturan kualitas pada setiap frame (30 FPS):
-- **Kecepatan & Percepatan Sudut**: Menilai batas gaya gerak (*stylized* vs *realistic*) untuk mencegah diskontinuitas visual.
-- **Lantai & Tumpuan Kaki (Foot Sliding)**: Mengukur ketinggian sendi telapak/jari kaki terhadap lantai dan mendeteksi pergeseran tidak wajar saat bertumpu.
-- **Batas Rentang Anatomi**: Memeriksa apakah rotasi leher, tulang belakang, lutut, siku, dan pinggul berada dalam rentang wajar manusia.
-- **Kontinuitas Loop**: Memastikan frame awal dan akhir cocok pada klip yang ditandai `loop: true` (seperti *walk* atau *idle*).
-- **Kecepatan Root Motion**: Memvalidasi kecepatan translasi tubuh agar tidak terjadi lonjakan jarak instan.
-
-### 3. Jendela Aksi Gameplay (Combat Windows) & Events
-- **Timeline Berwarna**: Visualisasi lane untuk jendela aksi `hitbox` (merah), `active` (oranye), `parry` (emas), `cancel` (biru), dan `invulnerable` (hijau).
-- **Event Markers**: Penempatan penanda event berwaktu (misalnya pemicu suara SFX, spawn partikel VFX, atau getaran kamera) dengan sinkronisasi playhead.
-- **Grafik Kecepatan Terintegrasi**: Kurva kecepatan sudut dan kecepatan translasi root yang dinormalisasi terhadap ambang batas batas peringatan (*warn/fail*).
-
-### 4. Ekosistem VRM 1.0 & Ekspor `.vrma`
-- **Muat Model Sendiri**: Seret dan lepas (*drag & drop*) file `.vrm` apa pun ke dalam kanvas.
-- **Inspeksi Metadata**: Memeriksa kelengkapan humanoid bones, bone sintetis, jumlah mesh, dan segitiga poligon.
-- **Ekspor Instan**: Menghasilkan file binary glTF `.vrma` valid dengan satu klik tombol **Ekspor .vrma**.
-
-### 5. Editor JSON & Diff Riwayat Versi
-- **Editor Langsung**: Mengedit JSON klip langsung di browser dengan format rapi otomatis, duplikasi klip, dan validasi sintaks instan.
-- **Diff Snapshot**: Membandingkan perubahan pada klip kerja terhadap snapshot versi yang dirilis (menyorot perubahan yang memengaruhi gameplay secara khusus).
-- **Inspektur Kurva Interaktif**: Grafik SVG interaktif per channel yang menampilkan batas anatomi rig, nilai default, dan manipulasi playhead.
+    User->>AI: "Buat animasi tebasan pedang cepat 0.8 detik dengan window hitbox di tengah"
+    loop Agentic Feedback Loop (Self-Healing)
+        AI->>CK: Generate / Update Clip JSON (DSL)
+        CK->>CK: Evaluasi FK 30 FPS & Jalankan Aturan Validasi
+        CK-->>AI: Laporan Validasi (FAIL / WARN / PASS + data metrik)
+        Note over AI,CK: Jika ada FAIL (misal: siku over-speed / sliding), AI memperbaiki keyframe
+    end
+    CK->>Engine: Compile ke Binary .vrma (VRM 1.0 Animation)
+    CK-->>User: Pratinjau 3D real-time (Rangka & Mesh VRM)
+```
 
 ---
 
-## Spesifikasi & Format Animasi
+## 🧩 Mengapa Arsitektur Ini Cocok untuk AI?
 
-Sebuah klip ClipKit adalah dokumen JSON mandiri dengan skema terstruktur:
+### 1. Representasi Gerak yang "Bisa Dipikirkan" oleh AI
+Alih-alih mengontrol ribuan matriks transformasi mentah per frame, ClipKit menyediakan channel semantik tingkat tinggi:
+- **Channel Rotasi Anatomi**: `lean`, `twist`, `neck_pitch`, `armR_elev`, `armR_azim`, `legL_flex`, dst.
+- **Keyframe Ber-easing**: `[waktu_detik, nilai, "inOutSine" | "outQuad" | "linear"]`.
+- **Root Motion Terarah**: Vektor arah gerak, jarak, dan jendela translasi.
+- **Jendela Mekanik Gameplay**: `hitbox`, `cancel`, `parry`, `invulnerable`.
+
+### 2. Pesan Error Terstruktur sebagai Prompt Koreksi Otomatis
+Ketika AI menghasilkan gerakan yang tidak realistis, validator mengembalikan petunjuk eksplisit:
+```
+[FAIL] kecepatan sudut RightForeArm maks 1420.5°/s di t=0.33s melebihi batas 1200.0°/s
+[WARN] foot sliding LeftToeBase terdeteksi 0.18 m saat menapak di t=0.40s s.d 0.60s
+[FAIL] lutut LeftLeg tertekuk ke depan (sudut -12.4° di t=0.20s), anatomi melarang hiperekstensi
+```
+Pesan ini berfungsi sebagai masukan *zero-shot prompt* berikutnya agar agen AI tahu persis channel apa dan detik ke berapa yang harus disesuaikan.
+
+### 3. Ekspor Langsung ke Standar Industri
+Setelah AI mencapai status `0 FAIL`, ClipKit mengompilasi data channel menjadi spesifikasi glTF biner dengan ekstensi `VRMC_vrm_animation`. Hasilnya adalah aset kelas produksi, bukan sekadar visualisasi konsep.
+
+---
+
+## 📋 Spesifikasi DSL Animasi (Input untuk AI)
+
+AI menghasilkan objek JSON sesuai skema berikut:
 
 ```json
 {
-  "name": "slash",
+  "name": "slash_horizontal",
   "format_version": 1,
   "version": 1,
   "changelog": [
-    { "v": 1, "catatan": "Tebasan horizontal tangan kanan." }
+    { "v": 1, "catatan": "Draft awal tebasan pedang cepat." }
   ],
   "duration": 0.8,
   "loop": false,
   "channels": {
     "lean": [[0, 0], [0.3, 15, "inOutSine"], [0.8, 0, "outQuad"]],
+    "twist": [[0, -20], [0.35, 30, "outQuad"], [0.8, 0, "inOutSine"]],
     "armR_elev": [[0, -70], [0.35, 45, "outQuad"], [0.8, -70, "inOutSine"]],
     "armR_azim": [[0, -20], [0.35, 80, "outQuad"], [0.8, -20, "inOutSine"]]
   },
@@ -93,118 +88,100 @@ Sebuah klip ClipKit adalah dokumen JSON mandiri dengan skema terstruktur:
     "cancel": [0.55, 0.8]
   },
   "events": [
-    { "t": 0.3, "type": "sfx", "id": "slash_swing" }
+    { "t": 0.3, "type": "sfx", "id": "slash_heavy" }
   ],
-  "move": [
-    { "dir": [0, 0, 1], "distance": 0.8, "t0": 0.1, "t1": 0.4, "ease": "outQuad" }
-  ]
+  "claims": {
+    "duration": 0.8,
+    "tolerance": 0.05
+  },
+  "validate": {
+    "foot_slide": true
+  }
 }
 ```
 
-### Parameter Utama:
-- `duration`: Durasi klip dalam detik (0 s.d. 30 detik).
-- `channels`: Kumpulan keyframe `[waktu_detik, nilai_derajat_atau_meter, tipe_easing]`.
-- `windows`: Rentang waktu `[t_mulai, t_selesai]` untuk mekanik gameplay.
-- `events`: Titik pemicu event diskret pada waktu tertentu `t`.
-- `move`: Segmen perpindahan root motion (arah `[x,y,z]`, jarak tempuh, rentang waktu, kurva translasi).
+---
+
+## 🛠️ Aturan Validasi Otomatis (Rules Matrix)
+
+ClipKit memeriksa kualitas animasi buatan AI melalui rangkaian aturan:
+
+| Kategori | Yang Diukur | Kriteria FAIL / WARN |
+|---|---|---|
+| **Kecepatan Sudut** | Laju rotasi antar-frame (°/detik) | Melebihi batas gaya (*stylized* vs *realistic*) |
+| **Percepatan Sudut** | Lonjakan akselerasi rotasi | Menandakan gerakan patah (*snapping*) |
+| **Lantai & Tumpuan** | Posisi telapak & jari kaki terhadap lantai | Menembus lantai atau bergeser (*sliding*) saat bertumpu |
+| **Rentang Anatomi** | Batas gerak sendi manusia | Lutut/siku melipat terbalik, leher melintir ekstrem |
+| **Loop Continuity** | Selisih nilai frame awal vs akhir | Animasi siklis (*walk/run/idle*) tidak menyatu mulus |
+| **Root Motion** | Vektor translasi badan | Melompat terlalu jauh dalam satu interval frame |
+| **Gameplay Window** | Urutan jendela waktu | Jendela *hitbox* melebihi durasi klip atau bertabrakan |
+| **Standar VRM 1.0** | Kesesuaian T-Pose & Humanoid bones | Nama bone atau hierarki tidak sesuai spesifikasi VRM |
 
 ---
 
-## Kebutuhan Sistem & Prasyarat
+## 🚀 Kebutuhan Sistem & Penggunaan
 
-### Perangkat Lunak:
-- **Node.js**: Versi `18.0.0` atau yang lebih baru (disarankan LTS v20+) **ATAU** runtime **Bun** (v1.0+).
-- **Manajer Paket**: `npm`, `pnpm`, `yarn`, atau `bun`.
+### Prasyarat
+- **Node.js**: Versi `>= 18` atau runtime **Bun** (`>= 1.0`).
+- **Browser Modern**: Google Chrome, Edge, Firefox, atau Safari (dengan dukungan WebGL).
 
-### Peramban Web (Browser):
-- Google Chrome / Chromium v90+
-- Mozilla Firefox v90+
-- Microsoft Edge v90+
-- Apple Safari v15+
-- *Kartu grafis / driver yang mendukung WebGL untuk tampilan render mesh 3D.*
-
----
-
-## Panduan Penggunaan (Quickstart)
-
-### 1. Instalasi Dependensi
-Jalankan di terminal proyek:
+### Menjalankan Fasilitas
 ```bash
+# 1. Install dependensi
 npm install
-```
-*(Atau dengan Bun: `bun install`)*
 
-### 2. Menjalankan Server Pengembangan (Dev Mode)
-```bash
+# 2. Jalankan sandbox web lokal
 npm run dev
-```
-Buka browser pada alamat yang ditampilkan di terminal (default: `http://localhost:5173`).
+# Akses http://localhost:5173
 
-### 3. Menjalankan Pengujian Unit (Test Suite)
-Untuk memverifikasi keakuratan matematika FK, evaluasi pose, dan kepatuhan VRM 1.0:
-```bash
+# 3. Jalankan automated test suite (untuk integrasi AI/CI)
 npm test
-```
 
-### 4. Membangun Bundel Mandiri (Production Build)
-Untuk mendistribusikan aplikasi sebagai satu file HTML mandiri:
-```bash
+# 4. Bangun versi standalone single-file HTML
 npm run build
-```
-Hasil build akan tersimpan di `dist/index.html` (berukuran ~900 KB, mencakup seluruh engine Three.js, CSS, shader, parser, dan aset klip bawaan tanpa dependensi server tambahan). File ini dapat dibuka langsung secara offline atau dihosting di static hosting mana pun.
-
----
-
-## Alur Kerja (Workflow Pipeline)
-
-Aplikasi menyajikan panduan tahapan visual di bagian atas layar:
-
-```mermaid
-graph LR
-    A["1. Edit JSON"] --> B["2. Build"]
-    B --> C["3. Validasi"]
-    C --> D["4. Lihat & Nilai"]
-    D --> E["5. Ekspor .vrma"]
+# Output berada di dist/index.html (dapat berjalan tanpa server Node)
 ```
 
-1. **Edit JSON**: Tulis atau sesuaikan keyframe rotasi channel dan timing jendela aksi.
-2. **Build**: Mesin menghitung seluruh pose 30 frame per detik dan kurva kecepatan secara instan.
-3. **Validasi**: Periksa laporan otomatis untuk memastikan tidak ada pelanggaran *FAIL* dan perhatikan petunjuk *WARN*.
-4. **Lihat & Nilai**: Putar animasi di viewport 3D, putar sudut kamera, dan periksa lintasan tangan/kaki.
-5. **Ekspor .vrma**: Simpan file `.vrma` untuk digunakan di Godot, Unity, Blender, atau aplikasi VTuber.
+---
+
+## 🕹️ Integrasi Programatik & Mode Agent
+
+ClipKit mengekspos instance inti ke lingkungan runtime global (`window.ClipKit` dan `window.__clipkit`) sehingga agen AI berkemampuan browser automation (seperti Puppeteer, Playwright, atau subagent AI) dapat berinteraksi langsung:
+
+```javascript
+// Contoh bagaimana agen AI menguji klip secara programatik:
+const clipJson = { /* ... klip hasil rancangan AI ... */ };
+
+// 1. Evaluasi & validasi klip
+const res = ClipKit.validate(rig, ctx, limits, clipJson, 'stylized');
+
+if (res.lines.some(l => l[0] === 'FAIL')) {
+  console.error("AI perlu memperbaiki:", res.lines.filter(l => l[0] === 'FAIL'));
+} else {
+  // 2. Jika valid, ekspor langsung ke binary .vrma
+  const vrmaBlob = ClipKit.buildVrmaGlb(rig, ctx, clipJson);
+  // Simpan atau kirim ke game engine
+}
+```
 
 ---
 
-## Pintasan Keyboard & Navigasi
-
-| Pintasan | Fungsi |
-|---|---|
-| <kbd>Spasi</kbd> | Putar / Jeda animasi (*Play/Pause*) |
-| <kbd>,</kbd> (Koma) | Mundur 1 frame |
-| <kbd>.</kbd> (Titik) | Maju 1 frame |
-| <kbd>[</kbd> / <kbd>]</kbd> | Memperlambat / mempercepat kecepatan pemutaran |
-| <kbd>1</kbd> s.d. <kbd>9</kbd> | Memilih klip animasi berdasarkan nomor urut tab |
-| **Klik Kiri + Geser** | Memutar sudut pandang kamera 3D (*Orbit*) |
-| **Scroll Mouse** | Memperbesar / memperkecil tampilan (*Zoom*) |
-| **Sentuh 2 Jari** | Cubit untuk zoom (*Pinch Zoom*) pada layar sentuh |
-| **Drag & Drop File** | Seret file `.vrm` atau `.glb` langsung ke viewport untuk memuat model baru |
-
----
-
-## Struktur Direktori
+## 📂 Struktur Repositori
 
 ```
 clipkit-web/
-├── index.html                   # Halaman HTML utama
-├── package.json                 # Konfigurasi dependensi proyek
-├── vite.config.js               # Konfigurasi Vite & bundling single-file
+├── index.html                   # Shell antarmuka visualizer & editor
+├── package.json                 # Dependensi (three, @pixiv/three-vrm, vite, vitest)
 ├── src/
-│   ├── main.js                  # Entry point bootstrap aplikasi
-│   ├── styles/                  # Styling & tema antarmuka
-│   ├── domain/                  # Logika inti (matematika, FK pose, easing, validasi, VRMA)
-│   ├── infrastructure/          # Adapter Three.js 3D & GLB/VRM parser
-│   ├── application/             # State manajemen (playback, clip, camera, rig, theme)
-│   ├── presentation/            # Komponen UI, controller viewport, dan timeline canvas
-│   └── data/                    # Definisi rig bawaan dan 14 klip animasi JSON
-└── tests/                       # Unit tests (golden pose evaluator & parser VRM)
+│   ├── domain/                  # 🧠 Pure Animation Math & Engine (Target API AI)
+│   │   ├── math/                # Vektor 3D & Quaternion
+│   │   ├── animation/           # Evaluator Easing, Keyframes, & Root Motion
+│   │   ├── rig/                 # Rig Context & Pose Evaluator (Forward Kinematics)
+│   │   ├── validation/          # Mesin Linter & Aturan Validasi (Rules Engine)
+│   │   └── clipkit.js           # Facade terpadu
+│   ├── infrastructure/          # 🔌 Driver I/O (Three.js 3D Mesh & Parser GLB)
+│   ├── application/             # ⚙️ Manajemen State & Store
+│   ├── presentation/            # 🖥️ Visualizer Viewport, Timeline, & UI Panels
+│   └── data/                    # 📚 Rig MotusMan, VRM Sample, & 14 Klip Referensi
+└── tests/                       # 🧪 Automated Golden Unit Tests
 ```
