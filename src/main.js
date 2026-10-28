@@ -237,6 +237,8 @@ export function refreshAll(fromEditor = false) {
   renderClipbar({
     barEl: $('#clipbar'),
     vrmInputEl: $('#vrmIn'),
+    glCanvas,
+    onMeshLoaded: handleMeshLoaded,
     onSelectClip: (id) => handleSelectClip(id),
     onAfterRigChange: () => handleAfterRigChange(),
     onRefreshAll: () => refreshAll(),
@@ -270,6 +272,14 @@ function handleAfterRigChange() {
   refreshAll();
 }
 
+function handleMeshLoaded(_inf) {
+  playbackState.mesh = true;
+  playbackState.skel = false;
+  if (viewportCtrl) viewportCtrl.syncToggles();
+  renderRig($('#p-rig'), $('#vrmIn'));
+  dirtyAll();
+}
+
 // Initialize Viewport and Timeline Controllers
 const viewportCtrl = initViewportController({
   vpEl: vp,
@@ -278,6 +288,7 @@ const viewportCtrl = initViewportController({
   onDirty: dirtyAll,
   onSetTab: setTab,
   onRefreshAll: refreshAll,
+  onMeshLoaded: handleMeshLoaded,
 });
 
 initTimelineScrubber({
@@ -316,6 +327,7 @@ $('#vrmIn')?.addEventListener('change', (e) => {
         setTab('rig');
         renderRig($('#p-rig'), $('#vrmIn'));
       },
+      handleMeshLoaded,
     );
   }
   e.target.value = '';

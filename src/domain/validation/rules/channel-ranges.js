@@ -9,25 +9,28 @@ export function checkChannelRanges(rig, clip) {
 
   for (const c of Object.keys(chs)) {
     if (!valid.includes(c)) {
-      w.push(`channel tidak dikenal: ${c}`);
+      w.push(['FAIL', `channel tidak dikenal: ${c}`]);
       continue;
     }
     const rg = channelRange(rig, c);
-    let worst = 0,
-      wt = 0;
+    let worst = 0;
+    let wt = 0;
+    let valAtWorst = 0;
     for (let f = 0; f <= Math.ceil(clip.duration * FPS); f++) {
-      const t = Math.min(f / FPS, clip.duration),
-        v = sampleKeys(chs[c], t);
+      const t = Math.min(f / FPS, clip.duration);
+      const v = sampleKeys(chs[c], t);
       const over = Math.max(rg[0] - v, v - rg[1]);
       if (over > 1e-4 && over > worst) {
         worst = over;
         wt = t;
+        valAtWorst = v;
       }
     }
     if (worst > 0) {
-      w.push(
-        `channel ${c} keluar range [${rg[0]}, ${rg[1]}] maks ${worst.toFixed(1)} di t=${wt.toFixed(2)}s`,
-      );
+      w.push([
+        'WARN',
+        `channel ${c} keluar range [${rg[0]}, ${rg[1]}]: nilai ${valAtWorst.toFixed(1)} (selisih ${worst.toFixed(1)}) di t=${wt.toFixed(2)}s`,
+      ]);
     }
   }
   return w;

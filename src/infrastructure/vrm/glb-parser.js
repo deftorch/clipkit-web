@@ -1,20 +1,32 @@
 const CHUNK_JSON = 0x4e4f534a;
+const CHUNK_BIN = 0x004e4942;
 
-export function parseGlb(buf) {
+export function parseGlbChunks(buf) {
   const dv = new DataView(buf);
   if (buf.byteLength < 20 || dv.getUint32(0, true) !== 0x46546c67) {
     throw new Error('Bukan file GLB/VRM (header glTF tidak ditemukan).');
   }
   let off = 12;
+  let json = null;
+  let binary = null;
   while (off + 8 <= buf.byteLength) {
-    const l = dv.getUint32(off, true),
-      t = dv.getUint32(off + 4, true);
+    const l = dv.getUint32(off, true);
+    const t = dv.getUint32(off + 4, true);
     if (t === CHUNK_JSON) {
-      return JSON.parse(new TextDecoder().decode(new Uint8Array(buf, off + 8, l)));
+      json = JSON.parse(new TextDecoder().decode(new Uint8Array(buf, off + 8, l)));
+    } else if (t === CHUNK_BIN) {
+      binary = new Uint8Array(buf, off + 8, l);
     }
     off += 8 + l;
   }
-  throw new Error('Chunk JSON tidak ditemukan di file.');
+  if (!json) {
+    throw new Error('Chunk JSON tidak ditemukan di file.');
+  }
+  return { json, binary };
+}
+
+export function parseGlb(buf) {
+  return parseGlbChunks(buf).json;
 }
 
 // Matriks kolom-mayor 4x4

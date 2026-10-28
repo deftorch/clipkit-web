@@ -78,78 +78,137 @@ export function validate(rig, ctx, limits, clip, style = 'stylized') {
 
   // 3. Anatomi
   let kMin = Infinity,
+    kMinSide = 'kiri',
+    kMinT = 0,
     kMax = -Infinity,
+    kMaxSide = 'kiri',
+    kMaxT = 0,
     eMax = 0,
-    nMax = 0;
+    eMaxSide = 'kiri',
+    eMaxT = 0,
+    nMax = 0,
+    nMaxT = 0;
   const ang = (a, b) => R2D * Math.acos(Math.min(1, Math.max(-1, vdot(a, b))));
-  for (const P of poses) {
-    const p = P.pos,
-      lax = vnorm(vsub(p[I.LeftUpLeg], p[I.RightUpLeg]));
+  for (let f = 0; f < poses.length; f++) {
+    const P = poses[f];
+    const t = tAt(f);
+    const p = P.pos;
+    const lax = vnorm(vsub(p[I.LeftUpLeg], p[I.RightUpLeg]));
     for (const s of ['Left', 'Right']) {
-      const th = vnorm(vsub(p[I[s + 'Leg']], p[I[s + 'UpLeg']])),
-        sh = vnorm(vsub(p[I[s + 'Foot']], p[I[s + 'Leg']]));
+      const th = vnorm(vsub(p[I[s + 'Leg']], p[I[s + 'UpLeg']]));
+      const sh = vnorm(vsub(p[I[s + 'Foot']], p[I[s + 'Leg']]));
       const flex = R2D * Math.atan2(vdot(vcross(th, sh), lax), vdot(th, sh));
-      kMin = Math.min(kMin, flex);
-      kMax = Math.max(kMax, flex);
-      const ua = vnorm(vsub(p[I[s + 'ForeArm']], p[I[s + 'Arm']])),
-        fa = vnorm(vsub(p[I[s + 'Hand']], p[I[s + 'ForeArm']]));
-      eMax = Math.max(eMax, ang(ua, fa));
+      if (flex < kMin) {
+        kMin = flex;
+        kMinSide = s === 'Left' ? 'kiri' : 'kanan';
+        kMinT = t;
+      }
+      if (flex > kMax) {
+        kMax = flex;
+        kMaxSide = s === 'Left' ? 'kiri' : 'kanan';
+        kMaxT = t;
+      }
+      const ua = vnorm(vsub(p[I[s + 'ForeArm']], p[I[s + 'Arm']]));
+      const fa = vnorm(vsub(p[I[s + 'Hand']], p[I[s + 'ForeArm']]));
+      const elbowAng = ang(ua, fa);
+      if (elbowAng > eMax) {
+        eMax = elbowAng;
+        eMaxSide = s === 'Left' ? 'kiri' : 'kanan';
+        eMaxT = t;
+      }
     }
-    nMax = Math.max(
-      nMax,
-      ang(vnorm(vsub(p[I.Neck], p[I.Spine2])), vnorm(vsub(p[I.Head], p[I.Neck]))),
-    );
+    const neckAng = ang(vnorm(vsub(p[I.Neck], p[I.Spine2])), vnorm(vsub(p[I.Head], p[I.Neck])));
+    if (neckAng > nMax) {
+      nMax = neckAng;
+      nMaxT = t;
+    }
   }
-  const kTxt = `lutut: fleksi ${fx(kMin)}° sampai ${fx(kMax)}°`;
+  const kIsFail = kMin < an.knee_flex_min || kMax > an.knee_flex_max;
+  const kTxt = `lutut: fleksi ${fx(kMin, 1)}° (${kMinSide} @${kMinT.toFixed(2)}s) sampai ${fx(kMax, 1)}° (${kMaxSide} @${kMaxT.toFixed(2)}s)`;
   lines.push(
-    kMin < an.knee_flex_min || kMax > an.knee_flex_max
+    kIsFail
       ? [
           'FAIL',
-          `${kTxt} (batas ${an.knee_flex_min}..${an.knee_flex_max}, negatif = menekuk terbalik)`,
+          `${kTxt} (batas ${an.knee_flex_min}..${an.knee_flex_max}°, negatif = menekuk terbalik)`,
         ]
-      : ['PASS', kTxt],
+      : ['PASS', `${kTxt} (dalam batas ${an.knee_flex_min}..${an.knee_flex_max}°)`],
   );
-  lines.push([eMax > an.elbow_flex_max ? 'FAIL' : 'PASS', `siku: tekuk maks ${fx(eMax)}°`]);
-  lines.push([nMax > an.neck_bend_max ? 'FAIL' : 'PASS', `leher-kepala: tekuk maks ${fx(nMax)}°`]);
+  lines.push([
+    eMax > an.elbow_flex_max ? 'FAIL' : 'PASS',
+    `siku: tekuk maks ${fx(eMax, 1)}° (${eMaxSide} @${eMaxT.toFixed(2)}s, batas maks ${an.elbow_flex_max}°)`,
+  ]);
+  lines.push([
+    nMax > an.neck_bend_max ? 'FAIL' : 'PASS',
+    `leher-kepala: tekuk maks ${fx(nMax, 1)}° (@${nMaxT.toFixed(2)}s, batas maks ${an.neck_bend_max}°)`,
+  ]);
 
   // 4. Lantai dan foot sliding
   let minToe = Infinity,
+    minToeSide = 'kiri',
+    minToeT = 0,
     contact = 0;
   const slide = [];
-  for (let f = 0; f < poses.length; f++)
+  let maxSlide = 0,
+    maxSlideSide = '',
+    maxSlideT = 0;
+
+  for (let f = 0; f < poses.length; f++) {
+    const t = tAt(f);
     for (const s of ['Left', 'Right']) {
-      const ti = I[s + 'ToeBase'],
-        tp = poses[f].pos[ti];
-      minToe = Math.min(minToe, tp[1]);
-      const inC = tp[1] - floorY < fl.contact_height_m;
+      const ti = I[s + 'ToeBase'];
+      const tp = poses[f].pos[ti];
+      if (tp[1] < minToe) {
+        minToe = tp[1];
+        minToeSide = s === 'Left' ? 'kiri' : 'kanan';
+        minToeT = t;
+      }
+      const plantedWin = s === 'Left' ? clip.windows?.planted_L : clip.windows?.planted_R;
+      const inC = plantedWin
+        ? t >= plantedWin[0] && t <= plantedWin[1]
+        : tp[1] - floorY < fl.contact_height_m;
       if (inC) contact++;
       if (f + 1 < poses.length && inC) {
-        const tn = poses[f + 1].pos[ti];
-        if (tn[1] - floorY < fl.contact_height_m)
-          slide.push(Math.hypot(tn[0] - tp[0], tn[2] - tp[2]) * FPS);
+        const nextT = tAt(f + 1);
+        const nextInC = plantedWin
+          ? nextT >= plantedWin[0] && nextT <= plantedWin[1]
+          : poses[f + 1].pos[ti][1] - floorY < fl.contact_height_m;
+        if (nextInC) {
+          const tn = poses[f + 1].pos[ti];
+          const spd = Math.hypot(tn[0] - tp[0], tn[2] - tp[2]) * FPS;
+          slide.push(spd);
+          if (spd > maxSlide) {
+            maxSlide = spd;
+            maxSlideSide = s === 'Left' ? 'kiri' : 'kanan';
+            maxSlideT = t;
+          }
+        }
       }
     }
+  }
   const pen = floorY - minToe;
-  if (vm.check_floor !== false)
+  if (vm.check_floor !== false) {
     lines.push([
       pen > fl.penetration_fail_m ? 'FAIL' : 'PASS',
-      `lantai: toe terendah ${(minToe - floorY).toFixed(3)} m dari lantai (penetrasi ${Math.max(
+      `lantai: toe ${minToeSide} terendah ${(minToe - floorY).toFixed(3)} m dari lantai di t=${minToeT.toFixed(2)}s (penetrasi ${Math.max(
         pen,
         0,
-      ).toFixed(3)} m)`,
+      ).toFixed(3)} m, batas maks ${fl.penetration_fail_m} m)`,
     ]);
-  if (vm.foot_slide !== false) {
-    if (!slide.length)
+  }
+  if (vm.foot_slide !== false || clip.windows?.planted_L || clip.windows?.planted_R) {
+    if (!slide.length) {
       lines.push(['PASS', 'foot sliding: tidak ada frame kontak (klip melayang/tanpa tumpuan)']);
-    else {
+    } else {
       slide.sort((a, b) => a - b);
-      const mean = slide.reduce((a, b) => a + b, 0) / slide.length,
-        p95 = slide[Math.floor(slide.length * 0.95)];
+      const mean = slide.reduce((a, b) => a + b, 0) / slide.length;
+      const p95 = slide[Math.floor(slide.length * 0.95)];
+      const hasPlanted = clip.windows?.planted_L || clip.windows?.planted_R;
+      const label = hasPlanted ? 'foot sliding (jendela tumpuan)' : 'foot sliding';
       lines.push([
         p95 > fl.slide_warn_ms ? 'WARN' : 'PASS',
-        `foot sliding: ${contact} frame kontak, rata-rata ${mean.toFixed(2)} m/s, p95 ${p95.toFixed(
+        `${label}: ${contact} frame kontak, rata-rata ${mean.toFixed(2)} m/s, p95 ${p95.toFixed(
           2,
-        )} m/s`,
+        )} m/s (maks ${maxSlide.toFixed(2)} m/s @${maxSlideT.toFixed(2)}s kaki ${maxSlideSide}, batas ${fl.slide_warn_ms} m/s)`,
       ]);
     }
   }
@@ -226,8 +285,12 @@ export function validate(rig, ctx, limits, clip, style = 'stylized') {
   for (const v of versionIssues(clip.version ?? 1, clip.changelog, clip.format_version ?? 1)) {
     lines.push(v);
   }
-  for (const w of checkChannelRanges(rig, clip)) {
-    lines.push(['WARN', w]);
+  for (const item of checkChannelRanges(rig, clip)) {
+    if (Array.isArray(item)) {
+      lines.push(item);
+    } else {
+      lines.push(['WARN', item]);
+    }
   }
 
   const fail = lines.filter((l) => l[0] === 'FAIL').length,

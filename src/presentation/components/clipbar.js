@@ -3,7 +3,15 @@ import { RIGS, rigLabel, rigState, setRig } from '../../application/state/rig-st
 import limitsData from '../../data/limits.json';
 import { el } from '../dom/h.js';
 
-export function renderClipbar({ barEl, vrmInputEl, onSelectClip, onAfterRigChange, onRefreshAll }) {
+export function renderClipbar({
+  barEl,
+  vrmInputEl,
+  glCanvas,
+  onMeshLoaded,
+  onSelectClip,
+  onAfterRigChange,
+  onRefreshAll,
+}) {
   if (!barEl) return;
   barEl.textContent = '';
 
@@ -40,7 +48,7 @@ export function renderClipbar({ barEl, vrmInputEl, onSelectClip, onAfterRigChang
     rs.append(o);
   }
   rs.onchange = () => {
-    setRig(rs.value, onAfterRigChange);
+    setRig(rs.value, onAfterRigChange, glCanvas, onMeshLoaded);
   };
   rl.append(rs);
   barEl.append(rl);

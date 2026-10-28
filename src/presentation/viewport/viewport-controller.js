@@ -10,6 +10,7 @@ export function initViewportController({
   onDirty,
   onSetTab,
   onRefreshAll,
+  onMeshLoaded,
 }) {
   const ptrs = new Map();
   let pinch = 0;
@@ -125,6 +126,7 @@ export function initViewportController({
           onSetTab('rig');
           onRefreshAll();
         },
+        onMeshLoaded,
       );
     }
   });

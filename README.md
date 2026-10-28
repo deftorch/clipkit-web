@@ -57,10 +57,10 @@ sequenceDiagram
 
 ### 1. Motion Representations that LLMs Can Reason About
 Instead of forcing an AI to calculate thousands of raw transform matrices, ClipKit exposes semantic, high-level channels:
-- **Anatomical Rotation Channels**: `lean`, `twist`, `neck_pitch`, `armR_elev`, `armR_azim`, `legL_flex`, etc.
+- **Anatomical Rotation Channels**: `lean`, `twist`, `head_pitch`, `armR_elev`, `armR_azim`, `legL_swing`, `kneeL`, etc.
 - **Eased Keyframes**: `[time_seconds, value_degrees_or_meters, "inOutSine" | "outQuad" | "linear"]`.
 - **Directional Root Motion**: Explicit movement vectors `[x, y, z]`, distances, and translation intervals.
-- **Combat Mechanics Windows**: `hitbox`, `cancel`, `parry`, and `invulnerable`.
+- **Combat Mechanics Windows**: `hitbox`, `cancel`, `parry`, and `inv`.
 
 ### 2. Structured Error Messages as Self-Correction Prompts
 When an LLM produces unnatural or physically impossible movements, the validator returns precise compiler errors:

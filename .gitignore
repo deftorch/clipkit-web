@@ -41,3 +41,8 @@ Thumbs.db
 !.vscode/settings.json
 *.sublime-workspace
 *.sublime-project
+
+# Temporary artifacts and test caches
+.tempmediaStorage/
+*.local/
+.cache/

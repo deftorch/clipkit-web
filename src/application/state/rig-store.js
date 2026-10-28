@@ -1,7 +1,8 @@
 import { loadRigs } from '../../data/load-rigs.js';
 import ClipKit from '../../domain/clipkit.js';
 import VrmView from '../../infrastructure/three/three-mesh-renderer.js';
-import VrmRig from '../../infrastructure/vrm/vrm-rig-builder.js';
+import { parseGlb } from '../../infrastructure/vrm/glb-parser.js';
+import { buildRig } from '../../infrastructure/vrm/vrm-rig-builder.js';
 
 const { motus, vrm_sample } = loadRigs();
 
@@ -16,7 +17,21 @@ export const RIGINFO = {
   vrm_sample: vrm_sample.info,
 };
 
+// Bound buffer cache to prevent memory leaks with multiple large VRMs
 export const MESHBUF = {};
+const MAX_MESH_BUFS = 3;
+const meshBufKeys = [];
+
+export function setMeshBuf(key, buffer) {
+  if (meshBufKeys.length >= MAX_MESH_BUFS) {
+    const oldest = meshBufKeys.shift();
+    delete MESHBUF[oldest];
+  }
+  if (!meshBufKeys.includes(key)) {
+    meshBufKeys.push(key);
+  }
+  MESHBUF[key] = buffer;
+}
 
 export const rigState = {
   rigKey: 'vrm_sample',
@@ -41,7 +56,7 @@ export function rigLabel(k) {
   return k === 'motus' ? 'MotusMan (rig repo)' : 'VRM 1.0 · ' + (RIGS[k]?.name || k);
 }
 
-export function setRig(k, onAfterSet) {
+export function setRig(k, onAfterSet, glCanvas, onMeshLoaded) {
   if (!RIGS[k]) return;
   rigState.rigKey = k;
   rigState.rig = RIGS[k];
@@ -50,7 +65,7 @@ export function setRig(k, onAfterSet) {
   rigState.meshMsg = null;
 
   if (MESHBUF[k]) {
-    ensureMesh(k);
+    ensureMesh(k, glCanvas, onMeshLoaded);
   } else {
     if (VrmView) VrmView.unload();
   }
@@ -59,7 +74,7 @@ export function setRig(k, onAfterSet) {
   if (onAfterSet) onAfterSet(rigState);
 }
 
-export function ensureMesh(k, glCanvas) {
+export function ensureMesh(k, glCanvas, onMeshLoaded) {
   if (!VrmView) {
     rigState.meshMsg = 'Pustaka render tidak termuat.';
     notify();
@@ -70,7 +85,7 @@ export function ensureMesh(k, glCanvas) {
       VrmView.mount(glCanvas);
       rigState.glReady = true;
     }
-  } catch (e) {
+  } catch (_e) {
     rigState.meshMsg = 'WebGL tidak tersedia di browser ini, jadi mesh tidak bisa dirender.';
     notify();
     return;
@@ -85,6 +100,7 @@ export function ensureMesh(k, glCanvas) {
       RIGINFO[k].mesh = inf;
       rigState.meshMsg = null;
       notify();
+      if (onMeshLoaded) onMeshLoaded(inf);
     })
     .catch((e) => {
       rigState.meshMsg = e.message;
@@ -92,7 +108,7 @@ export function ensureMesh(k, glCanvas) {
     });
 }
 
-export function loadVrmFile(f, glCanvas, onSuccess, onError) {
+export function loadVrmFile(f, glCanvas, onSuccess, onError, onMeshLoaded) {
   const r = new FileReader();
   r.onerror = () => {
     rigState.rigErr = 'File tidak bisa dibaca.';
@@ -101,18 +117,16 @@ export function loadVrmFile(f, glCanvas, onSuccess, onError) {
   };
   r.onload = () => {
     try {
-      const parsed = VrmRig.parseGlb(r.result);
+      const parsed = parseGlb(r.result);
       const name = f.name.replace(/\.(vrm|glb)$/i, '');
-      const { rig: nr, info } = VrmRig.buildRig(parsed, baseMotusRig, name);
+      const { rig: nr, info } = buildRig(parsed, baseMotusRig, name);
       info.fileName = f.name;
       info.size = f.size;
       const key = 'file:' + f.name;
       RIGS[key] = nr;
       RIGINFO[key] = info;
-      MESHBUF[key] = r.result;
-      setRig(key);
-      if (glCanvas) ensureMesh(key, glCanvas);
-      if (onSuccess) onSuccess(key, info);
+      setMeshBuf(key, r.result);
+      setRig(key, onSuccess, glCanvas, onMeshLoaded);
     } catch (e) {
       rigState.rigErr = e.message;
       notify();

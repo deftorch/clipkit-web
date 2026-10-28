@@ -7,44 +7,44 @@ This document tracks all immediate fixes, quality hardening tasks, and roadmap m
 ## Milestone 0: Critical Fixes & Quality Hardening (Priority)
 
 ### 0.1 Fix VRM Model Loading Crash
-- [ ] In `src/application/state/rig-store.js`, import `parseGlb` from `../../infrastructure/vrm/glb-parser.js` instead of calling `VrmRig.parseGlb` (which is undefined).
-- [ ] Verify that drag-and-drop and the file input button successfully parse binary GLB/VRM files without throwing `TypeError`.
+- [x] In `src/application/state/rig-store.js`, import `parseGlb` from `../../infrastructure/vrm/glb-parser.js` instead of calling `VrmRig.parseGlb` (which is undefined).
+- [x] Verify that drag-and-drop and the file input button successfully parse binary GLB/VRM files without throwing `TypeError`.
 
 ### 0.2 Fix Mesh Lifecycle & UI Toggle Synchronization
-- [ ] Remove redundant duplicate call to `ensureMesh` in `loadVrmFile` (eliminate duplicate buffer copying).
-- [ ] Ensure that when `VrmView.load()` resolves asynchronously:
+- [x] Remove redundant duplicate call to `ensureMesh` in `loadVrmFile` (eliminate duplicate buffer copying).
+- [x] Ensure that when `VrmView.load()` resolves asynchronously:
   - Set `playbackState.mesh = true` and `playbackState.skel = false`.
   - Trigger `viewportCtrl.syncToggles()` so the "Mesh" button in the 3D viewport enables and highlights.
   - Trigger `renderRig()` to update mesh polygon and object statistics.
   - Trigger `dirtyAll()` to immediately render the 3D mesh on canvas.
-- [ ] Add bounds or eviction policy to `MESHBUF` in `rig-store.js` to prevent unbounded memory growth when loading multiple 15MB+ VRM files.
+- [x] Add bounds or eviction policy to `MESHBUF` in `rig-store.js` to prevent unbounded memory growth when loading multiple 15MB+ VRM files.
 
 ### 0.3 Integrate `Deft.vrm` Sample Model & Automated Smoke Test
-- [ ] Relocate `Deft.vrm` from root to `public/models/deft.vrm` for client-side demo use, and create `tests/fixtures/deft.vrm` (or shared reference) for testing.
-- [ ] Add automated smoke test `tests/vrm-loading.test.js` to verify:
+- [x] Relocate `Deft.vrm` from root to `public/models/deft.vrm` for client-side demo use, and create `tests/fixtures/deft.vrm` (or shared reference) for testing.
+- [x] Add automated smoke test `tests/vrm-loading.test.js` to verify:
   - Reading a binary VRM 1.0 file.
   - Parsing GLB chunks with `parseGlb`.
   - Building rig with `buildRig` without exceptions.
   - Generating valid rig metadata (22/22 bones present).
 
 ### 0.4 Lock Numerical Precision (True Golden Pose Assertions)
-- [ ] In `tests/golden-pose.test.js`, replace shallow length checks (`expect(p0.pos.length).toBe(...)`) with exact coordinate assertions against Godot reference values (`[x, y, z]` joint positions within $0.09\text{ mm}$ tolerance).
-- [ ] Add a round-trip `.vrma` export test:
+- [x] In `tests/golden-pose.test.js`, replace shallow length checks (`expect(p0.pos.length).toBe(...)`) with exact coordinate assertions against Godot reference values (`[x, y, z]` joint positions within $0.09\text{ mm}$ tolerance).
+- [x] Add a round-trip `.vrma` export test:
   - Export reference clips (`slash`, `dodge`, `walk`) to binary `.vrma`.
   - Parse the binary glTF output and verify animation samplers match source keyframes within $0.05^\circ$ angular error.
 
 ### 0.5 Harden Validator for AI Agent Generation
-- [ ] In `src/domain/validation/rules/channel-ranges.js`, elevate unknown channel names from `WARN` to `FAIL` so AI hallucinations (e.g. `neck_pitch`, `legL_flex`) are immediately rejected.
-- [ ] In `src/domain/validation/vrm10/check-vrm10.js`:
+- [x] In `src/domain/validation/rules/channel-ranges.js`, elevate unknown channel names from `WARN` to `FAIL` so AI hallucinations (e.g. `neck_pitch`, `legL_flex`) are immediately rejected.
+- [x] In `src/domain/validation/vrm10/check-vrm10.js`:
   - Change the bone check to test channels and humanoid bones actually used in the clip rather than querying the static 55-bone rig definition.
   - Correct the requirement terminology: VRM 1.0 mandates 15 humanoid bones (`REQUIRED_VRM_BONES`), while the remaining 40 bones are optional.
-- [ ] Enrich validation messages with exact joint names, measured numerical values, limits, and timestamps across all rules (knee flexion, floor penetration, foot sliding).
-- [ ] Re-evaluate `foot_slide: false` on locomotion clips (`walk.json`, `kick_*.json`) and introduce explicit foot contact time intervals (`windows.planted_L`, `windows.planted_R`).
+- [x] Enrich validation messages with exact joint names, measured numerical values, limits, and timestamps across all rules (knee flexion, floor penetration, foot sliding).
+- [x] Re-evaluate `foot_slide: false` on locomotion clips (`walk.json`, `kick_*.json`) and introduce explicit foot contact time intervals (`windows.planted_L`, `windows.planted_R`).
 
 ### 0.6 Documentation & Repository Cleanliness
-- [ ] In `README.md`, correct channel name references: replace `neck_pitch` with `head_pitch`, replace `legL_flex` with `legL_swing` / `kneeL`, and replace `invulnerable` with `inv`.
-- [ ] Remove duplicate `bun.lock` (standardizing solely on canonical `package-lock.json` and `npm ci`).
-- [ ] Add `.tempmediaStorage` and test caches to `.gitignore`.
+- [x] In `README.md`, correct channel name references: replace `neck_pitch` with `head_pitch`, replace `legL_flex` with `legL_swing` / `kneeL`, and replace `invulnerable` with `inv`.
+- [x] Remove duplicate `bun.lock` (standardizing solely on canonical `package-lock.json` and `npm ci`).
+- [x] Add `.tempmediaStorage` and test caches to `.gitignore`.
 
 ---
 
