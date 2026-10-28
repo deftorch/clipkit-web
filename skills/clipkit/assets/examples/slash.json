@@ -1,0 +1,99 @@
+{
+  "name": "slash",
+  "vrm_spec": "1.0",
+  "format_version": 1,
+  "version": 2,
+  "changelog": [
+    {
+      "v": 1,
+      "catatan": "Versi awal pada rig lama."
+    },
+    {
+      "v": 2,
+      "catatan": "Disesuaikan ke rig VRM 1.0 dengan preset ekspresi angry dan vokal aa saat menebas."
+    }
+  ],
+  "group": "combat",
+  "tags": ["vrm-1.0", "attack"],
+  "duration": 0.9,
+  "loop": false,
+  "channels": {
+    "twist": [[0, 0], [0.25, -35, "inOutSine"], [0.45, 35, "inQuad"], [0.9, 0, "inOutSine"]],
+    "hip_twist": [[0, 0], [0.25, -28, "inOutSine"], [0.45, 32, "inQuad"], [0.9, 0, "inOutSine"]],
+    "lean": [[0, 0], [0.25, -8, "inOutSine"], [0.45, 22, "inQuad"], [0.9, 0, "inOutSine"]],
+    "head_yaw": [[0, 0], [0.25, 10, "inOutSine"], [0.45, -15, "inQuad"], [0.9, 0, "inOutSine"]],
+    "armR_elev": [[0, -75], [0.25, 45, "outQuad"], [0.45, -10, "inQuad"], [0.9, -75, "inOutSine"]],
+    "armR_azim": [[0, 0], [0.25, -30, "outQuad"], [0.45, 80, "inQuad"], [0.9, 0, "inOutSine"]],
+    "elbowR": [[0, 10], [0.25, 90, "outQuad"], [0.45, 15, "inQuad"], [0.9, 10, "inOutSine"]],
+    "armL_elev": [[0, -75], [0.25, -40, "outQuad"], [0.45, -60, "inQuad"], [0.9, -75, "inOutSine"]],
+    "armL_azim": [[0, 0], [0.25, 40, "outQuad"], [0.45, -20, "inQuad"], [0.9, 0, "inOutSine"]],
+    "elbowL": [[0, 10], [0.25, 70, "outQuad"], [0.9, 10, "inOutSine"]],
+    "hip_y": [
+      [0, 0],
+      [0.15, -0.01, "outQuad"],
+      [0.3, -0.05, "inOutSine"],
+      [0.45, -0.112, "inQuad"],
+      [0.9, 0, "inOutSine"]
+    ],
+    "hip_z": [
+      [0, 0],
+      [0.15, 0.05, "outQuad"],
+      [0.3, 0.25, "inOutSine"],
+      [0.45, 0.414, "inQuad"],
+      [0.9, 0, "inOutSine"]
+    ],
+    "legL_swing": [
+      [0, 0],
+      [0.15, 5, "outQuad"],
+      [0.3, 40, "inOutSine"],
+      [0.45, 33, "inQuad"],
+      [0.9, 0, "inOutSine"]
+    ],
+    "kneeL": [
+      [0, 3],
+      [0.15, 20, "outQuad"],
+      [0.3, 70, "inOutSine"],
+      [0.45, 60, "inQuad"],
+      [0.9, 3, "inOutSine"]
+    ],
+    "footL_pitch": [[0, 0], [0.3, -20, "inOutSine"], [0.45, -27, "inQuad"], [0.9, 0, "inOutSine"]],
+    "legR_swing": [
+      [0, 0],
+      [0.15, -5, "outQuad"],
+      [0.3, -22, "inOutSine"],
+      [0.45, -30, "inQuad"],
+      [0.9, 0, "inOutSine"]
+    ],
+    "kneeR": [[0, 3], [0.3, 3, "inOutSine"], [0.45, 0, "inQuad"], [0.9, 3, "inOutSine"]],
+    "footR_pitch": [[0, 0], [0.45, -30, "inQuad"], [0.9, 0, "inOutSine"]]
+  },
+  "expressions": {
+    "angry": [[0, 0], [0.25, 0.9, "outQuad"], [0.65, 0.9, "hold"], [0.9, 0, "inOutSine"]],
+    "aa": [[0, 0], [0.32, 0], [0.38, 0.8, "outQuad"], [0.55, 0, "inQuad"]]
+  },
+  "windows": {
+    "hitbox": [0.36, 0.47],
+    "cancel": [0.6, 0.9]
+  },
+  "events": [
+    {
+      "t": 0.32,
+      "type": "sfx",
+      "id": "swoosh"
+    },
+    {
+      "t": 0.4,
+      "type": "trail",
+      "id": "blade_on"
+    },
+    {
+      "t": 0.5,
+      "type": "trail",
+      "id": "blade_off"
+    }
+  ],
+  "claims": {
+    "duration": 0.9,
+    "tolerance": 0.1
+  }
+}

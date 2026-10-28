@@ -149,15 +149,16 @@ The former Milestone 1 (AI Vision & Contact Sheet) is merged into Milestone 2, b
 
 ## Milestone 4: Agent Skill Packaging (ROADMAP Phase C3)
 
-- [ ] `skills/clipkit/SKILL.md` with a pushy trigger description and workflow rules: one body part per task, one variant per request, validate and look at the sheet every iteration, never overwrite versions, compose last.
-- [ ] References: `dsl.md`, `channels.md` (generated from the rig JSON), `validation-fixes.md`, `face.md`, `hands.md`, `locomotion.md`, `combat.md`, `animation-principles.md`.
-- [ ] `assets/examples/`: three to four reference clips that pass validation.
-- [ ] `npm run build:skill`: bundle the CLI into `scripts/clipkit.mjs` and regenerate the generated references.
-- [ ] Staged release: v0 needs only Milestone 2 `validate` and `export`; v1 adds `sheet` and per-part references; v2 adds `compare`, variants and `compose`.
-- [ ] Evals: "make a jump" (zero FAIL, saved as a new version), "make a floatier variant" (new child version, parent untouched), "add an angry face to this clip" (only face channels change).
-- [ ] Package as a `.skill` file and document the `.claude/skills/` setup for repository-based use.
+- [x] `skills/clipkit/SKILL.md` with a pushy trigger description and workflow rules: one body part per task, one variant per request, validate and look at the sheet every iteration, never overwrite versions, compose last.
+- [x] References: `dsl.md`, `channels.md` (generated from the rig JSON), `validation-fixes.md`, `face.md`, `hands.md`, `locomotion.md`, `combat.md`, `animation-principles.md`.
+- [x] `assets/examples/`: three to four reference clips that pass validation.
+- [x] `npm run build:skill`: bundle the CLI into `scripts/clipkit.mjs` and regenerate the generated references.
+- [x] Staged release: v0 needs only Milestone 2 `validate` and `export`; v1 adds `sheet` and per-part references; v2 adds `compare`, variants and `compose`.
+- [x] Evals: "make a jump" (zero FAIL, saved as a new version), "make a floatier variant" (new child version, parent untouched), "add an angry face to this clip" (only face channels change).
+- [x] Package as a `.skill` file and document the `.claude/skills/` setup for repository-based use.
 
 **Done when**: the evals pass with the skill and measurably better than without it, and the skill's generated references match the code.
+
 
 ---
 

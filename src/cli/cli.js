@@ -365,7 +365,7 @@ export async function main(argv = process.argv.slice(2)) {
         return 2;
     }
   } catch (err) {
-    console.error(`Error: ${err.message}`);
+    console.error(err.stack || `Error: ${err.message}`);
     return 3;
   }
 }

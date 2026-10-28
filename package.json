@@ -25,6 +25,7 @@
     "dev": "vite",
     "build": "vite build && vite build --config vite.cli.config.js",
     "build:cli": "vite build --config vite.cli.config.js",
+    "build:skill": "npm run build:cli && node scripts/build-skill.js",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
