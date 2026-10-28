@@ -4,6 +4,29 @@ import { vadd, vnorm, vscale } from '../math/vec3.js';
 import { evalExpressions } from '../validation/vrm10/expressions.js';
 import { evalChannels } from './rig-context.js';
 
+export const OP_EVALUATORS = {
+  axis: (op, gp, cv, qd) => {
+    return qmul(qaxis(vnorm(qrot(gp, op.axis)), cv[op.ch] * D2R * op.w), qd);
+  },
+  aim: (op, gp, cv, qd) => {
+    const el = cv[op.name + '_elev'] * D2R,
+      az = cv[op.name + '_azim'] * D2R,
+      ro = cv[op.name + '_roll'] * D2R;
+    const d = [
+      op.lateral[0] * Math.cos(el) * Math.cos(az),
+      Math.sin(el),
+      Math.cos(el) * Math.sin(az),
+    ];
+    const dc = vnorm(qrot(gp, d)),
+      rc = vnorm(qrot(gp, op.rest_dir));
+    return qmul(qaxis(dc, ro), qmul(qarc(rc, dc), qd));
+  },
+};
+
+export function registerOpEvaluator(kind, evalFn) {
+  OP_EVALUATORS[kind] = evalFn;
+}
+
 export function evalPose(rig, ctx, clip, t) {
   const cv = evalChannels(rig, ctx, clip, t),
     n = ctx.n;
@@ -23,20 +46,9 @@ export function evalPose(rig, ctx, clip, t) {
     let qd = [0, 0, 0, 1];
 
     for (const op of ctx.ops[i]) {
-      if (op.kind === 'axis') {
-        qd = qmul(qaxis(vnorm(qrot(gp, op.axis)), cv[op.ch] * D2R * op.w), qd);
-      } else {
-        const el = cv[op.name + '_elev'] * D2R,
-          az = cv[op.name + '_azim'] * D2R,
-          ro = cv[op.name + '_roll'] * D2R;
-        const d = [
-          op.lateral[0] * Math.cos(el) * Math.cos(az),
-          Math.sin(el),
-          Math.cos(el) * Math.sin(az),
-        ];
-        const dc = vnorm(qrot(gp, d)),
-          rc = vnorm(qrot(gp, op.rest_dir));
-        qd = qmul(qaxis(dc, ro), qmul(qarc(rc, dc), qd));
+      const evaluator = OP_EVALUATORS[op.kind];
+      if (evaluator) {
+        qd = evaluator(op, gp, cv, qd);
       }
     }
 

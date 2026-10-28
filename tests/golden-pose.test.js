@@ -6,8 +6,8 @@ import { evalPose } from '../src/domain/rig/pose-evaluator.js';
 import { makeCtx, restPositions } from '../src/domain/rig/rig-context.js';
 import { validate } from '../src/domain/validation/validator.js';
 import { checkVrm10 } from '../src/domain/validation/vrm10/check-vrm10.js';
-import { buildVrmaGlb } from '../src/domain/validation/vrm10/vrma-exporter.js';
 import { parseGlbChunks } from '../src/infrastructure/vrm/glb-parser.js';
+import { buildVrmaGlb } from '../src/infrastructure/vrma/vrma-exporter.js';
 
 describe('ClipKit ES Modules - Golden Tests', () => {
   const { motus, vrm_sample } = loadRigs();

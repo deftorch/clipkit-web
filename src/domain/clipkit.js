@@ -18,14 +18,12 @@ import { validate } from './validation/validator.js';
 import { checkVrm10 } from './validation/vrm10/check-vrm10.js';
 import { FPS, VRM10_BONES, VRM10_EXPRESSIONS } from './validation/vrm10/constants.js';
 import { evalExpressions } from './validation/vrm10/expressions.js';
-import { buildVrmaGlb } from './validation/vrm10/vrma-exporter.js';
 
 export const ClipKit = {
   VRM10_BONES,
   VRM10_EXPRESSIONS,
   evalExpressions,
   checkVrm10,
-  buildVrmaGlb,
   FPS,
   ease,
   EASINGS,

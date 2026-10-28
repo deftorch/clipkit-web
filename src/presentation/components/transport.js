@@ -8,17 +8,15 @@ import {
   togglePlay,
 } from '../../application/state/playback-store.js';
 import { rigState } from '../../application/state/rig-store.js';
-import ClipKit from '../../domain/clipkit.js';
-
 export function syncPlayBtn(bPlay) {
   if (bPlay) {
     bPlay.textContent = playbackState.playing ? 'Jeda' : 'Putar';
   }
 }
 
-export function exportVrma(it = curItem(), rig = rigState.rig, ctx = rigState.ctx) {
-  if (!it || !it.clip) return;
-  const blob = ClipKit.buildVrmaGlb(rig, ctx, it.clip);
+export function exportVrma(it = curItem(), rig = rigState.rig, ctx = rigState.ctx, exporter) {
+  if (!it || !it.clip || typeof exporter !== 'function') return;
+  const blob = exporter(rig, ctx, it.clip);
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = (it.clip.name || 'anim') + '.vrma';
@@ -37,6 +35,7 @@ export function initTransport({
   cOnion,
   cFollow,
   bVrma,
+  onExportVrma,
   onDirty,
   onSelectClip,
 }) {
@@ -112,7 +111,9 @@ export function initTransport({
 
   if (bVrma) {
     bVrma.onclick = () => {
-      exportVrma(curItem(), rigState.rig, rigState.ctx);
+      if (onExportVrma) {
+        onExportVrma(curItem(), rigState.rig, rigState.ctx);
+      }
     };
   }
 

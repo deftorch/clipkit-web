@@ -45,9 +45,9 @@ infrastructure -> domain
 - `src/presentation/`: User interface components, canvas 2D renderers, viewport controls, and the timeline scrubber.
 - `src/data/`: Default rigs, animation clips, and validation limits.
 
-**Known deviations.** The rule is the target, and it is not fully enforced yet. Today `src/application/state/rig-store.js` imports the Three.js renderer and the GLB/VRM parsers, `src/presentation/viewport/viewport-controller.js` imports the Three.js renderer, `src/application/state/clip-store.js` reads and writes `localStorage`, `src/application/theme.js` uses `document` and `window`, and `src/main.js` still contains scene rendering (`drawScene`) and the `window.ClipKit`, `window.VrmRig`, `window.VrmView` and `window.__clipkit` globals. These are tracked in `TODO.md` (Milestone 1: Architecture Hardening). New code must not add to them, and changes that touch these areas should move them toward the rule.
+**Architectural boundaries enforcement.** Layer dependency rules are strictly enforced by automated testing (`tests/architecture.test.js`). Any commit that introduces a forbidden import across layers (e.g. `domain` importing anything outside `domain`, `application` importing `infrastructure` or `presentation`, `infrastructure` importing `application`, or `presentation` importing `infrastructure`) will fail the test suite. All cross-layer wiring is performed in the composition root (`src/main.js` and CLI entry points).
 
-**Adding things.** New validation rules, panels, channel types and easing curves should be added as new modules that register themselves, rather than by extending an existing function or list. See `ROADMAP.md` Phase C0.
+**Adding things.** New validation rules, panels, channel types and easing curves should be added as new modules that register themselves into their respective registries, rather than by extending an existing function or list. See `ROADMAP.md` Phase C0.
 
 ---
 

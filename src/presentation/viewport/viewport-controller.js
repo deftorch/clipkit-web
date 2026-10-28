@@ -1,12 +1,12 @@
 import { cameraState, setPresetView, VIEWS } from '../../application/state/camera-store.js';
 import { playbackState } from '../../application/state/playback-store.js';
 import { loadVrmFile, rigState } from '../../application/state/rig-store.js';
-import VrmView from '../../infrastructure/three/three-mesh-renderer.js';
 
 export function initViewportController({
   vpEl,
   viewsEl,
   glCanvas,
+  hasMesh,
   onDirty,
   onSetTab,
   onRefreshAll,
@@ -79,7 +79,7 @@ export function initViewportController({
   function syncToggles() {
     const m = viewsEl.querySelector('[data-t=mesh]');
     const k = viewsEl.querySelector('[data-t=skel]');
-    const ok = !!VrmView && VrmView.has(rigState.rigKey);
+    const ok = typeof hasMesh === 'function' ? hasMesh(rigState.rigKey) : false;
     if (m) {
       m.disabled = !ok;
       m.setAttribute('aria-pressed', String(playbackState.mesh && ok));

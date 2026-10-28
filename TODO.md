@@ -67,22 +67,22 @@ The former Milestone 1 (AI Vision & Contact Sheet) is merged into Milestone 2, b
 
 ## Milestone 1: Architecture Hardening (ROADMAP Phase C0, prerequisite for the CLI)
 
-- [ ] First: record `validate()` output (all lines and FAIL/WARN counts) for the 14 reference clips under each style (`realistic`, `stylized`, `exaggerated`) in `tests/fixtures/validation-baseline.json`, and add a test asserting it is reproduced exactly. The refactor below must keep it green.
-- [ ] Replace the monolithic `validate()` with a rule registry: each rule in `src/domain/validation/rules/*.js` exposes `check({ rig, clip, limits })` (angular-speed, anatomy, floor, root-motion, windows, loop, vrm10, version). `validate()` only runs the registered rules and merges results.
-- [ ] Add one unit test per rule.
-- [ ] Move `vrma-exporter.js` from `src/domain/validation/vrm10/` to `src/infrastructure/vrma/`.
-- [ ] Define ports in `src/application/ports/`: `ClipRepository`, `MeshRenderer` (`pose`, `render`), `MeshLoader` (`load`, `unload`), `RigLoader`.
-- [ ] Implement `ClipRepository` with `localStorage` in infrastructure; remove `localStorage` from `clip-store.js`.
-- [ ] Move DOM and `window` access out of `application/theme.js` into presentation; provide a constant palette usable without a DOM.
-- [ ] Remove imports of `infrastructure/` from `application/` (rig store) and `presentation/` (viewport controller); inject the implementations from `main.js`.
-- [ ] Reduce `main.js` to a composition root: move `drawScene` to `presentation/viewport/scene-renderer.js` and the frame loop to a playback controller.
-- [ ] Replace the hard-coded lists in `refreshAll()` and `setTab()` with a panel registry that panels register into.
-- [ ] Replace the `if/else` on channel type and the `switch` on easing with registries.
-- [ ] Split `clip-store.js` responsibilities: text formatting, version snapshots, rebuild pipeline (parse, schema check, validate), and selection.
-- [ ] `src/data/history.json`: do not simply delete the entries. It duplicates the behavior keys of every reference clip and feeds `snapshotLines()`; removing it would make all 14 clips report "not released". Replace the copies with a content hash per released version (or move the record into the variant manifest) and keep the version-bump check passing.
-- [ ] Replace the `window.ClipKit`, `window.VrmRig`, `window.VrmView` and `window.__clipkit` globals with one documented agent API.
-- [ ] Add `tests/architecture.test.js` that fails on forbidden imports (domain imports nothing outside domain; application imports domain only; infrastructure imports domain only; presentation imports application and domain). `src/main.js` and `src/cli/` are composition roots and may import any layer.
-- [ ] Update `CONTRIBUTING.md` once the boundary test exists (it currently lists the known deviations).
+- [x] First: record `validate()` output (all lines and FAIL/WARN counts) for the 14 reference clips under each style (`realistic`, `stylized`, `exaggerated`) in `tests/fixtures/validation-baseline.json`, and add a test asserting it is reproduced exactly. The refactor below must keep it green.
+- [x] Replace the monolithic `validate()` with a rule registry: each rule in `src/domain/validation/rules/*.js` exposes `check({ rig, clip, limits })` (angular-speed, anatomy, floor, root-motion, windows, loop, vrm10, version). `validate()` only runs the registered rules and merges results.
+- [x] Add one unit test per rule.
+- [x] Move `vrma-exporter.js` from `src/domain/validation/vrm10/` to `src/infrastructure/vrma/`.
+- [x] Define ports in `src/application/ports/`: `ClipRepository`, `MeshRenderer` (`pose`, `render`), `MeshLoader` (`load`, `unload`), `RigLoader`.
+- [x] Implement `ClipRepository` with `localStorage` in infrastructure; remove `localStorage` from `clip-store.js`.
+- [x] Move DOM and `window` access out of `application/theme.js` into presentation; provide a constant palette usable without a DOM.
+- [x] Remove imports of `infrastructure/` from `application/` (rig store) and `presentation/` (viewport controller); inject the implementations from `main.js`.
+- [x] Reduce `main.js` to a composition root: move `drawScene` to `presentation/viewport/scene-renderer.js` and the frame loop to a playback controller.
+- [x] Replace the hard-coded lists in `refreshAll()` and `setTab()` with a panel registry that panels register into.
+- [x] Replace the `if/else` on channel type and the `switch` on easing with registries.
+- [x] Split `clip-store.js` responsibilities: text formatting, version snapshots, rebuild pipeline (parse, schema check, validate), and selection.
+- [x] `src/data/history.json`: do not simply delete the entries. It duplicates the behavior keys of every reference clip and feeds `snapshotLines()`; removing it would make all 14 clips report "not released". Replace the copies with a content hash per released version (or move the record into the variant manifest) and keep the version-bump check passing.
+- [x] Replace the `window.ClipKit`, `window.VrmRig`, `window.VrmView` and `window.__clipkit` globals with one documented agent API.
+- [x] Add `tests/architecture.test.js` that fails on forbidden imports (domain imports nothing outside domain; application imports domain only; infrastructure imports domain only; presentation imports application and domain). `src/main.js` and `src/cli/` are composition roots and may import any layer.
+- [x] Update `CONTRIBUTING.md` once the boundary test exists (it currently lists the known deviations).
 
 **Done when**: the golden-pose, VRM and round-trip tests pass unchanged, the boundary test passes, and `npm run build` still produces a single-file bundle.
 

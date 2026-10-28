@@ -28,3 +28,13 @@ export function versionIssues(version, changelog, fv = 1) {
   }
   return out;
 }
+
+export function check({ clip }) {
+  const lines = versionIssues(clip.version ?? 1, clip.changelog, clip.format_version ?? 1);
+  return { lines };
+}
+
+export const versionRule = {
+  name: 'version',
+  check,
+};

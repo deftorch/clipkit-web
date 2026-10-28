@@ -35,3 +35,14 @@ export function checkChannelRanges(rig, clip) {
   }
   return w;
 }
+
+export function check({ rig, clip }) {
+  const items = checkChannelRanges(rig, clip);
+  const lines = items.map((item) => (Array.isArray(item) ? item : ['WARN', item]));
+  return { lines };
+}
+
+export const channelRangesRule = {
+  name: 'channel-ranges',
+  check,
+};

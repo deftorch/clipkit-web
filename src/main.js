@@ -1,10 +1,5 @@
-import {
-  camBasis,
-  cameraState,
-  fitCamera,
-  lerpTarget,
-  prj,
-} from './application/state/camera-store.js';
+import { createAgentApi } from './application/services/agent-api.js';
+import { cameraState, fitCamera } from './application/state/camera-store.js';
 import {
   clipState,
   curItem,
@@ -13,43 +8,59 @@ import {
   rebuildAll,
   selectClip,
 } from './application/state/clip-store.js';
-import { playbackState, setPlaying, setTime } from './application/state/playback-store.js';
-import { loadVrmFile, rigState, setRig } from './application/state/rig-store.js';
-import { C, initTheme, onThemeChange, winColor } from './application/theme.js';
+import { playbackState } from './application/state/playback-store.js';
+import {
+  loadVrmFile,
+  rigState,
+  setMeshRenderer,
+  setRig,
+  setRigLoader,
+} from './application/state/rig-store.js';
+import { C, onThemeChange, winColor } from './application/theme.js';
 import ClipKit from './domain/clipkit.js';
+import { LocalStorageClipRepository } from './infrastructure/storage/local-storage-clip-repo.js';
 import VrmView from './infrastructure/three/three-mesh-renderer.js';
-import VrmRig from './infrastructure/vrm/vrm-rig-builder.js';
+import { parseGlb } from './infrastructure/vrm/glb-parser.js';
+import VrmRig, { buildRig } from './infrastructure/vrm/vrm-rig-builder.js';
+import { buildVrmaGlb } from './infrastructure/vrma/vrma-exporter.js';
 import { renderClipbar } from './presentation/components/clipbar.js';
 import { renderPipe } from './presentation/components/pipeline-status.js';
 import { initTransport, syncPlayBtn } from './presentation/components/transport.js';
-import { $, fmt2 } from './presentation/dom/h.js';
+import { PlaybackController } from './presentation/controllers/playback-controller.js';
+import { $ } from './presentation/dom/h.js';
 import { renderAbout } from './presentation/panels/about-panel.js';
 import { renderCurves, updatePlayhead } from './presentation/panels/curves-panel.js';
 import { renderEditor, syncEditor } from './presentation/panels/editor-panel.js';
+import { PanelRegistry } from './presentation/panels/panel-registry.js';
 import { renderRig } from './presentation/panels/rig-panel.js';
 import { renderValid } from './presentation/panels/validation-panel.js';
 import { renderVer } from './presentation/panels/versions-panel.js';
+import { initTheme } from './presentation/theme/theme-observer.js';
 import { initTimelineScrubber } from './presentation/timeline/scrubber.js';
 import { drawTimeline } from './presentation/timeline/timeline-renderer.js';
-import { drawFigure, drawFloor, floorY } from './presentation/viewport/skeleton-renderer.js';
-import { drawTrails } from './presentation/viewport/trail-renderer.js';
+import { drawScene } from './presentation/viewport/scene-renderer.js';
 import { initViewportController } from './presentation/viewport/viewport-controller.js';
 
-// Expose modules on window for debugging & compatibility
-window.ClipKit = ClipKit;
-window.VrmRig = VrmRig;
-window.VrmView = VrmView;
+// 1. Dependency Inversion: Inject infrastructure implementations into application layer
+setMeshRenderer(VrmView);
+setRigLoader({
+  parseRigFile: (buffer, fileName, baseRig) => {
+    const parsed = parseGlb(buffer);
+    const name = fileName.replace(/\.(vrm|glb)$/i, '');
+    const { rig, info } = buildRig(parsed, baseRig, name);
+    info.fileName = fileName;
+    return { rig, info };
+  },
+});
 
-const FPS = ClipKit.FPS;
+// 2. Initialize storage repository and load default & saved clips
+initClips(new LocalStorageClipRepository());
 
-// Initialize theme tokens & listeners
+// 3. Initialize DOM theme listener
 initTheme();
 onThemeChange(() => dirtyAll());
 
-// Initialize default & saved clips
-initClips();
-
-// Canvas & Host Elements
+// 4. Canvas & Host Elements
 const vp = $('#vp');
 const cv = $('#cv');
 const g = cv.getContext('2d');
@@ -80,150 +91,57 @@ function sizeCanvas(c, host) {
   return { w: r.width, h: r.height, d };
 }
 
-function meshOn() {
-  return playbackState.mesh && !!VrmView && VrmView.has(rigState.rigKey);
-}
+// 5. Panel Registry setup
+const panelRegistry = new PanelRegistry();
 
-// 3D Scene Rendering
-function drawScene() {
-  const it = curItem();
-  g.setTransform(DPR, 0, 0, DPR, 0, 0);
-  g.fillStyle = C['--view'];
-  g.fillRect(0, 0, W, H);
+panelRegistry.register({
+  id: 'rig',
+  el: $('#p-rig'),
+  render: () => renderRig($('#p-rig'), $('#vrmIn')),
+});
 
-  if (!it || !it.clip) {
-    g.fillStyle = C['--fail'];
-    g.font = '14px ' + getComputedStyle(document.body).fontFamily;
-    g.textAlign = 'center';
-    g.fillText('Klip belum valid. Perbaiki di tab Editor JSON.', W / 2, H / 2);
-    g.textAlign = 'left';
-    return;
-  }
+panelRegistry.register({
+  id: 'valid',
+  el: $('#p-valid'),
+  render: () => renderValid($('#p-valid')),
+});
 
-  if (playbackState.follow) {
-    lerpTarget(it, rigState.rig, rigState.ctx, playbackState.t);
-  }
+panelRegistry.register({
+  id: 'edit',
+  el: $('#p-edit'),
+  render: ({ fromEditor = false }) => {
+    if (fromEditor) syncEditor(false);
+    else syncEditor(true);
+  },
+  onSelect: () => syncEditor(true),
+});
 
-  const B = camBasis();
-  const KF = H / 2 / Math.tan((20 * Math.PI) / 180);
-  const prjFn = (p) => prj(p, W, H, KF, B);
-
-  const y = floorY(it);
-  drawFloor(g, it, y, prjFn, C);
-
-  const P = ClipKit.evalPose(rigState.rig, rigState.ctx, it.clip, playbackState.t);
-  const rs = rigState.rig.scale || 1;
-
-  // Bayangan di lantai
-  const sh = prjFn([P.pos[0][0], y, P.pos[0][2]]);
-  if (sh) {
-    g.fillStyle = C['--ink'];
-    g.globalAlpha = 0.14;
-    g.beginPath();
-    g.ellipse(
-      sh[0],
-      sh[1],
-      (0.3 * rs * KF) / sh[2],
-      ((0.3 * rs * KF) / sh[2]) * Math.max(0.12, Math.sin(Math.max(cameraState.pitch, 0.1))),
-      0,
-      0,
-      7,
-    );
-    g.fill();
-    g.globalAlpha = 1;
-  }
-
-  // Panah arah hadap di lantai (+Z)
-  const a0 = prjFn([P.root[0], y, P.root[2] + 0.25 * rs]);
-  const a1 = prjFn([P.root[0], y, P.root[2] + 0.55 * rs]);
-  if (a0 && a1) {
-    g.strokeStyle = C['--muted'];
-    g.lineWidth = 2;
-    g.beginPath();
-    g.moveTo(a0[0], a0[1]);
-    g.lineTo(a1[0], a1[1]);
-    g.stroke();
-  }
-
-  if (playbackState.trail) {
-    drawTrails(g, it, playbackState.t, rigState.ctx, prjFn, C, winColor);
-  }
-
-  if (playbackState.onion) {
-    for (let f = 0; f < it.res.poses.length; f += 3) {
-      drawFigure(g, it.res.poses[f], rigState.ctx, rigState.rig, 0.2, true, prjFn, C, KF);
+panelRegistry.register({
+  id: 'curves',
+  el: $('#p-curves'),
+  render: ({ fromEditor = false }) => {
+    if (clipState.tab === 'curves' || !fromEditor) {
+      renderCurves($('#p-curves'), dirtyAll, () => syncPlayBtn($('#bPlay')));
     }
-  }
+  },
+  onSelect: () => renderCurves($('#p-curves'), dirtyAll, () => syncPlayBtn($('#bPlay'))),
+});
 
-  if (playbackState.skel || !meshOn()) {
-    drawFigure(g, P, rigState.ctx, rigState.rig, 1, false, prjFn, C, KF);
-  }
+panelRegistry.register({
+  id: 'ver',
+  el: $('#p-ver'),
+  render: () => renderVer($('#p-ver')),
+});
 
-  const mo = meshOn();
-  glCanvas.hidden = !mo;
-  if (mo) {
-    try {
-      VrmView.pose(P, rigState.rig);
-      VrmView.render(W, H, DPR, B.eye, cameraState.target, 40);
-    } catch (e) {
-      playbackState.mesh = false;
-      playbackState.skel = true;
-      rigState.meshMsg = 'Render mesh gagal: ' + e.message;
-      viewportCtrl.syncToggles();
-      renderRig($('#p-rig'), $('#vrmIn'));
-    }
-  }
+panelRegistry.register({
+  id: 'about',
+  el: $('#p-about'),
+  render: () => renderAbout($('#p-about')),
+});
 
-  // HUD
-  const fr = Math.round(playbackState.t * FPS);
-  const nf = it.res ? it.res.frames : 0;
-  const hudTime = $('#hudTime');
-  if (hudTime) {
-    hudTime.textContent = `t ${fmt2(playbackState.t)} s · frame ${fr}/${nf} · ${it.clip.name || clipState.cur} v${it.clip.version ?? '?'} · rig ${rigState.rig.kind === 'vrm1' ? 'VRM 1.0' : 'MotusMan'}`;
-    const ex = P.expr
-      ? Object.entries(P.expr)
-          .filter((e) => e[1] > 0.02)
-          .map((e) => e[0] + ' ' + e[1].toFixed(2))
-          .join(' · ')
-      : '';
-    if (ex) hudTime.textContent += ' · ekspresi: ' + ex;
-  }
-
-  const wins = it.clip.windows || {};
-  const chips = $('#chips');
-  if (chips) {
-    for (const ch of chips.children) {
-      const w = ch.dataset.w;
-      let on = false;
-      if (w === 'event') {
-        on = (it.clip.events || []).some((e) => Math.abs(playbackState.t - e.t) <= 0.05);
-      } else if (wins[w]) {
-        on = playbackState.t >= wins[w][0] && playbackState.t <= wins[w][1];
-      }
-      ch.classList.toggle('on', on);
-      if (w === 'event') {
-        const evMatch = (it.clip.events || []).find((e) => Math.abs(playbackState.t - e.t) <= 0.05);
-        ch.textContent = on && evMatch ? 'event: ' + (evMatch.id ?? evMatch.type) : 'event';
-      }
-    }
-  }
-}
-
-// Tab Switching
 export function setTab(p) {
   clipState.tab = p;
-  const ptabs = $('#ptabs');
-  if (ptabs) {
-    for (const b of ptabs.children) {
-      b.setAttribute('aria-selected', String(b.dataset.p === p));
-    }
-  }
-  for (const id of ['rig', 'valid', 'edit', 'curves', 'ver', 'about']) {
-    const elP = $('#p-' + id);
-    if (elP) elP.hidden = id !== p;
-  }
-  if (p === 'edit') syncEditor(true);
-  if (p === 'curves') renderCurves($('#p-curves'), dirtyAll, () => syncPlayBtn($('#bPlay')));
+  panelRegistry.setTab(p, $('#ptabs'));
 }
 
 $('#ptabs')?.addEventListener('click', (e) => {
@@ -231,7 +149,6 @@ $('#ptabs')?.addEventListener('click', (e) => {
   if (b && b.dataset.p) setTab(b.dataset.p);
 });
 
-// Refresh All UI Panels
 export function refreshAll(fromEditor = false) {
   renderPipe($('#pipe'));
   renderClipbar({
@@ -243,18 +160,12 @@ export function refreshAll(fromEditor = false) {
     onAfterRigChange: () => handleAfterRigChange(),
     onRefreshAll: () => refreshAll(),
   });
-  renderRig($('#p-rig'), $('#vrmIn'));
-  renderValid($('#p-valid'));
-  renderVer($('#p-ver'));
-  if (clipState.tab === 'curves' || !fromEditor) {
-    renderCurves($('#p-curves'), dirtyAll, () => syncPlayBtn($('#bPlay')));
-  }
-  if (fromEditor) syncEditor(false);
-  else syncEditor(true);
+  panelRegistry.refreshAll({ fromEditor });
   dirtyAll();
 }
 
 function handleSelectClip(id) {
+  selectClip(id);
   playbackState.t = 0;
   playbackState.playing = true;
   syncPlayBtn($('#bPlay'));
@@ -280,11 +191,12 @@ function handleMeshLoaded(_inf) {
   dirtyAll();
 }
 
-// Initialize Viewport and Timeline Controllers
+// 6. Viewport and Scrubber Controllers
 const viewportCtrl = initViewportController({
   vpEl: vp,
   viewsEl: $('#views'),
   glCanvas,
+  hasMesh: (k) => VrmView.has(k),
   onDirty: dirtyAll,
   onSetTab: setTab,
   onRefreshAll: refreshAll,
@@ -308,6 +220,15 @@ initTransport({
   cOnion: $('#cOnion'),
   cFollow: $('#cFollow'),
   bVrma: $('#bVrma'),
+  onExportVrma: (it, rig, ctx) => {
+    if (!it || !it.clip) return;
+    const blob = buildVrmaGlb(rig, ctx, it.clip);
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = (it.clip.name || 'anim') + '.vrma';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+  },
   onDirty: dirtyAll,
   onSelectClip: handleSelectClip,
 });
@@ -333,7 +254,7 @@ $('#vrmIn')?.addEventListener('change', (e) => {
   e.target.value = '';
 });
 
-// Resize handler
+// Sizing and ResizeObserver
 function resize() {
   const a = sizeCanvas(cv, vp);
   W = a.w;
@@ -348,52 +269,55 @@ function resize() {
 new ResizeObserver(resize).observe(vp);
 new ResizeObserver(resize).observe(tlHost);
 
-// Main Animation Loop
-let lastTime = performance.now();
-function loop(ts) {
-  const dt = Math.min(0.1, (ts - lastTime) / 1000);
-  lastTime = ts;
-  const it = curItem();
-
-  if (playbackState.playing && it && it.clip) {
-    playbackState.t += dt * playbackState.speed;
-    if (playbackState.t >= it.clip.duration) {
-      if (it.clip.loop || playbackState.auto) {
-        playbackState.t = it.clip.loop ? playbackState.t % it.clip.duration : 0;
-      } else {
-        playbackState.t = it.clip.duration;
-        playbackState.playing = false;
-        syncPlayBtn($('#bPlay'));
-      }
-    }
+// 7. Playback Animation Controller
+const playbackController = new PlaybackController({
+  onTick: () => {
     needDraw = true;
     tlDirty = true;
-  }
+  },
+  onPause: () => {
+    syncPlayBtn($('#bPlay'));
+  },
+  getClip: () => curItem()?.clip,
+});
 
+function renderFrame() {
   if (playbackState.follow) needDraw = true;
   if (needDraw) {
     needDraw = false;
-    drawScene();
+    drawScene({
+      ctx2d: g,
+      glCanvas,
+      width: W,
+      height: H,
+      dpr: DPR,
+      meshRenderer: VrmView,
+      onMeshError: (e) => {
+        rigState.meshMsg = 'Render mesh gagal: ' + e.message;
+        viewportCtrl.syncToggles();
+        renderRig($('#p-rig'), $('#vrmIn'));
+      },
+    });
   }
   if (tlDirty) {
     tlDirty = false;
+    const it = curItem();
     drawTimeline({
+      tlc,
       tg,
-      it,
-      TW,
-      TH,
-      DPR,
-      C,
-      winColorFn: winColor,
-      style: clipState.style,
+      item: it,
       t: playbackState.t,
+      colors: C,
+      winColor,
+      speedSeries: it?.res?.speedSeries,
+      fps: ClipKit.FPS,
     });
     updatePlayhead();
   }
-  requestAnimationFrame(loop);
+  requestAnimationFrame(renderFrame);
 }
 
-// Initial Render setup
+// Initial Presentation setup
 renderAbout($('#p-about'));
 renderEditor($('#p-edit'), refreshAll, setTab);
 setTab('rig');
@@ -402,9 +326,21 @@ fitCamera(curItem());
 refreshAll();
 resize();
 syncPlayBtn($('#bPlay'));
-requestAnimationFrame(loop);
+playbackController.start();
+requestAnimationFrame(renderFrame);
 
-// Backward-compatibility and global inspection object
+// 8. Canonical Single Agent API & Backward-compatibility Globals
+const agentApi = createAgentApi({
+  onExportVrma: (it, rig, ctx) => buildVrmaGlb(rig, ctx, it.clip),
+  onRefreshAll: refreshAll,
+});
+
+window.clipkit = agentApi;
+
+// Backward-compatibility aliases
+window.ClipKit = ClipKit;
+window.VrmRig = VrmRig;
+window.VrmView = VrmView;
 window.__clipkit = {
   S: {
     ...clipState,

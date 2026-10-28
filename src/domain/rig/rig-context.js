@@ -29,6 +29,24 @@ export function channelRange(rig, c) {
   return null;
 }
 
+export const CHANNEL_BUILDERS = {
+  axis: (cname, c, idx, ops, _posOps) => {
+    const axis = vscale(vnorm(c.axis), c.sign);
+    for (const b of Object.keys(c.bones)) {
+      if (idx[b] != null) {
+        ops[idx[b]].push({ kind: 'axis', ch: cname, axis, w: c.bones[b] });
+      }
+    }
+  },
+  pos: (cname, c, _idx, _ops, posOps) => {
+    posOps.push({ ch: cname, axis: c.axis });
+  },
+};
+
+export function registerChannelBuilder(type, builderFn) {
+  CHANNEL_BUILDERS[type] = builderFn;
+}
+
 export function makeCtx(rig) {
   const names = rig.animated_bones;
   const idx = {};
@@ -40,13 +58,9 @@ export function makeCtx(rig) {
 
   for (const cname of Object.keys(rig.channels)) {
     const c = rig.channels[cname];
-    if (c.type === 'axis') {
-      const axis = vscale(vnorm(c.axis), c.sign);
-      for (const b of Object.keys(c.bones)) {
-        ops[idx[b]].push({ kind: 'axis', ch: cname, axis, w: c.bones[b] });
-      }
-    } else if (c.type === 'pos') {
-      posOps.push({ ch: cname, axis: c.axis });
+    const builder = CHANNEL_BUILDERS[c.type];
+    if (builder) {
+      builder(cname, c, idx, ops, posOps);
     }
   }
 

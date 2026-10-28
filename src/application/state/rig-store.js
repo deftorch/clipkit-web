@@ -1,8 +1,5 @@
 import { loadRigs } from '../../data/load-rigs.js';
 import ClipKit from '../../domain/clipkit.js';
-import VrmView from '../../infrastructure/three/three-mesh-renderer.js';
-import { parseGlb } from '../../infrastructure/vrm/glb-parser.js';
-import { buildRig } from '../../infrastructure/vrm/vrm-rig-builder.js';
 
 const { motus, vrm_sample } = loadRigs();
 
@@ -16,6 +13,25 @@ export const RIGS = {
 export const RIGINFO = {
   vrm_sample: vrm_sample.info,
 };
+
+let meshRenderer = null;
+let rigLoader = null;
+
+export function setMeshRenderer(renderer) {
+  meshRenderer = renderer;
+}
+
+export function setRigLoader(loader) {
+  rigLoader = loader;
+}
+
+export function getMeshRenderer() {
+  return meshRenderer;
+}
+
+export function getRigLoader() {
+  return rigLoader;
+}
 
 // Bound buffer cache to prevent memory leaks with multiple large VRMs
 export const MESHBUF = {};
@@ -67,7 +83,7 @@ export function setRig(k, onAfterSet, glCanvas, onMeshLoaded) {
   if (MESHBUF[k]) {
     ensureMesh(k, glCanvas, onMeshLoaded);
   } else {
-    if (VrmView) VrmView.unload();
+    if (meshRenderer) meshRenderer.unload();
   }
 
   notify();
@@ -75,14 +91,14 @@ export function setRig(k, onAfterSet, glCanvas, onMeshLoaded) {
 }
 
 export function ensureMesh(k, glCanvas, onMeshLoaded) {
-  if (!VrmView) {
+  if (!meshRenderer) {
     rigState.meshMsg = 'Pustaka render tidak termuat.';
     notify();
     return;
   }
   try {
     if (!rigState.glReady && glCanvas) {
-      VrmView.mount(glCanvas);
+      meshRenderer.mount(glCanvas);
       rigState.glReady = true;
     }
   } catch (_e) {
@@ -93,7 +109,8 @@ export function ensureMesh(k, glCanvas, onMeshLoaded) {
   rigState.meshMsg = 'Memuat mesh...';
   notify();
 
-  VrmView.load(k, MESHBUF[k])
+  meshRenderer
+    .load(k, MESHBUF[k])
     .then((inf) => {
       if (rigState.rigKey !== k) return;
       if (!RIGINFO[k]) RIGINFO[k] = {};
@@ -117,10 +134,8 @@ export function loadVrmFile(f, glCanvas, onSuccess, onError, onMeshLoaded) {
   };
   r.onload = () => {
     try {
-      const parsed = parseGlb(r.result);
-      const name = f.name.replace(/\.(vrm|glb)$/i, '');
-      const { rig: nr, info } = buildRig(parsed, baseMotusRig, name);
-      info.fileName = f.name;
+      if (!rigLoader) throw new Error('Rig loader is not configured');
+      const { rig: nr, info } = rigLoader.parseRigFile(r.result, f.name, baseMotusRig);
       info.size = f.size;
       const key = 'file:' + f.name;
       RIGS[key] = nr;

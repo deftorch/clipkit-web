@@ -1,1435 +1,163 @@
 {
   "dodge": {
     "2": {
-      "duration": 0.8,
-      "loop": false,
-      "channels": {
-        "hip_y": [
-          [0, 0],
-          [0.12, -0.108, "outQuad"],
-          [0.18, -0.008, "outQuad"],
-          [0.34, 0.16, "outQuad"],
-          [0.5, -0.008, "inQuad"],
-          [0.6, -0.108, "outQuad"],
-          [0.8, 0, "inOutSine"]
-        ],
-        "hip_z": [
-          [0, 0],
-          [0.12, -0.107, "outQuad"],
-          [0.18, -0.039, "outQuad"],
-          [0.34, -0.2, "outQuad"],
-          [0.5, -0.039, "inQuad"],
-          [0.6, -0.107, "outQuad"],
-          [0.8, 0, "inOutSine"]
-        ],
-        "lean": [
-          [0, 0],
-          [0.12, 25, "outQuad"],
-          [0.34, 10, "inOutSine"],
-          [0.6, 25, "outQuad"],
-          [0.8, 0, "outBack"]
-        ],
-        "armL_elev": [
-          [0, -75],
-          [0.12, -60, "outQuad"],
-          [0.34, -25, "outQuad"],
-          [0.6, -60, "inOutSine"],
-          [0.8, -75, "inOutSine"]
-        ],
-        "armR_elev": [
-          [0, -75],
-          [0.12, -60, "outQuad"],
-          [0.34, -25, "outQuad"],
-          [0.6, -60, "inOutSine"],
-          [0.8, -75, "inOutSine"]
-        ],
-        "armL_azim": [
-          [0, 0],
-          [0.12, -35, "outQuad"],
-          [0.34, 35, "outQuad"],
-          [0.6, -30, "inOutSine"],
-          [0.8, 0, "inOutSine"]
-        ],
-        "armR_azim": [
-          [0, 0],
-          [0.12, -35, "outQuad"],
-          [0.34, 35, "outQuad"],
-          [0.6, -30, "inOutSine"],
-          [0.8, 0, "inOutSine"]
-        ],
-        "elbowL": [[0, 10], [0.34, 50, "outQuad"], [0.8, 10, "inOutSine"]],
-        "elbowR": [[0, 10], [0.34, 50, "outQuad"], [0.8, 10, "inOutSine"]],
-        "legL_swing": [
-          [0, 0],
-          [0.12, 35, "outQuad"],
-          [0.18, 10, "outQuad"],
-          [0.34, 50, "outQuad"],
-          [0.5, 10, "inQuad"],
-          [0.6, 35, "outQuad"],
-          [0.8, 0, "inOutSine"]
-        ],
-        "legR_swing": [
-          [0, 0],
-          [0.12, 35, "outQuad"],
-          [0.18, 10, "outQuad"],
-          [0.34, 50, "outQuad"],
-          [0.5, 10, "inQuad"],
-          [0.6, 35, "outQuad"],
-          [0.8, 0, "inOutSine"]
-        ],
-        "kneeL": [
-          [0, 3],
-          [0.12, 55, "outQuad"],
-          [0.18, 15, "outQuad"],
-          [0.34, 90, "outQuad"],
-          [0.5, 15, "inQuad"],
-          [0.6, 55, "outQuad"],
-          [0.8, 3, "inOutSine"]
-        ],
-        "kneeR": [
-          [0, 3],
-          [0.12, 55, "outQuad"],
-          [0.18, 15, "outQuad"],
-          [0.34, 90, "outQuad"],
-          [0.5, 15, "inQuad"],
-          [0.6, 55, "outQuad"],
-          [0.8, 3, "inOutSine"]
-        ],
-        "footL_pitch": [
-          [0, 0],
-          [0.12, -20, "outQuad"],
-          [0.18, -5, "outQuad"],
-          [0.34, 20, "outQuad"],
-          [0.5, -5, "inQuad"],
-          [0.6, -20, "outQuad"],
-          [0.8, 0, "inOutSine"]
-        ],
-        "footR_pitch": [
-          [0, 0],
-          [0.12, -20, "outQuad"],
-          [0.18, -5, "outQuad"],
-          [0.34, 20, "outQuad"],
-          [0.5, -5, "inQuad"],
-          [0.6, -20, "outQuad"],
-          [0.8, 0, "inOutSine"]
-        ]
-      },
-      "expressions": {
-        "surprised": [[0, 0], [0.15, 0.85, "outQuad"], [0.5, 0.2, "inOutSine"], [0.8, 0, "linear"]],
-        "blink": [[0, 0], [0.08, 1, "outQuad"], [0.18, 0, "inQuad"]]
-      },
-      "move": {
-        "dir": [0, 0, -1],
-        "distance": 2.5,
-        "t0": 0.18,
-        "t1": 0.5,
-        "ease": "linear"
-      },
-      "windows": {
-        "inv": [0.1, 0.45],
-        "cancel": [0.6, 0.8]
-      },
-      "events": [
-        {
-          "t": 0.18,
-          "type": "sfx",
-          "id": "whoosh"
-        },
-        {
-          "t": 0.5,
-          "type": "vfx",
-          "id": "dust"
-        }
-      ],
-      "claims": {
-        "distance": 2.5,
-        "tolerance": 0.1,
-        "duration": 0.8
-      }
+      "duration": "091312de62206f",
+      "loop": "030f8a6393f0aa",
+      "channels": "005cc77fb8e4ab",
+      "expressions": "06b3098718f0e2",
+      "move": "00dedfcceeef36",
+      "windows": "16e35bf7293f00",
+      "events": "0cc568710536d5",
+      "claims": "13a9256e74032c"
     }
   },
   "slash": {
     "2": {
-      "duration": 0.9,
-      "loop": false,
-      "channels": {
-        "twist": [[0, 0], [0.25, -35, "inOutSine"], [0.45, 35, "inQuad"], [0.9, 0, "inOutSine"]],
-        "hip_twist": [
-          [0, 0],
-          [0.25, -28, "inOutSine"],
-          [0.45, 32, "inQuad"],
-          [0.9, 0, "inOutSine"]
-        ],
-        "lean": [[0, 0], [0.25, -8, "inOutSine"], [0.45, 22, "inQuad"], [0.9, 0, "inOutSine"]],
-        "head_yaw": [[0, 0], [0.25, 10, "inOutSine"], [0.45, -15, "inQuad"], [0.9, 0, "inOutSine"]],
-        "armR_elev": [
-          [0, -75],
-          [0.25, 45, "outQuad"],
-          [0.45, -10, "inQuad"],
-          [0.9, -75, "inOutSine"]
-        ],
-        "armR_azim": [[0, 0], [0.25, -30, "outQuad"], [0.45, 80, "inQuad"], [0.9, 0, "inOutSine"]],
-        "elbowR": [[0, 10], [0.25, 90, "outQuad"], [0.45, 15, "inQuad"], [0.9, 10, "inOutSine"]],
-        "armL_elev": [
-          [0, -75],
-          [0.25, -40, "outQuad"],
-          [0.45, -60, "inQuad"],
-          [0.9, -75, "inOutSine"]
-        ],
-        "armL_azim": [[0, 0], [0.25, 40, "outQuad"], [0.45, -20, "inQuad"], [0.9, 0, "inOutSine"]],
-        "elbowL": [[0, 10], [0.25, 70, "outQuad"], [0.9, 10, "inOutSine"]],
-        "hip_y": [
-          [0, 0],
-          [0.15, -0.01, "outQuad"],
-          [0.3, -0.05, "inOutSine"],
-          [0.45, -0.112, "inQuad"],
-          [0.9, 0, "inOutSine"]
-        ],
-        "hip_z": [
-          [0, 0],
-          [0.15, 0.05, "outQuad"],
-          [0.3, 0.25, "inOutSine"],
-          [0.45, 0.414, "inQuad"],
-          [0.9, 0, "inOutSine"]
-        ],
-        "legL_swing": [
-          [0, 0],
-          [0.15, 5, "outQuad"],
-          [0.3, 40, "inOutSine"],
-          [0.45, 33, "inQuad"],
-          [0.9, 0, "inOutSine"]
-        ],
-        "kneeL": [
-          [0, 3],
-          [0.15, 20, "outQuad"],
-          [0.3, 70, "inOutSine"],
-          [0.45, 60, "inQuad"],
-          [0.9, 3, "inOutSine"]
-        ],
-        "footL_pitch": [
-          [0, 0],
-          [0.3, -20, "inOutSine"],
-          [0.45, -27, "inQuad"],
-          [0.9, 0, "inOutSine"]
-        ],
-        "legR_swing": [
-          [0, 0],
-          [0.15, -5, "outQuad"],
-          [0.3, -22, "inOutSine"],
-          [0.45, -30, "inQuad"],
-          [0.9, 0, "inOutSine"]
-        ],
-        "kneeR": [[0, 3], [0.3, 3, "inOutSine"], [0.45, 0, "inQuad"], [0.9, 3, "inOutSine"]],
-        "footR_pitch": [[0, 0], [0.45, -30, "inQuad"], [0.9, 0, "inOutSine"]]
-      },
-      "expressions": {
-        "angry": [[0, 0], [0.25, 0.9, "outQuad"], [0.65, 0.9, "hold"], [0.9, 0, "inOutSine"]],
-        "aa": [[0, 0], [0.32, 0], [0.38, 0.8, "outQuad"], [0.55, 0, "inQuad"]]
-      },
-      "windows": {
-        "hitbox": [0.36, 0.47],
-        "cancel": [0.6, 0.9]
-      },
-      "events": [
-        {
-          "t": 0.32,
-          "type": "sfx",
-          "id": "swoosh"
-        },
-        {
-          "t": 0.4,
-          "type": "trail",
-          "id": "blade_on"
-        },
-        {
-          "t": 0.5,
-          "type": "trail",
-          "id": "blade_off"
-        }
-      ],
-      "claims": {
-        "duration": 0.9,
-        "tolerance": 0.1
-      }
+      "duration": "0da77012832485",
+      "loop": "030f8a6393f0aa",
+      "channels": "18839390c41215",
+      "expressions": "081df87cdc1230",
+      "windows": "0561dcef2e1e5f",
+      "events": "060cc3b19b04dd",
+      "claims": "086ddd9133eea4"
     }
   },
   "parry": {
     "3": {
-      "duration": 0.6,
-      "loop": false,
-      "channels": {
-        "lean": [
-          [0, 0],
-          [0.04, 3, "outQuad"],
-          [0.16, -10, "outQuad"],
-          [0.34, -6, "inOutSine"],
-          [0.6, 0, "inOutSine"]
-        ],
-        "twist": [[0, 0], [0.16, 15, "outQuad"], [0.34, 5, "inOutSine"], [0.6, 0, "inOutSine"]],
-        "armR_elev": [
-          [0, -75],
-          [0.04, -85, "outQuad"],
-          [0.16, -10, "outQuad"],
-          [0.34, -10, "inOutSine"],
-          [0.6, -75, "inOutSine"]
-        ],
-        "armR_azim": [
-          [0, 0],
-          [0.04, -10, "outQuad"],
-          [0.16, 55, "outQuad"],
-          [0.34, 55, "inOutSine"],
-          [0.6, 0, "inOutSine"]
-        ],
-        "elbowR": [
-          [0, 10],
-          [0.04, 10, "outQuad"],
-          [0.16, 95, "outQuad"],
-          [0.34, 95, "inOutSine"],
-          [0.6, 10, "inOutSine"]
-        ],
-        "armL_elev": [[0, -75], [0.16, -20, "outQuad"], [0.6, -75, "inOutSine"]],
-        "armL_azim": [[0, 0], [0.16, 50, "outQuad"], [0.6, 0, "inOutSine"]],
-        "elbowL": [[0, 10], [0.16, 80, "outQuad"], [0.6, 10, "inOutSine"]],
-        "hip_y": [[0, 0], [0.16, -0.039, "outQuad"], [0.6, 0, "inOutSine"]],
-        "hip_z": [[0, 0], [0.16, -0.042, "outQuad"], [0.6, 0, "inOutSine"]],
-        "legL_swing": [[0, 0], [0.16, 20, "outQuad"], [0.6, 0, "inOutSine"]],
-        "legR_swing": [[0, 0], [0.16, 20, "outQuad"], [0.6, 0, "inOutSine"]],
-        "kneeL": [[0, 3], [0.16, 35, "outQuad"], [0.6, 3, "inOutSine"]],
-        "kneeR": [[0, 3], [0.16, 35, "outQuad"], [0.6, 3, "inOutSine"]],
-        "footL_pitch": [[0, 0], [0.16, -15, "outQuad"], [0.6, 0, "inOutSine"]],
-        "footR_pitch": [[0, 0], [0.16, -15, "outQuad"], [0.6, 0, "inOutSine"]]
-      },
-      "expressions": {
-        "angry": [[0, 0], [0.14, 0.65, "outQuad"], [0.34, 0.65, "hold"], [0.6, 0, "inOutSine"]]
-      },
-      "windows": {
-        "parry": [0.16, 0.32],
-        "cancel": [0.42, 0.6]
-      },
-      "events": [
-        {
-          "t": 0.16,
-          "type": "sfx",
-          "id": "clang_ready"
-        }
-      ],
-      "claims": {
-        "duration": 0.6,
-        "tolerance": 0.1
-      }
+      "duration": "01d4272c2458e2",
+      "loop": "030f8a6393f0aa",
+      "channels": "1109bad64e210f",
+      "expressions": "0b870955c824c6",
+      "windows": "0759986cc6b471",
+      "events": "08ac6bbbdda9e8",
+      "claims": "027d810b8a4695"
     }
   },
   "idle": {
     "1": {
-      "duration": 2,
-      "loop": true,
-      "channels": {
-        "lean": [[0, 1], [1, 3.5, "inOutSine"], [2, 1, "inOutSine"]],
-        "side_lean": [[0, -1.5], [1, 1.5, "inOutSine"], [2, -1.5, "inOutSine"]],
-        "head_pitch": [[0, 0], [1, -3, "inOutSine"], [2, 0, "inOutSine"]],
-        "head_yaw": [[0, -3], [1, 3, "inOutSine"], [2, -3, "inOutSine"]],
-        "armL_elev": [[0, -76], [1, -73, "inOutSine"], [2, -76, "inOutSine"]],
-        "armR_elev": [[0, -76], [1, -73, "inOutSine"], [2, -76, "inOutSine"]],
-        "elbowL": [[0, 12], [1, 16, "inOutSine"], [2, 12, "inOutSine"]],
-        "elbowR": [[0, 12], [1, 16, "inOutSine"], [2, 12, "inOutSine"]],
-        "kneeL": [[0, 3], [2, 3]],
-        "kneeR": [[0, 3], [2, 3]]
-      },
-      "expressions": {
-        "relaxed": [[0, 0.35], [1, 0.55, "inOutSine"], [2, 0.35, "inOutSine"]],
-        "blink": [
-          [0, 0],
-          [0.85, 0, "hold"],
-          [0.93, 1, "outQuad"],
-          [1.05, 0, "inQuad"],
-          [2, 0, "linear"]
-        ]
-      },
-      "events": [
-        {
-          "t": 1,
-          "type": "breath",
-          "id": "inhale_peak"
-        }
-      ],
-      "claims": {
-        "duration": 2,
-        "tolerance": 0.1
-      }
+      "duration": "0c6d5b50db4c54",
+      "loop": "156a4c870bf5f4",
+      "channels": "028d41d61d2385",
+      "expressions": "04ba295b132170",
+      "events": "1e991582f6dcef",
+      "claims": "102af64b2bc86f"
     }
   },
   "walk": {
     "1": {
-      "duration": 1,
-      "loop": true,
-      "channels": {
-        "hip_y": [
-          [0, -0.015],
-          [0.25, 0.018, "inOutSine"],
-          [0.5, -0.015, "inOutSine"],
-          [0.75, 0.018, "inOutSine"],
-          [1, -0.015, "inOutSine"]
-        ],
-        "lean": [[0, 4], [1, 4]],
-        "twist": [[0, -8], [0.5, 8, "inOutSine"], [1, -8, "inOutSine"]],
-        "hip_twist": [[0, 8], [0.5, -8, "inOutSine"], [1, 8, "inOutSine"]],
-        "hip_roll": [[0, -3], [0.5, 3, "inOutSine"], [1, -3, "inOutSine"]],
-        "armL_elev": [[0, -72], [0.5, -70, "inOutSine"], [1, -72, "inOutSine"]],
-        "armR_elev": [[0, -70], [0.5, -72, "inOutSine"], [1, -70, "inOutSine"]],
-        "armL_azim": [[0, -22], [0.5, 26, "inOutSine"], [1, -22, "inOutSine"]],
-        "armR_azim": [[0, 26], [0.5, -22, "inOutSine"], [1, 26, "inOutSine"]],
-        "elbowL": [[0, 18], [0.5, 30, "inOutSine"], [1, 18, "inOutSine"]],
-        "elbowR": [[0, 30], [0.5, 18, "inOutSine"], [1, 30, "inOutSine"]],
-        "legL_swing": [[0, 26], [0.5, -20, "inOutSine"], [1, 26, "inOutSine"]],
-        "legR_swing": [[0, -20], [0.5, 26, "inOutSine"], [1, -20, "inOutSine"]],
-        "kneeL": [
-          [0, 8],
-          [0.25, 14, "inOutSine"],
-          [0.5, 18, "inOutSine"],
-          [0.75, 48, "outSine"],
-          [1, 8, "inSine"]
-        ],
-        "kneeR": [
-          [0, 18],
-          [0.25, 48, "outSine"],
-          [0.5, 8, "inSine"],
-          [0.75, 14, "inOutSine"],
-          [1, 18, "inOutSine"]
-        ],
-        "footL_pitch": [[0, -10], [0.5, 14, "inOutSine"], [1, -10, "inOutSine"]],
-        "footR_pitch": [[0, 14], [0.5, -10, "inOutSine"], [1, 14, "inOutSine"]]
-      },
-      "expressions": {
-        "happy": [[0, 0.25], [1, 0.25]]
-      },
-      "move": {
-        "dir": [0, 0, 1],
-        "distance": 1.3,
-        "t0": 0,
-        "t1": 1,
-        "ease": "linear"
-      },
-      "events": [
-        {
-          "t": 0.05,
-          "type": "sfx",
-          "id": "step_L"
-        },
-        {
-          "t": 0.55,
-          "type": "sfx",
-          "id": "step_R"
-        }
-      ],
-      "claims": {
-        "distance": 1.3,
-        "duration": 1,
-        "tolerance": 0.1
-      },
-      "validate": {
-        "foot_slide": false
-      }
+      "duration": "0546d8e4fa6648",
+      "loop": "156a4c870bf5f4",
+      "channels": "024987e0f17cd3",
+      "expressions": "1630c7083c3c80",
+      "move": "0db51a0eb921f3",
+      "events": "046cb26ac0f01a",
+      "claims": "02a04754c3612d",
+      "validate": "1188925f80337d"
     }
   },
   "jump": {
     "1": {
-      "duration": 0.9,
-      "loop": false,
-      "channels": {
-        "hip_y": [
-          [0, 0],
-          [0.18, -0.105, "outQuad"],
-          [0.45, 0.34, "outQuad"],
-          [0.72, -0.105, "inQuad"],
-          [0.9, 0, "inOutSine"]
-        ],
-        "lean": [
-          [0, 0],
-          [0.18, 22, "outQuad"],
-          [0.45, -8, "inOutSine"],
-          [0.72, 22, "outQuad"],
-          [0.9, 0, "inOutSine"]
-        ],
-        "head_pitch": [
-          [0, 0],
-          [0.18, 10, "outQuad"],
-          [0.45, -15, "outQuad"],
-          [0.72, 8, "inQuad"],
-          [0.9, 0, "inOutSine"]
-        ],
-        "armL_elev": [
-          [0, -75],
-          [0.18, -80, "outQuad"],
-          [0.45, 35, "outQuad"],
-          [0.72, -55, "inQuad"],
-          [0.9, -75, "inOutSine"]
-        ],
-        "armR_elev": [
-          [0, -75],
-          [0.18, -80, "outQuad"],
-          [0.45, 35, "outQuad"],
-          [0.72, -55, "inQuad"],
-          [0.9, -75, "inOutSine"]
-        ],
-        "armL_azim": [
-          [0, 0],
-          [0.18, -25, "outQuad"],
-          [0.45, 45, "outQuad"],
-          [0.72, 15, "inQuad"],
-          [0.9, 0, "inOutSine"]
-        ],
-        "armR_azim": [
-          [0, 0],
-          [0.18, -25, "outQuad"],
-          [0.45, 45, "outQuad"],
-          [0.72, 15, "inQuad"],
-          [0.9, 0, "inOutSine"]
-        ],
-        "elbowL": [
-          [0, 10],
-          [0.18, 35, "outQuad"],
-          [0.45, 25, "outQuad"],
-          [0.72, 45, "inQuad"],
-          [0.9, 10, "inOutSine"]
-        ],
-        "elbowR": [
-          [0, 10],
-          [0.18, 35, "outQuad"],
-          [0.45, 25, "outQuad"],
-          [0.72, 45, "inQuad"],
-          [0.9, 10, "inOutSine"]
-        ],
-        "legL_swing": [
-          [0, 0],
-          [0.18, 35, "outQuad"],
-          [0.45, 45, "outQuad"],
-          [0.72, 35, "inQuad"],
-          [0.9, 0, "inOutSine"]
-        ],
-        "legR_swing": [
-          [0, 0],
-          [0.18, 35, "outQuad"],
-          [0.45, 20, "outQuad"],
-          [0.72, 35, "inQuad"],
-          [0.9, 0, "inOutSine"]
-        ],
-        "kneeL": [
-          [0, 3],
-          [0.18, 55, "outQuad"],
-          [0.45, 80, "outQuad"],
-          [0.72, 55, "inQuad"],
-          [0.9, 3, "inOutSine"]
-        ],
-        "kneeR": [
-          [0, 3],
-          [0.18, 55, "outQuad"],
-          [0.45, 45, "outQuad"],
-          [0.72, 55, "inQuad"],
-          [0.9, 3, "inOutSine"]
-        ],
-        "footL_pitch": [
-          [0, 0],
-          [0.18, -20, "outQuad"],
-          [0.45, 25, "outQuad"],
-          [0.72, -20, "inQuad"],
-          [0.9, 0, "inOutSine"]
-        ],
-        "footR_pitch": [
-          [0, 0],
-          [0.18, -20, "outQuad"],
-          [0.45, 25, "outQuad"],
-          [0.72, -20, "inQuad"],
-          [0.9, 0, "inOutSine"]
-        ]
-      },
-      "expressions": {
-        "surprised": [[0, 0], [0.2, 0.8, "outQuad"], [0.65, 0.2, "inQuad"], [0.9, 0, "linear"]],
-        "aa": [[0, 0], [0.22, 0.6, "outQuad"], [0.6, 0, "inQuad"]],
-        "blink": [[0, 0], [0.7, 0], [0.76, 1, "outQuad"], [0.86, 0, "inQuad"]]
-      },
-      "move": {
-        "dir": [0, 0, 1],
-        "distance": 1.5,
-        "t0": 0.18,
-        "t1": 0.72,
-        "ease": "inOutSine"
-      },
-      "events": [
-        {
-          "t": 0.18,
-          "type": "sfx",
-          "id": "jump_launch"
-        },
-        {
-          "t": 0.72,
-          "type": "vfx",
-          "id": "land_dust"
-        }
-      ],
-      "claims": {
-        "distance": 1.5,
-        "duration": 0.9,
-        "tolerance": 0.1
-      }
+      "duration": "0da77012832485",
+      "loop": "030f8a6393f0aa",
+      "channels": "1885fac0d4382e",
+      "expressions": "0f888499cf0c6b",
+      "move": "0c6528e3c7670b",
+      "events": "07bc8cfb5fe4f1",
+      "claims": "0e5eca0fd96562"
     }
   },
   "wave": {
     "1": {
-      "duration": 1.6,
-      "loop": true,
-      "channels": {
-        "side_lean": [[0, 0], [0.4, -6, "inOutSine"], [1.2, 4, "inOutSine"], [1.6, 0, "inOutSine"]],
-        "head_yaw": [[0, 0], [0.4, -8, "inOutSine"], [1.2, 6, "inOutSine"], [1.6, 0, "inOutSine"]],
-        "head_pitch": [
-          [0, 0],
-          [0.4, -5, "inOutSine"],
-          [1.2, 2, "inOutSine"],
-          [1.6, 0, "inOutSine"]
-        ],
-        "armR_elev": [
-          [0, -75],
-          [0.3, 35, "outQuad"],
-          [1.3, 35, "inOutSine"],
-          [1.6, -75, "inOutSine"]
-        ],
-        "armR_azim": [
-          [0, 0],
-          [0.3, 30, "outQuad"],
-          [0.55, 15, "inOutSine"],
-          [0.8, 40, "inOutSine"],
-          [1.05, 15, "inOutSine"],
-          [1.3, 35, "inOutSine"],
-          [1.6, 0, "inOutSine"]
-        ],
-        "elbowR": [
-          [0, 10],
-          [0.3, 95, "outQuad"],
-          [0.55, 60, "inOutSine"],
-          [0.8, 105, "inOutSine"],
-          [1.05, 60, "inOutSine"],
-          [1.3, 95, "inOutSine"],
-          [1.6, 10, "inOutSine"]
-        ],
-        "armL_elev": [[0, -75], [0.8, -68, "inOutSine"], [1.6, -75, "inOutSine"]],
-        "elbowL": [[0, 10], [0.8, 22, "inOutSine"], [1.6, 10, "inOutSine"]],
-        "kneeL": [[0, 3], [1.6, 3]],
-        "kneeR": [[0, 3], [1.6, 3]]
-      },
-      "expressions": {
-        "happy": [[0, 0.2], [0.3, 0.95, "outQuad"], [1.3, 0.95, "hold"], [1.6, 0.2, "inOutSine"]],
-        "aa": [
-          [0, 0],
-          [0.35, 0.75, "outQuad"],
-          [0.7, 0.15, "inOutSine"],
-          [1, 0.65, "outQuad"],
-          [1.35, 0, "inQuad"],
-          [1.6, 0]
-        ],
-        "blinkLeft": [[0, 0], [0.4, 1, "outQuad"], [0.9, 1, "hold"], [1.1, 0, "inQuad"], [1.6, 0]]
-      },
-      "events": [
-        {
-          "t": 0.35,
-          "type": "voice",
-          "id": "halo_sapa"
-        }
-      ],
-      "claims": {
-        "duration": 1.6,
-        "tolerance": 0.1
-      }
+      "duration": "07957b72f4a5e7",
+      "loop": "156a4c870bf5f4",
+      "channels": "0c603569aa5a81",
+      "expressions": "1886969073bd65",
+      "events": "111915e04fcdfe",
+      "claims": "0d568a0f3959c2"
     }
   },
   "kick_front": {
     "1": {
-      "duration": 0.85,
-      "loop": false,
-      "channels": {
-        "hip_y": [
-          [0, 0],
-          [0.2, 0.01, "inOutSine"],
-          [0.38, 0.02, "inOutSine"],
-          [0.58, 0.01, "inOutSine"],
-          [0.85, 0, "inOutSine"]
-        ],
-        "hip_z": [
-          [0, 0],
-          [0.2, 0.04, "inOutSine"],
-          [0.38, 0.12, "outSine"],
-          [0.58, 0.05, "inOutSine"],
-          [0.85, 0, "inOutSine"]
-        ],
-        "lean": [
-          [0, 0],
-          [0.2, 4, "inOutSine"],
-          [0.38, -14, "outSine"],
-          [0.58, -4, "inOutSine"],
-          [0.85, 0, "inOutSine"]
-        ],
-        "twist": [[0, 0], [0.2, -12, "inOutSine"], [0.38, 18, "outSine"], [0.85, 0, "inOutSine"]],
-        "hip_twist": [
-          [0, 0],
-          [0.2, -10, "inOutSine"],
-          [0.38, 16, "outSine"],
-          [0.85, 0, "inOutSine"]
-        ],
-        "armL_elev": [
-          [0, -75],
-          [0.2, -35, "inOutSine"],
-          [0.38, -25, "outSine"],
-          [0.85, -75, "inOutSine"]
-        ],
-        "armR_elev": [
-          [0, -75],
-          [0.2, -40, "inOutSine"],
-          [0.38, -45, "outSine"],
-          [0.85, -75, "inOutSine"]
-        ],
-        "armL_azim": [
-          [0, 0],
-          [0.2, 45, "inOutSine"],
-          [0.38, 55, "outSine"],
-          [0.85, 0, "inOutSine"]
-        ],
-        "armR_azim": [
-          [0, 0],
-          [0.2, 35, "inOutSine"],
-          [0.38, -25, "outSine"],
-          [0.85, 0, "inOutSine"]
-        ],
-        "elbowL": [[0, 10], [0.2, 85, "inOutSine"], [0.38, 90, "outSine"], [0.85, 10, "inOutSine"]],
-        "elbowR": [[0, 10], [0.2, 80, "inOutSine"], [0.38, 65, "outSine"], [0.85, 10, "inOutSine"]],
-        "legR_swing": [
-          [0, 0],
-          [0.2, 58, "inOutSine"],
-          [0.38, 88, "outSine"],
-          [0.58, 45, "inOutSine"],
-          [0.85, 0, "inOutSine"]
-        ],
-        "kneeR": [
-          [0, 3],
-          [0.2, 92, "inOutSine"],
-          [0.38, 8, "outSine"],
-          [0.58, 78, "inOutSine"],
-          [0.85, 3, "inOutSine"]
-        ],
-        "footR_pitch": [
-          [0, 0],
-          [0.2, 15, "inOutSine"],
-          [0.38, 28, "outSine"],
-          [0.58, 10, "inOutSine"],
-          [0.85, 0, "inOutSine"]
-        ],
-        "legL_swing": [[0, 0], [0.38, 12, "inOutSine"], [0.85, 0, "inOutSine"]],
-        "kneeL": [[0, 3], [0.38, 14, "inOutSine"], [0.85, 3, "inOutSine"]],
-        "footL_pitch": [[0, 0], [0.38, -4, "inOutSine"], [0.85, 0, "inOutSine"]]
-      },
-      "expressions": {
-        "angry": [[0, 0], [0.2, 0.85, "outQuad"], [0.55, 0.85, "hold"], [0.85, 0, "inOutSine"]],
-        "aa": [[0, 0], [0.3, 0.75, "outQuad"], [0.52, 0, "inQuad"]]
-      },
-      "windows": {
-        "hitbox": [0.32, 0.45],
-        "cancel": [0.6, 0.85]
-      },
-      "events": [
-        {
-          "t": 0.32,
-          "type": "sfx",
-          "id": "front_kick_snap"
-        }
-      ],
-      "claims": {
-        "duration": 0.85,
-        "tolerance": 0.1
-      },
-      "validate": {
-        "foot_slide": false
-      }
+      "duration": "0d5d3b184bb1ae",
+      "loop": "030f8a6393f0aa",
+      "channels": "038f23a847d43c",
+      "expressions": "11866bd26963d4",
+      "windows": "0a7bee2ea77a1a",
+      "events": "16991e1902c67c",
+      "claims": "187634a7a736c2",
+      "validate": "1188925f80337d"
     }
   },
   "kick_roundhouse": {
     "1": {
-      "duration": 0.95,
-      "loop": false,
-      "channels": {
-        "hip_y": [
-          [0, 0],
-          [0.22, 0.02, "inOutSine"],
-          [0.44, 0.03, "inOutSine"],
-          [0.65, 0.01, "inOutSine"],
-          [0.95, 0, "inOutSine"]
-        ],
-        "lean": [
-          [0, 0],
-          [0.22, 6, "inOutSine"],
-          [0.44, -14, "inOutSine"],
-          [0.65, -5, "inOutSine"],
-          [0.95, 0, "inOutSine"]
-        ],
-        "side_lean": [
-          [0, 0],
-          [0.22, -8, "inOutSine"],
-          [0.44, -18, "inOutSine"],
-          [0.65, -8, "inOutSine"],
-          [0.95, 0, "inOutSine"]
-        ],
-        "twist": [
-          [0, 0],
-          [0.22, -22, "inOutSine"],
-          [0.44, 32, "inOutSine"],
-          [0.65, 12, "inOutSine"],
-          [0.95, 0, "inOutSine"]
-        ],
-        "hip_twist": [
-          [0, 0],
-          [0.22, -25, "inOutSine"],
-          [0.44, 44, "inOutSine"],
-          [0.65, 16, "inOutSine"],
-          [0.95, 0, "inOutSine"]
-        ],
-        "hip_roll": [
-          [0, 0],
-          [0.22, -6, "inOutSine"],
-          [0.44, -12, "inOutSine"],
-          [0.65, -4, "inOutSine"],
-          [0.95, 0, "inOutSine"]
-        ],
-        "head_yaw": [
-          [0, 0],
-          [0.22, 12, "inOutSine"],
-          [0.44, -24, "inOutSine"],
-          [0.95, 0, "inOutSine"]
-        ],
-        "armL_elev": [
-          [0, -75],
-          [0.22, -30, "inOutSine"],
-          [0.44, -20, "inOutSine"],
-          [0.95, -75, "inOutSine"]
-        ],
-        "armR_elev": [
-          [0, -75],
-          [0.22, -35, "inOutSine"],
-          [0.44, -30, "inOutSine"],
-          [0.95, -75, "inOutSine"]
-        ],
-        "armL_azim": [
-          [0, 0],
-          [0.22, 40, "inOutSine"],
-          [0.44, 60, "inOutSine"],
-          [0.95, 0, "inOutSine"]
-        ],
-        "armR_azim": [
-          [0, 0],
-          [0.22, 30, "inOutSine"],
-          [0.44, -35, "inOutSine"],
-          [0.95, 0, "inOutSine"]
-        ],
-        "elbowL": [
-          [0, 10],
-          [0.22, 85, "inOutSine"],
-          [0.44, 95, "inOutSine"],
-          [0.95, 10, "inOutSine"]
-        ],
-        "elbowR": [
-          [0, 10],
-          [0.22, 75, "inOutSine"],
-          [0.44, 55, "inOutSine"],
-          [0.95, 10, "inOutSine"]
-        ],
-        "legR_swing": [
-          [0, 0],
-          [0.22, 45, "inOutSine"],
-          [0.44, 78, "inOutSine"],
-          [0.65, 40, "inOutSine"],
-          [0.95, 0, "inOutSine"]
-        ],
-        "legR_abd": [
-          [0, 0],
-          [0.22, 34, "inOutSine"],
-          [0.44, 46, "inOutSine"],
-          [0.65, 22, "inOutSine"],
-          [0.95, 0, "inOutSine"]
-        ],
-        "kneeR": [
-          [0, 3],
-          [0.22, 90, "inOutSine"],
-          [0.44, 10, "inOutSine"],
-          [0.65, 75, "inOutSine"],
-          [0.95, 3, "inOutSine"]
-        ],
-        "footR_pitch": [
-          [0, 0],
-          [0.22, 20, "inOutSine"],
-          [0.44, 35, "inOutSine"],
-          [0.65, 10, "inOutSine"],
-          [0.95, 0, "inOutSine"]
-        ],
-        "legL_swing": [[0, 0], [0.44, 14, "inOutSine"], [0.95, 0, "inOutSine"]],
-        "kneeL": [[0, 3], [0.44, 16, "inOutSine"], [0.95, 3, "inOutSine"]],
-        "footL_pitch": [[0, 0], [0.44, -4, "inOutSine"], [0.95, 0, "inOutSine"]]
-      },
-      "expressions": {
-        "angry": [[0, 0], [0.2, 0.9, "outQuad"], [0.6, 0.9, "hold"], [0.95, 0, "inOutSine"]],
-        "oh": [[0, 0], [0.34, 0.8, "outQuad"], [0.58, 0, "inQuad"]]
-      },
-      "move": {
-        "dir": [0, 0, 1],
-        "distance": 0.35,
-        "t0": 0.15,
-        "t1": 0.45,
-        "ease": "inOutSine"
-      },
-      "windows": {
-        "hitbox": [0.36, 0.5],
-        "cancel": [0.65, 0.95]
-      },
-      "events": [
-        {
-          "t": 0.36,
-          "type": "sfx",
-          "id": "roundhouse_whoosh"
-        },
-        {
-          "t": 0.42,
-          "type": "trail",
-          "id": "leg_arc"
-        }
-      ],
-      "claims": {
-        "distance": 0.35,
-        "duration": 0.95,
-        "tolerance": 0.1
-      },
-      "validate": {
-        "foot_slide": false
-      }
+      "duration": "18bf9963fc344d",
+      "loop": "030f8a6393f0aa",
+      "channels": "1c428cc276bce9",
+      "expressions": "1bb7f097a104c5",
+      "move": "16c99529a1c337",
+      "windows": "1c49846d1584d8",
+      "events": "02e2ad0d636171",
+      "claims": "1aec2eabd0c7d1",
+      "validate": "1188925f80337d"
     }
   },
   "kick_side": {
     "1": {
-      "duration": 0.9,
-      "loop": false,
-      "channels": {
-        "hip_y": [
-          [0, 0],
-          [0.22, 0.02, "inOutSine"],
-          [0.42, 0.04, "inOutSine"],
-          [0.62, 0.02, "inOutSine"],
-          [0.9, 0, "inOutSine"]
-        ],
-        "side_lean": [
-          [0, 0],
-          [0.22, -16, "inOutSine"],
-          [0.42, -28, "inOutSine"],
-          [0.62, -14, "inOutSine"],
-          [0.9, 0, "inOutSine"]
-        ],
-        "twist": [
-          [0, 0],
-          [0.22, -15, "inOutSine"],
-          [0.42, -26, "inOutSine"],
-          [0.62, -12, "inOutSine"],
-          [0.9, 0, "inOutSine"]
-        ],
-        "hip_twist": [
-          [0, 0],
-          [0.22, 32, "inOutSine"],
-          [0.42, 50, "inOutSine"],
-          [0.62, 24, "inOutSine"],
-          [0.9, 0, "inOutSine"]
-        ],
-        "hip_roll": [
-          [0, 0],
-          [0.22, -6, "inOutSine"],
-          [0.42, -12, "inOutSine"],
-          [0.62, -5, "inOutSine"],
-          [0.9, 0, "inOutSine"]
-        ],
-        "head_yaw": [
-          [0, 0],
-          [0.22, -18, "inOutSine"],
-          [0.42, -35, "inOutSine"],
-          [0.62, -15, "inOutSine"],
-          [0.9, 0, "inOutSine"]
-        ],
-        "armL_elev": [
-          [0, -75],
-          [0.22, -35, "inOutSine"],
-          [0.42, -30, "inOutSine"],
-          [0.9, -75, "inOutSine"]
-        ],
-        "armR_elev": [
-          [0, -75],
-          [0.22, -30, "inOutSine"],
-          [0.42, -15, "inOutSine"],
-          [0.9, -75, "inOutSine"]
-        ],
-        "armL_azim": [[0, 0], [0.42, 45, "inOutSine"], [0.9, 0, "inOutSine"]],
-        "armR_azim": [[0, 0], [0.42, 30, "inOutSine"], [0.9, 0, "inOutSine"]],
-        "elbowL": [[0, 10], [0.42, 85, "inOutSine"], [0.9, 10, "inOutSine"]],
-        "elbowR": [[0, 10], [0.42, 75, "inOutSine"], [0.9, 10, "inOutSine"]],
-        "legR_swing": [
-          [0, 0],
-          [0.22, 38, "inOutSine"],
-          [0.42, 26, "inOutSine"],
-          [0.62, 30, "inOutSine"],
-          [0.9, 0, "inOutSine"]
-        ],
-        "legR_abd": [
-          [0, 0],
-          [0.22, 25, "inOutSine"],
-          [0.42, 56, "inOutSine"],
-          [0.62, 28, "inOutSine"],
-          [0.9, 0, "inOutSine"]
-        ],
-        "kneeR": [
-          [0, 3],
-          [0.22, 92, "inOutSine"],
-          [0.42, 6, "inOutSine"],
-          [0.62, 72, "inOutSine"],
-          [0.9, 3, "inOutSine"]
-        ],
-        "footR_pitch": [
-          [0, 0],
-          [0.22, -10, "inOutSine"],
-          [0.42, -18, "inOutSine"],
-          [0.62, -8, "inOutSine"],
-          [0.9, 0, "inOutSine"]
-        ],
-        "legL_swing": [[0, 0], [0.42, 10, "inOutSine"], [0.9, 0, "inOutSine"]],
-        "kneeL": [[0, 3], [0.42, 12, "inOutSine"], [0.9, 3, "inOutSine"]]
-      },
-      "expressions": {
-        "angry": [[0, 0], [0.2, 0.85, "outQuad"], [0.6, 0.85, "hold"], [0.9, 0, "inOutSine"]],
-        "ee": [[0, 0], [0.32, 0.75, "outQuad"], [0.55, 0, "inQuad"]]
-      },
-      "windows": {
-        "hitbox": [0.35, 0.48],
-        "cancel": [0.62, 0.9]
-      },
-      "events": [
-        {
-          "t": 0.35,
-          "type": "sfx",
-          "id": "side_kick_thrust"
-        }
-      ],
-      "claims": {
-        "duration": 0.9,
-        "tolerance": 0.1
-      },
-      "validate": {
-        "foot_slide": false
-      }
+      "duration": "0da77012832485",
+      "loop": "030f8a6393f0aa",
+      "channels": "1810ba2c64ff8b",
+      "expressions": "1bb45ab329d917",
+      "windows": "1ccd57ed3f56c2",
+      "events": "1fd8e0dba63bb3",
+      "claims": "086ddd9133eea4",
+      "validate": "1188925f80337d"
     }
   },
   "kick_low": {
     "1": {
-      "duration": 0.8,
-      "loop": false,
-      "channels": {
-        "hip_y": [
-          [0, 0],
-          [0.2, -0.015, "inOutSine"],
-          [0.4, -0.02, "inOutSine"],
-          [0.8, 0, "inOutSine"]
-        ],
-        "lean": [[0, 0], [0.2, 8, "inOutSine"], [0.4, 15, "inOutSine"], [0.8, 0, "inOutSine"]],
-        "side_lean": [
-          [0, 0],
-          [0.2, 6, "inOutSine"],
-          [0.4, -10, "inOutSine"],
-          [0.8, 0, "inOutSine"]
-        ],
-        "twist": [[0, 0], [0.2, -24, "inOutSine"], [0.4, 28, "inOutSine"], [0.8, 0, "inOutSine"]],
-        "hip_twist": [
-          [0, 0],
-          [0.2, -28, "inOutSine"],
-          [0.4, 38, "inOutSine"],
-          [0.8, 0, "inOutSine"]
-        ],
-        "armL_elev": [
-          [0, -75],
-          [0.2, -40, "inOutSine"],
-          [0.4, -30, "inOutSine"],
-          [0.8, -75, "inOutSine"]
-        ],
-        "armR_elev": [
-          [0, -75],
-          [0.2, -35, "inOutSine"],
-          [0.4, -50, "inOutSine"],
-          [0.8, -75, "inOutSine"]
-        ],
-        "armL_azim": [[0, 0], [0.4, 50, "inOutSine"], [0.8, 0, "inOutSine"]],
-        "armR_azim": [
-          [0, 0],
-          [0.2, 35, "inOutSine"],
-          [0.4, -30, "inOutSine"],
-          [0.8, 0, "inOutSine"]
-        ],
-        "elbowL": [[0, 10], [0.4, 80, "inOutSine"], [0.8, 10, "inOutSine"]],
-        "elbowR": [[0, 10], [0.4, 45, "inOutSine"], [0.8, 10, "inOutSine"]],
-        "legR_swing": [
-          [0, 0],
-          [0.2, -12, "inOutSine"],
-          [0.4, 42, "inOutSine"],
-          [0.6, 18, "inOutSine"],
-          [0.8, 0, "inOutSine"]
-        ],
-        "legR_abd": [
-          [0, 0],
-          [0.2, 18, "inOutSine"],
-          [0.4, 28, "inOutSine"],
-          [0.6, 10, "inOutSine"],
-          [0.8, 0, "inOutSine"]
-        ],
-        "kneeR": [
-          [0, 3],
-          [0.2, 38, "inOutSine"],
-          [0.4, 16, "inOutSine"],
-          [0.6, 30, "inOutSine"],
-          [0.8, 3, "inOutSine"]
-        ],
-        "footR_pitch": [[0, 0], [0.4, 22, "inOutSine"], [0.8, 0, "inOutSine"]],
-        "legL_swing": [
-          [0, 0],
-          [0.2, 18, "inOutSine"],
-          [0.4, 22, "inOutSine"],
-          [0.8, 0, "inOutSine"]
-        ],
-        "kneeL": [[0, 3], [0.2, 28, "inOutSine"], [0.4, 34, "inOutSine"], [0.8, 3, "inOutSine"]],
-        "footL_pitch": [
-          [0, 0],
-          [0.2, -10, "inOutSine"],
-          [0.4, -14, "inOutSine"],
-          [0.8, 0, "inOutSine"]
-        ]
-      },
-      "expressions": {
-        "angry": [[0, 0], [0.18, 0.75, "outQuad"], [0.55, 0.75, "hold"], [0.8, 0, "inOutSine"]],
-        "ih": [[0, 0], [0.3, 0.65, "outQuad"], [0.52, 0, "inQuad"]]
-      },
-      "windows": {
-        "hitbox": [0.32, 0.45],
-        "cancel": [0.55, 0.8]
-      },
-      "events": [
-        {
-          "t": 0.32,
-          "type": "sfx",
-          "id": "low_sweep"
-        }
-      ],
-      "claims": {
-        "duration": 0.8,
-        "tolerance": 0.1
-      },
-      "validate": {
-        "foot_slide": false
-      }
+      "duration": "091312de62206f",
+      "loop": "030f8a6393f0aa",
+      "channels": "0c04f0fe5cb44c",
+      "expressions": "17602092836aff",
+      "windows": "179826206f34ad",
+      "events": "0b404ae262cc29",
+      "claims": "15741e33a2b670",
+      "validate": "1188925f80337d"
     }
   },
   "kick_axe": {
     "1": {
-      "duration": 1,
-      "loop": false,
-      "channels": {
-        "hip_y": [
-          [0, 0],
-          [0.16, -0.05, "inOutSine"],
-          [0.4, 0.22, "outSine"],
-          [0.62, -0.02, "inSine"],
-          [1, 0, "inOutSine"]
-        ],
-        "lean": [
-          [0, 0],
-          [0.16, 14, "inOutSine"],
-          [0.4, -12, "inOutSine"],
-          [0.62, 22, "inOutSine"],
-          [1, 0, "inOutSine"]
-        ],
-        "twist": [
-          [0, 0],
-          [0.16, -18, "inOutSine"],
-          [0.4, 15, "inOutSine"],
-          [0.62, 22, "inOutSine"],
-          [1, 0, "inOutSine"]
-        ],
-        "hip_twist": [
-          [0, 0],
-          [0.16, -15, "inOutSine"],
-          [0.4, 18, "inOutSine"],
-          [0.62, 15, "inOutSine"],
-          [1, 0, "inOutSine"]
-        ],
-        "armL_elev": [
-          [0, -75],
-          [0.16, -60, "inOutSine"],
-          [0.4, 20, "inOutSine"],
-          [0.62, -45, "inOutSine"],
-          [1, -75, "inOutSine"]
-        ],
-        "armR_elev": [
-          [0, -75],
-          [0.16, -60, "inOutSine"],
-          [0.4, 10, "inOutSine"],
-          [0.62, -55, "inOutSine"],
-          [1, -75, "inOutSine"]
-        ],
-        "armL_azim": [[0, 0], [0.4, 45, "inOutSine"], [0.62, 20, "inOutSine"], [1, 0, "inOutSine"]],
-        "armR_azim": [
-          [0, 0],
-          [0.4, 30, "inOutSine"],
-          [0.62, -25, "inOutSine"],
-          [1, 0, "inOutSine"]
-        ],
-        "elbowL": [[0, 10], [0.4, 65, "inOutSine"], [1, 10, "inOutSine"]],
-        "elbowR": [[0, 10], [0.4, 55, "inOutSine"], [1, 10, "inOutSine"]],
-        "legR_swing": [
-          [0, 0],
-          [0.16, 22, "inOutSine"],
-          [0.4, 112, "inOutSine"],
-          [0.62, 22, "inOutSine"],
-          [1, 0, "inOutSine"]
-        ],
-        "kneeR": [
-          [0, 3],
-          [0.16, 35, "inOutSine"],
-          [0.4, 8, "inOutSine"],
-          [0.62, 25, "inOutSine"],
-          [1, 3, "inOutSine"]
-        ],
-        "footR_pitch": [
-          [0, 0],
-          [0.16, -10, "inOutSine"],
-          [0.4, -12, "inOutSine"],
-          [0.62, -8, "inOutSine"],
-          [1, 0, "inOutSine"]
-        ],
-        "legL_swing": [
-          [0, 0],
-          [0.16, 26, "inOutSine"],
-          [0.4, 18, "inOutSine"],
-          [0.62, 18, "inOutSine"],
-          [1, 0, "inOutSine"]
-        ],
-        "kneeL": [
-          [0, 3],
-          [0.16, 42, "inOutSine"],
-          [0.4, 38, "inOutSine"],
-          [0.62, 28, "inOutSine"],
-          [1, 3, "inOutSine"]
-        ],
-        "footL_pitch": [
-          [0, 0],
-          [0.16, -16, "inOutSine"],
-          [0.4, 15, "inOutSine"],
-          [0.62, -10, "inOutSine"],
-          [1, 0, "inOutSine"]
-        ]
-      },
-      "expressions": {
-        "angry": [[0, 0], [0.2, 0.95, "outQuad"], [0.7, 0.95, "hold"], [1, 0, "inOutSine"]],
-        "aa": [[0, 0], [0.35, 0.9, "outQuad"], [0.68, 0, "inQuad"]]
-      },
-      "move": {
-        "dir": [0, 0, 1],
-        "distance": 1.1,
-        "t0": 0.16,
-        "t1": 0.62,
-        "ease": "inOutSine"
-      },
-      "windows": {
-        "hitbox": [0.42, 0.6],
-        "cancel": [0.72, 1]
-      },
-      "events": [
-        {
-          "t": 0.18,
-          "type": "sfx",
-          "id": "axe_jump"
-        },
-        {
-          "t": 0.52,
-          "type": "vfx",
-          "id": "heavy_slam"
-        }
-      ],
-      "claims": {
-        "distance": 1.1,
-        "duration": 1,
-        "tolerance": 0.1
-      },
-      "validate": {
-        "foot_slide": false
-      }
+      "duration": "0546d8e4fa6648",
+      "loop": "030f8a6393f0aa",
+      "channels": "13a51ddc8ba892",
+      "expressions": "1c3fc181ecf30a",
+      "move": "091825239a21e7",
+      "windows": "098ab71a87039b",
+      "events": "1b12b43d3350a4",
+      "claims": "09d9d470a0c76d",
+      "validate": "1188925f80337d"
     }
   },
   "kick_back": {
     "1": {
-      "duration": 0.95,
-      "loop": false,
-      "channels": {
-        "hip_y": [
-          [0, 0],
-          [0.22, 0.01, "inOutSine"],
-          [0.45, 0.03, "inOutSine"],
-          [0.68, 0.01, "inOutSine"],
-          [0.95, 0, "inOutSine"]
-        ],
-        "hip_pitch": [
-          [0, 0],
-          [0.22, 10, "inOutSine"],
-          [0.45, 22, "inOutSine"],
-          [0.68, 10, "inOutSine"],
-          [0.95, 0, "inOutSine"]
-        ],
-        "lean": [
-          [0, 0],
-          [0.22, 12, "inOutSine"],
-          [0.45, 28, "inOutSine"],
-          [0.68, 12, "inOutSine"],
-          [0.95, 0, "inOutSine"]
-        ],
-        "twist": [
-          [0, 0],
-          [0.22, -25, "inOutSine"],
-          [0.45, -45, "inOutSine"],
-          [0.68, -20, "inOutSine"],
-          [0.95, 0, "inOutSine"]
-        ],
-        "hip_twist": [
-          [0, 0],
-          [0.22, -30, "inOutSine"],
-          [0.45, -55, "inOutSine"],
-          [0.68, -25, "inOutSine"],
-          [0.95, 0, "inOutSine"]
-        ],
-        "head_yaw": [
-          [0, 0],
-          [0.22, -30, "inOutSine"],
-          [0.45, -58, "inOutSine"],
-          [0.68, -25, "inOutSine"],
-          [0.95, 0, "inOutSine"]
-        ],
-        "armL_elev": [[0, -75], [0.45, -35, "inOutSine"], [0.95, -75, "inOutSine"]],
-        "armR_elev": [[0, -75], [0.45, -30, "inOutSine"], [0.95, -75, "inOutSine"]],
-        "armL_azim": [[0, 0], [0.45, 40, "inOutSine"], [0.95, 0, "inOutSine"]],
-        "armR_azim": [[0, 0], [0.45, 45, "inOutSine"], [0.95, 0, "inOutSine"]],
-        "elbowL": [[0, 10], [0.45, 80, "inOutSine"], [0.95, 10, "inOutSine"]],
-        "elbowR": [[0, 10], [0.45, 85, "inOutSine"], [0.95, 10, "inOutSine"]],
-        "legR_swing": [
-          [0, 0],
-          [0.22, 25, "inOutSine"],
-          [0.45, -42, "inOutSine"],
-          [0.68, 15, "inOutSine"],
-          [0.95, 0, "inOutSine"]
-        ],
-        "legR_abd": [
-          [0, 0],
-          [0.22, 10, "inOutSine"],
-          [0.45, 18, "inOutSine"],
-          [0.68, 8, "inOutSine"],
-          [0.95, 0, "inOutSine"]
-        ],
-        "kneeR": [
-          [0, 3],
-          [0.22, 80, "inOutSine"],
-          [0.45, 8, "inOutSine"],
-          [0.68, 65, "inOutSine"],
-          [0.95, 3, "inOutSine"]
-        ],
-        "footR_pitch": [[0, 0], [0.45, -18, "inOutSine"], [0.95, 0, "inOutSine"]],
-        "legL_swing": [
-          [0, 0],
-          [0.22, 12, "inOutSine"],
-          [0.45, 26, "inOutSine"],
-          [0.68, 12, "inOutSine"],
-          [0.95, 0, "inOutSine"]
-        ],
-        "kneeL": [
-          [0, 3],
-          [0.22, 8, "inOutSine"],
-          [0.45, 12, "inOutSine"],
-          [0.68, 8, "inOutSine"],
-          [0.95, 3, "inOutSine"]
-        ],
-        "footL_pitch": [[0, 0], [0.45, -6, "inOutSine"], [0.95, 0, "inOutSine"]]
-      },
-      "expressions": {
-        "angry": [[0, 0], [0.22, 0.9, "outQuad"], [0.65, 0.9, "hold"], [0.95, 0, "inOutSine"]],
-        "oh": [[0, 0], [0.38, 0.85, "outQuad"], [0.62, 0, "inQuad"]]
-      },
-      "windows": {
-        "hitbox": [0.38, 0.52],
-        "cancel": [0.68, 0.95]
-      },
-      "events": [
-        {
-          "t": 0.38,
-          "type": "sfx",
-          "id": "back_kick_thrust"
-        }
-      ],
-      "claims": {
-        "duration": 0.95,
-        "tolerance": 0.1
-      },
-      "validate": {
-        "foot_slide": false
-      }
+      "duration": "18bf9963fc344d",
+      "loop": "030f8a6393f0aa",
+      "channels": "1127910736101d",
+      "expressions": "1a1260cac6451a",
+      "windows": "010651313dace1",
+      "events": "000a6eb73afaa6",
+      "claims": "021bd0bc8bee39",
+      "validate": "1188925f80337d"
     }
   },
   "hands_eyes_jaw": {
     "1": {
-      "duration": 3,
-      "loop": true,
-      "channels": {
-        "lean": [[0, 1], [1, 3.5, "inOutSine"], [2, 1, "inOutSine"]],
-        "side_lean": [[0, -1.5], [1, 1.5, "inOutSine"], [2, -1.5, "inOutSine"]],
-        "head_pitch": [[0, 0], [1, -3, "inOutSine"], [2, 0, "inOutSine"]],
-        "head_yaw": [[0, -3], [1, 3, "inOutSine"], [2, -3, "inOutSine"]],
-        "armL_elev": [[0, -76], [1, -73, "inOutSine"], [2, -76, "inOutSine"]],
-        "armR_elev": [[0, -76], [1, -73, "inOutSine"], [2, -76, "inOutSine"]],
-        "elbowL": [[0, 12], [1, 16, "inOutSine"], [2, 12, "inOutSine"]],
-        "elbowR": [[0, 12], [1, 16, "inOutSine"], [2, 12, "inOutSine"]],
-        "kneeL": [[0, 3], [2, 3]],
-        "kneeR": [[0, 3], [2, 3]],
-        "indexR": [[0, 0], [0.8, 0], [1, 0, "linear"], [3, 0, "linear"]],
-        "middleR": [[0, 0], [0.8, 90, "outQuad"], [2.2, 90], [3, 0, "inOutSine"]],
-        "ringR": [[0, 0], [0.8, 90, "outQuad"], [2.2, 90], [3, 0, "inOutSine"]],
-        "littleR": [[0, 0], [0.8, 90, "outQuad"], [2.2, 90], [3, 0, "inOutSine"]],
-        "thumbR": [[0, 0], [0.8, 70, "outQuad"], [2.2, 70], [3, 0, "inOutSine"]],
-        "indexL": [[0, 0], [1.5, 80, "inOutSine"], [3, 0, "inOutSine"]],
-        "middleL": [[0, 0], [1.5, 80, "inOutSine"], [3, 0, "inOutSine"]],
-        "ringL": [[0, 0], [1.5, 80, "inOutSine"], [3, 0, "inOutSine"]],
-        "littleL": [[0, 0], [1.5, 80, "inOutSine"], [3, 0, "inOutSine"]],
-        "spreadR": [[0, 0], [2.2, 0], [2.6, 25, "outQuad"], [3, 0, "inOutSine"]],
-        "eye_yaw": [[0, 0], [0.75, -25, "inOutSine"], [2.25, 25, "inOutSine"], [3, 0, "inOutSine"]],
-        "eye_pitch": [[0, 0], [1.5, 12, "inOutSine"], [3, 0, "inOutSine"]],
-        "jaw_open": [
-          [0, 0],
-          [0.4, 20, "outQuad"],
-          [0.8, 0, "inQuad"],
-          [1.2, 20, "outQuad"],
-          [1.6, 0, "inQuad"],
-          [3, 0]
-        ]
-      },
-      "expressions": {
-        "happy": [[0, 0], [1.5, 0.6, "inOutSine"], [3, 0, "inOutSine"]]
-      },
-      "events": [
-        {
-          "t": 1.5,
-          "type": "sfx",
-          "id": "demo_mid"
-        }
-      ],
-      "claims": {
-        "duration": 3
-      }
+      "duration": "04af17f40567e3",
+      "loop": "156a4c870bf5f4",
+      "channels": "16315abaaba126",
+      "expressions": "0d766e48cac37a",
+      "events": "053c14bc2c4076",
+      "claims": "02fa405da8edd9"
     }
   }
 }

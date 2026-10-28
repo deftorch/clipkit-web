@@ -1,5 +1,5 @@
-import { evalPose } from '../../rig/pose-evaluator.js';
-import { FPS, VRM10_EXPRESSIONS, vn } from './constants.js';
+import { evalPose } from '../../domain/rig/pose-evaluator.js';
+import { FPS, VRM10_EXPRESSIONS, vn } from '../../domain/validation/vrm10/constants.js';
 
 export function buildVrmaGlb(rig, ctx, clip) {
   const dur = clip.duration,
