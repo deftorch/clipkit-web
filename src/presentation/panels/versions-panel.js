@@ -1,7 +1,15 @@
-import { curItem, fmtClip, persist, rebuild, stable } from '../../application/state/clip-store.js';
+import {
+  clipState,
+  curItem,
+  fmtClip,
+  persist,
+  rebuild,
+  stable,
+} from '../../application/state/clip-store.js';
 import { playbackState, setOverlayClip } from '../../application/state/playback-store.js';
 import { rigState } from '../../application/state/rig-store.js';
 import historyData from '../../data/history.json';
+import { defaultClips } from '../../data/index.js';
 import keysData from '../../data/keys.json';
 import limitsData from '../../data/limits.json';
 import { compareClips } from '../../domain/animation/compare.js';
@@ -12,6 +20,7 @@ import { FPS } from '../../domain/math/vec3.js';
 import { el, fmt2 } from '../dom/h.js';
 
 let diffV = null;
+let compareTargetId = null;
 
 export function renderVer(host) {
   if (!host) return;
@@ -89,6 +98,116 @@ export function renderVer(host) {
   }
   host.append(editRow);
 
+  // 2. A/B Kinematic Comparison & 3D Ghost Figure Overlay
+  host.append(el('h3', { text: 'Bandingkan Klip A/B (Kinematika & Overlay 3D)' }));
+
+  const candidateClips = [];
+  const baseDef = defaultClips[c.name];
+  if (baseDef && baseDef !== c) {
+    candidateClips.push({
+      id: '__baseline__',
+      label: `${c.name} (Baseline Default)`,
+      clip: baseDef,
+    });
+  }
+  for (const id of clipState.order || []) {
+    const item = clipState.items[id];
+    if (item?.clip && item.clip !== c) {
+      candidateClips.push({
+        id,
+        label: `${item.clip.name || id} (Tab ${id})`,
+        clip: item.clip,
+      });
+    }
+  }
+
+  if (candidateClips.length > 0) {
+    if (!compareTargetId || !candidateClips.some((cand) => cand.id === compareTargetId)) {
+      compareTargetId = candidateClips[0].id;
+    }
+
+    const selCompare = el('select', { id: 'compareSel', 'aria-label': 'Pilih Klip Pembanding' });
+    for (const cand of candidateClips) {
+      const opt = el('option', { value: cand.id, text: cand.label });
+      if (cand.id === compareTargetId) opt.selected = true;
+      selCompare.append(opt);
+    }
+
+    const targetCand =
+      candidateClips.find((cand) => cand.id === compareTargetId) || candidateClips[0];
+    const targetClip = targetCand.clip;
+
+    const overlayActive = playbackState.showOverlay && playbackState.overlayClip;
+    const overlayBtn = el('button', {
+      class: 'btn' + (overlayActive ? ' primary' : ''),
+      text: overlayActive ? 'A/B Overlay 3D: AKTIF (Oranye)' : 'A/B Overlay 3D: MATI',
+    });
+    overlayBtn.onclick = () => {
+      const nextShow = !playbackState.showOverlay;
+      setOverlayClip(targetClip, nextShow);
+      renderVer(host);
+    };
+
+    selCompare.onchange = () => {
+      compareTargetId = selCompare.value;
+      const newTarget = candidateClips.find((cand) => cand.id === compareTargetId)?.clip;
+      if (playbackState.showOverlay && newTarget) {
+        setOverlayClip(newTarget, true);
+      }
+      renderVer(host);
+    };
+
+    host.append(
+      el(
+        'div',
+        { class: 'btnrow' },
+        selCompare,
+        overlayBtn,
+        el('span', {
+          class: 'hint',
+          text: `lawan: klip kerja di editor (${c.name} v${c.version})`,
+        }),
+      ),
+    );
+
+    if (targetClip) {
+      const comp = compareClips(rigState.rig, rigState.ctx, limitsData, targetClip, c);
+      const diffCard = el(
+        'div',
+        { class: 'diffcard' },
+        el(
+          'div',
+          { class: 'diffrow' },
+          `Durasi:       ${comp.metricsA.duration.toFixed(2)}s -> ${comp.metricsB.duration.toFixed(2)}s (${comp.diff.duration >= 0 ? '+' : ''}${comp.diff.duration}s)`,
+        ),
+        el(
+          'div',
+          { class: 'diffrow' },
+          `Root Travel:  ${comp.metricsA.rootTravel.toFixed(2)}m -> ${comp.metricsB.rootTravel.toFixed(2)}m (${comp.diff.rootTravel >= 0 ? '+' : ''}${comp.diff.rootTravel}m)`,
+        ),
+        el(
+          'div',
+          { class: 'diffrow' },
+          `Airtime:      ${comp.metricsA.airtime.toFixed(2)}s -> ${comp.metricsB.airtime.toFixed(2)}s (${comp.diff.airtime >= 0 ? '+' : ''}${comp.diff.airtime}s)`,
+        ),
+        el(
+          'div',
+          { class: 'diffrow' },
+          `Kecepatan Sudut Maks: ${comp.metricsA.peakAngularSpeed.toFixed(0)}°/s -> ${comp.metricsB.peakAngularSpeed.toFixed(0)}°/s`,
+        ),
+      );
+      host.append(diffCard);
+    }
+  } else {
+    host.append(
+      el('p', {
+        class: 'note',
+        text: 'Buka klip lain di tab atau buat varian baru untuk membandingkan A/B.',
+      }),
+    );
+  }
+
+  // 3. Release Snapshot Diff Section (history.json Hash Fingerprints)
   const hist = historyData[c.name];
   const vs = hist
     ? Object.keys(hist)
@@ -96,12 +215,12 @@ export function renderVer(host) {
         .sort((a, b) => a - b)
     : [];
 
-  host.append(el('h3', { text: 'Bandingkan dengan snapshot' }));
+  host.append(el('h3', { text: 'Bandingkan dengan Snapshot Rilis (history.json)' }));
   if (!vs.length) {
     host.append(
       el('p', {
         class: 'note',
-        text: 'Tidak ada snapshot untuk klip ini. Di repo, snapshot dibuat dengan clip_release.py release <nama>.',
+        text: 'Tidak ada snapshot rilis untuk klip ini di history.json.',
       }),
     );
     return;
@@ -111,28 +230,14 @@ export function renderVer(host) {
     diffV = vs[vs.length - 1];
   }
 
-  const sel = el('select', { id: 'diffSel', 'aria-label': 'Snapshot' });
+  const sel = el('select', { id: 'diffSel', 'aria-label': 'Snapshot Rilis' });
   for (const v of vs) {
-    const o = el('option', { value: v, text: `${c.name}@${v}` });
+    const o = el('option', { value: v, text: `${c.name}@v${v}` });
     if (v === diffV) o.selected = true;
     sel.append(o);
   }
   sel.onchange = () => {
     diffV = +sel.value;
-    if (playbackState.showOverlay && hist[diffV]) {
-      setOverlayClip(hist[diffV], true);
-    }
-    renderVer(host);
-  };
-
-  const overlayActive = playbackState.showOverlay && playbackState.overlayClip;
-  const overlayBtn = el('button', {
-    class: 'btn' + (overlayActive ? ' primary' : ''),
-    text: overlayActive ? 'A/B Overlay: AKTIF (Oranye)' : 'A/B Overlay: MATI',
-  });
-  overlayBtn.onclick = () => {
-    const nextShow = !playbackState.showOverlay;
-    setOverlayClip(hist[diffV], nextShow);
     renderVer(host);
   };
 
@@ -141,41 +246,11 @@ export function renderVer(host) {
       'div',
       { class: 'btnrow' },
       sel,
-      overlayBtn,
-      el('span', { class: 'hint', text: `lawan: klip kerja di editor (v${c.version})` }),
+      el('span', { class: 'hint', text: `fingerprint rilis lawan klip kerja (v${c.version})` }),
     ),
   );
 
-  // Compute and show kinematic metric differences
   const s = hist[diffV];
-  if (s) {
-    const comp = compareClips(rigState.rig, rigState.ctx, limitsData, s, c);
-    const diffCard = el(
-      'div',
-      { class: 'diffcard' },
-      el(
-        'div',
-        { class: 'diffrow' },
-        `Durasi:       ${comp.metricsA.duration.toFixed(2)}s -> ${comp.metricsB.duration.toFixed(2)}s (${comp.diff.duration >= 0 ? '+' : ''}${comp.diff.duration}s)`,
-      ),
-      el(
-        'div',
-        { class: 'diffrow' },
-        `Root Travel:  ${comp.metricsA.rootTravel.toFixed(2)}m -> ${comp.metricsB.rootTravel.toFixed(2)}m (${comp.diff.rootTravel >= 0 ? '+' : ''}${comp.diff.rootTravel}m)`,
-      ),
-      el(
-        'div',
-        { class: 'diffrow' },
-        `Airtime:      ${comp.metricsA.airtime.toFixed(2)}s -> ${comp.metricsB.airtime.toFixed(2)}s (${comp.diff.airtime >= 0 ? '+' : ''}${comp.diff.airtime}s)`,
-      ),
-      el(
-        'div',
-        { class: 'diffrow' },
-        `Kecepatan Sudut Maks: ${comp.metricsA.peakAngularSpeed.toFixed(0)}°/s -> ${comp.metricsB.peakAngularSpeed.toFixed(0)}°/s`,
-      ),
-    );
-    host.append(diffCard);
-  }
   const dk = keysData.behaviorKeys.filter((k) => stable(c[k]) !== stable(s[k]));
   if (!dk.length) {
     host.append(
@@ -218,10 +293,10 @@ export function renderVer(host) {
     }
   }
 
-  if (dk.includes('channels')) {
+  if (dk.includes('channels') && s.channels && typeof s.channels === 'object') {
     const names = new Set([...Object.keys(s.channels || {}), ...Object.keys(c.channels || {})]);
     const rows = [];
-    const dur = Math.max(s.duration, c.duration);
+    const dur = Math.max(s.duration || 0, c.duration || 0);
     const rig = rigState.rig;
 
     for (const n of names) {

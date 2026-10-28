@@ -3248,12 +3248,36 @@ const defaultClips = {
   hands_eyes_jaw
 };
 function computeClipMetrics(rig, ctx, limits, clip, style = "stylized") {
-  const dur = clip.duration || 1;
-  const frames = Math.ceil(dur * FPS - 1e-9);
+  if (!clip || typeof clip !== "object" || typeof clip.duration !== "number" || Number.isNaN(clip.duration) || clip.duration <= 0 || !clip.channels || typeof clip.channels !== "object") {
+    return {
+      name: clip?.name || "invalid",
+      duration: 0,
+      rootTravel: 0,
+      airtime: 0,
+      peakAngularSpeed: 0,
+      peakJoint: "",
+      jointSpeeds: {},
+      issues: { fail: 0, warn: 0 }
+    };
+  }
+  const dur = clip.duration;
+  const frames = Math.max(1, Math.ceil(dur * FPS - 1e-9));
   const tAt = (f) => Math.min(f / FPS, dur);
   const poses = [];
   for (let f = 0; f <= frames; f++) {
     poses.push(evalPose(rig, ctx, clip, tAt(f)));
+  }
+  if (!poses.length || !poses[0] || !poses[frames]) {
+    return {
+      name: clip.name || "unnamed",
+      duration: dur,
+      rootTravel: 0,
+      airtime: 0,
+      peakAngularSpeed: 0,
+      peakJoint: "",
+      jointSpeeds: {},
+      issues: { fail: 0, warn: 0 }
+    };
   }
   const I = ctx.idx;
   const restPos = restPositions(ctx);
