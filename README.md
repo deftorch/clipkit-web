@@ -166,6 +166,8 @@ npm run build
 
 ## Programmatic & Agent Integration
 
+> **Note**: the `window` globals below are the current integration point. They are planned to be replaced by one documented agent API and a headless, non-interactive CLI (`clipkit check`, `sheet`, `export`; see `ROADMAP.md`, Track C, Phases C0.9 and C1). The CLI does not exist yet.
+
 ClipKit exposes its core engine to the browser global scope (`window.ClipKit` and `window.__clipkit`), enabling headless automated browser agents (such as Playwright, Puppeteer, or IDE subagents) to run validation and export programmatically:
 
 ```javascript
@@ -210,3 +212,5 @@ clipkit-web/
 │   └── data/                    # Default MotusMan/VRM rigs & 14 reference JSON clips
 └── tests/                       # Unit tests (golden pose evaluator & VRM parser)
 ```
+
+Planned additions (not present yet; see `ROADMAP.md` Track C): `src/application/ports/`, `src/cli/`, `skills/clipkit/`, and `src/infrastructure/vrma/` (the `.vrma` exporter moves there from `src/domain/validation/vrm10/`).

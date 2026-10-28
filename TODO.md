@@ -48,17 +48,120 @@ This document tracks all immediate fixes, quality hardening tasks, and roadmap m
 
 ---
 
-## Milestone 1: AI Vision & Contact Sheet Exporter (ROADMAP Phase 1)
+## Milestone Map (ROADMAP Track C is executed first)
 
-- [ ] Implement headless multi-frame pose strip renderer in `src/presentation/viewport/contact-sheet-renderer.js`.
-- [ ] Support configurable frame count (e.g. 6 to 12 poses) with silhouette contrast mode.
-- [ ] Overlay distal extremity motion arcs (hands, feet, head) directly on the contact sheet image.
-- [ ] Add `Export Contact Sheet` button in the UI and expose `window.ClipKit.renderContactSheet(...)`.
-- [ ] Format structured image metadata payload (timestamps, camera perspective, root bounding box) for multimodal AI agent prompt ingestion.
+| Milestone | ROADMAP | Summary |
+|---|---|---|
+| 0 | n/a | Critical fixes and quality hardening (done) |
+| 1 | Phase C0 | Architecture hardening: rule registry, ports, enforced layers |
+| 2 | Phase C1 (+ Phase 1) | Agent CLI, structured diagnostics, headless contact sheet |
+| 3 | Phase C2 | Modular composition, branching variants, compare |
+| 4 | Phase C3 | Agent skill packaging |
+| 5 | Phase 2 | Overlap and kinetic chain engine |
+| 6 | Phases 3, 4, 5 | VRMA/GLB importer, inverse solver, BVH ingestion |
+| 7 | Phase 6 | Foot IK, procedural micro-dynamics, CoM validator |
+
+The former Milestone 1 (AI Vision & Contact Sheet) is merged into Milestone 2, because a contact sheet that agents can use must render headless. Former Milestones 2-4 are renumbered 5-7.
 
 ---
 
-## Milestone 2: Automated Overlap & Kinetic Chain Engine (ROADMAP Phase 2)
+## Milestone 1: Architecture Hardening (ROADMAP Phase C0, prerequisite for the CLI)
+
+- [ ] First: record `validate()` output (all lines and FAIL/WARN counts) for the 14 reference clips under each style (`realistic`, `stylized`, `exaggerated`) in `tests/fixtures/validation-baseline.json`, and add a test asserting it is reproduced exactly. The refactor below must keep it green.
+- [ ] Replace the monolithic `validate()` with a rule registry: each rule in `src/domain/validation/rules/*.js` exposes `check({ rig, clip, limits })` (angular-speed, anatomy, floor, root-motion, windows, loop, vrm10, version). `validate()` only runs the registered rules and merges results.
+- [ ] Add one unit test per rule.
+- [ ] Move `vrma-exporter.js` from `src/domain/validation/vrm10/` to `src/infrastructure/vrma/`.
+- [ ] Define ports in `src/application/ports/`: `ClipRepository`, `MeshRenderer` (`pose`, `render`), `MeshLoader` (`load`, `unload`), `RigLoader`.
+- [ ] Implement `ClipRepository` with `localStorage` in infrastructure; remove `localStorage` from `clip-store.js`.
+- [ ] Move DOM and `window` access out of `application/theme.js` into presentation; provide a constant palette usable without a DOM.
+- [ ] Remove imports of `infrastructure/` from `application/` (rig store) and `presentation/` (viewport controller); inject the implementations from `main.js`.
+- [ ] Reduce `main.js` to a composition root: move `drawScene` to `presentation/viewport/scene-renderer.js` and the frame loop to a playback controller.
+- [ ] Replace the hard-coded lists in `refreshAll()` and `setTab()` with a panel registry that panels register into.
+- [ ] Replace the `if/else` on channel type and the `switch` on easing with registries.
+- [ ] Split `clip-store.js` responsibilities: text formatting, version snapshots, rebuild pipeline (parse, schema check, validate), and selection.
+- [ ] `src/data/history.json`: do not simply delete the entries. It duplicates the behavior keys of every reference clip and feeds `snapshotLines()`; removing it would make all 14 clips report "not released". Replace the copies with a content hash per released version (or move the record into the variant manifest) and keep the version-bump check passing.
+- [ ] Replace the `window.ClipKit`, `window.VrmRig`, `window.VrmView` and `window.__clipkit` globals with one documented agent API.
+- [ ] Add `tests/architecture.test.js` that fails on forbidden imports (domain imports nothing outside domain; application imports domain only; infrastructure imports domain only; presentation imports application and domain). `src/main.js` and `src/cli/` are composition roots and may import any layer.
+- [ ] Update `CONTRIBUTING.md` once the boundary test exists (it currently lists the known deviations).
+
+**Done when**: the golden-pose, VRM and round-trip tests pass unchanged, the boundary test passes, and `npm run build` still produces a single-file bundle.
+
+---
+
+## Milestone 2: Agent CLI & Structured Diagnostics (ROADMAP Phase C1, absorbs Phase 1)
+
+### Diagnostics
+- [ ] Structured issue model `{ level, rule, channel, joint, t, value, limit, unit, keys, hint }` with stable rule codes; keep the text lines for the UI.
+- [ ] Compute actionable `hint` values (for example minimum key spacing for a speed limit, maximum amplitude for a joint).
+- [ ] Run schema validation first, reporting the location of the problem and "did you mean" suggestions for unknown channel names (for example `neck_pitch` to `head_pitch`).
+- [ ] Decide the canonical message language (see ROADMAP Open Decisions); rule codes are language-neutral either way.
+
+### Commands and contract
+- [ ] `bin` entry in `package.json` and commands: `check`, `validate`, `schema`, `channels --part <part>`, `rules`, `export`, `sheet`.
+- [ ] `--help` on every command with one example.
+- [ ] Non-interactive contract: exit codes `0` pass, `1` validation failures, `2` usage or unreadable input, `3` internal error.
+- [ ] Options `--json`, `--fail-on warn|fail`, `--max-issues`, and `-` for stdin/stdout.
+- [ ] Deterministic output: no timestamps, no network, byte-identical JSON for identical input.
+- [ ] Compact default output: summary first, issues sorted by severity, repeated issues grouped with a count; per-frame data only with `--verbose`.
+- [ ] `--part face|hands|arms|legs|torso` runs only the relevant rules.
+- [ ] Output policy: write files only into explicitly named directories, refuse paths outside the working directory unless `--allow-outside`, never overwrite without `--force`.
+- [ ] Declare `engines` in `package.json` consistent with the Node version stated in the README.
+
+### Headless contact sheet (former Milestone 1)
+- [ ] Headless renderer reusing `drawFigure`, `drawTrails` and `drawTimeline` with a Node canvas implementation; SVG fallback if the native canvas is unavailable.
+- [ ] Configurable frame count (6 to 12 poses) with silhouette contrast mode and multi-view output.
+- [ ] Annotations inside the image: frame timestamps, gameplay window bands (`hitbox`, `cancel`, `parry`, `inv`), distal motion arcs (hands, feet, head), grid scale.
+- [ ] Fixed camera and scale so two variants are directly comparable.
+- [ ] JSON metadata sidecar: frame timestamps, camera, root travel and bounding box.
+- [ ] `Export Contact Sheet` button in the UI and `renderContactSheet(...)` on the agent API.
+- [ ] Combined command `check <clip> --sheet <dir> --json` returning a compact summary and absolute image paths.
+
+### Packaging
+- [ ] Bundle the CLI as a single file without three.js and record a start-up time budget.
+- [ ] CLI golden tests asserting JSON output and sheet metadata (not pixels).
+
+**Done when**: an agent can run one command on a clip and receive structured issues plus an annotated image, and the same clip always yields identical JSON.
+
+---
+
+## Milestone 3: Modular Composition & Variants (ROADMAP Phase C2)
+
+- [ ] `src/data/parts.json`: partition every channel, `expressions`, `aims` and `move` into face, hands, arms, torso, legs and root.
+- [ ] Add `layers: [{ ref, channels, mode, offset }]` to the clip schema (`channels` supports globs; `mode` is `override` or `additive`); decide `format_version` (see ROADMAP Open Decisions).
+- [ ] `src/domain/animation/compose.js`: a pure `composeClips()` returning an ordinary clip.
+- [ ] WARN when two layers write the same channel; require `additive` mode for shared torso channels.
+- [ ] Validate each layer with only its relevant rules, then validate the composite as a whole.
+- [ ] Variants: a folder per clip with immutable versions and a `manifest.json` (`parent`, `note`, metrics).
+- [ ] `clipkit version <clip> --parent <v> --note "..."` creates a child version and refuses to overwrite without `--force`.
+- [ ] `clipkit compare a b`: per-joint metric differences (peak angular speed, airtime, root travel, FAIL/WARN counts) plus a side-by-side image with differently colored motion arcs.
+- [ ] Deterministic edit operations: `mirror`, `retime`, `scale-amplitude`, `close-loop`.
+- [ ] `clipkit compose <clip>` flattens layers into a normal clip.
+- [ ] Add `layers` to `behaviorKeys` in `src/data/keys.json` so the version diff and the behavior-change check see layer edits.
+- [ ] Write and review the per-field merge semantics (channels, aims, positions, windows, events, move, expressions, duration) before implementing `composeClips()`; add one test per rule (ROADMAP Open Decision 6).
+- [ ] `mirror`: implement the rule table in ROADMAP C2.6 (swap L/R; negate `side_lean`, `twist`, `hip_twist`, `hip_roll`, `head_yaw`, `hip_x` and aim `_roll`; keep the rest), including expression and `planted_L`/`planted_R` swapping.
+- [ ] Mirror tests: `mirror(mirror(clip))` equals `clip`, and joint positions equal their reflection within 1e-4 m on a set of poses.
+- [ ] Pose library: `src/data/poses/*.json` (single-keyframe poses tagged by part), `ref` support in layers, and `clipkit poses list|show`.
+- [ ] UI: variant tree or switcher and an A/B overlay in the viewport.
+
+**Done when**: a jump clip, a punch-arm layer and a face layer compose into one clip that validates and exports to `.vrma`, and two variants of the jump can be compared by metrics and image without losing either.
+
+---
+
+## Milestone 4: Agent Skill Packaging (ROADMAP Phase C3)
+
+- [ ] `skills/clipkit/SKILL.md` with a pushy trigger description and workflow rules: one body part per task, one variant per request, validate and look at the sheet every iteration, never overwrite versions, compose last.
+- [ ] References: `dsl.md`, `channels.md` (generated from the rig JSON), `validation-fixes.md`, `face.md`, `hands.md`, `locomotion.md`, `combat.md`, `animation-principles.md`.
+- [ ] `assets/examples/`: three to four reference clips that pass validation.
+- [ ] `npm run build:skill`: bundle the CLI into `scripts/clipkit.mjs` and regenerate the generated references.
+- [ ] Staged release: v0 needs only Milestone 2 `validate` and `export`; v1 adds `sheet` and per-part references; v2 adds `compare`, variants and `compose`.
+- [ ] Evals: "make a jump" (zero FAIL, saved as a new version), "make a floatier variant" (new child version, parent untouched), "add an angry face to this clip" (only face channels change).
+- [ ] Package as a `.skill` file and document the `.claude/skills/` setup for repository-based use.
+
+**Done when**: the evals pass with the skill and measurably better than without it, and the skill's generated references match the code.
+
+---
+
+## Milestone 5: Automated Overlap & Kinetic Chain Engine (ROADMAP Phase 2)
 
 - [ ] Create domain module `src/domain/animation/overlap-processor.js`.
 - [ ] Implement hierarchical propagation delays:
@@ -67,17 +170,20 @@ This document tracks all immediate fixes, quality hardening tasks, and roadmap m
 - [ ] Add motion rhythm templates (`Anticipation -> Acceleration -> Overshoot -> Settle`).
 - [ ] Add UI controls in Editor JSON panel to preview and bake procedural overlap non-destructively.
 
+- [ ] Expose overlap as a deterministic CLI operation and as a layer effect (see Milestone 3).
+
 ---
 
-## Milestone 3: Inbound Ingestion & Inverse Solver (ROADMAP Phases 3, 4, 5)
+## Milestone 6: Inbound Ingestion & Inverse Solver (ROADMAP Phases 3, 4, 5)
 
 ### Phase 3: VRMA & Animated GLB Importer
-- [ ] Implement `src/infrastructure/vrm/vrma-importer.js` to parse glTF animation tracks (`VRMC_vrm_animation`).
+- [ ] Implement `src/infrastructure/vrma/vrma-importer.js` (beside the exporter moved in Milestone 1) to parse glTF animation tracks (`VRMC_vrm_animation`).
 - [ ] Convert source rest orientations (A-pose to T-pose) and scale root displacements to model leg length.
 - [ ] Implement drag-and-drop ingestion handler in UI for `.vrma` and `.glb` files.
 
 ### Phase 4: Inverse Semantic Solver & Keyframe Compressor
 - [ ] Implement `src/domain/animation/inverse-solver.js` to derive semantic rotation channels (`lean`, `twist`, `armR_elev`, `armR_azim`, `kneeL`) from raw 3D bone orientation vectors.
+- [ ] Implement a zero-phase jitter filter on the semantic channels before reduction (per-part cutoff; do not smooth across `hold` easings or window boundaries) and report residual noise per channel.
 - [ ] Implement Ramer-Douglas-Peucker (RDP) curve simplification with easing curve fitting (`linear`, `inOutSine`, `outQuad`).
 - [ ] Output compression report displaying raw sample reduction count and angular loss metrics per joint.
 
@@ -88,8 +194,9 @@ This document tracks all immediate fixes, quality hardening tasks, and roadmap m
 
 ---
 
-## Milestone 4: Procedural Dynamics & Analytic Foot IK (ROADMAP Phase 6)
+## Milestone 7: Procedural Dynamics & Analytic Foot IK (ROADMAP Phase 6)
 
 - [ ] Implement two-bone analytic foot IK solver in `src/domain/rig/foot-ik-solver.js` to firmly plant foot transforms during contact intervals.
+- [ ] Share one definition of "planted" between the foot-slide rule and the IK solver (a domain helper reading `windows.planted_L`/`planted_R`); the foot-slide check must pass on clips with planted windows after IK.
 - [ ] Add procedural idle micro-dynamics (thoracic breathing oscillation, weight shift, anticipatory eye saccades).
-- [ ] Implement Center of Mass (CoM) floor polygon balance projection validator.
+- [ ] Implement Center of Mass (CoM) floor polygon balance projection validator as a new rule module in the validation rule registry (Milestone 1).

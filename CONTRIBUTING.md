@@ -30,13 +30,24 @@ npm test
 
 ## Architecture & Code Organization
 
-ClipKit Web follows **Clean Architecture** principles. When adding or modifying code, adhere to layer boundaries:
+ClipKit Web is organized in four layers plus data. The dependency rule is:
 
-- `src/domain/`: Pure business logic (mathematics, keyframe sampling, Forward Kinematics, rules engine). **Zero external dependencies.**
-- `src/infrastructure/`: Drivers and adapters (Three.js 3D rendering, binary glTF / VRM parsers).
-- `src/application/`: State stores (playback, clip collection, camera, theme).
-- `src/presentation/`: User interface components, canvas 2D renderers, viewport controls, and timeline scrubber.
+```
+presentation -> application -> domain
+infrastructure -> domain
+```
+
+`domain` imports nothing outside `domain`. `application` defines the ports it needs (state, storage, rendering, loading); `infrastructure` implements them; `main.js` is the only place that wires implementations together.
+
+- `src/domain/`: Pure business logic (mathematics, keyframe sampling, Forward Kinematics, validation rules). No DOM, `window`, `localStorage` or Three.js.
+- `src/application/`: State stores and use cases that depend on ports, not on concrete adapters.
+- `src/infrastructure/`: Drivers and adapters (Three.js mesh rendering, binary glTF / VRM parsing, storage, export).
+- `src/presentation/`: User interface components, canvas 2D renderers, viewport controls, and the timeline scrubber.
 - `src/data/`: Default rigs, animation clips, and validation limits.
+
+**Known deviations.** The rule is the target, and it is not fully enforced yet. Today `src/application/state/rig-store.js` imports the Three.js renderer and the GLB/VRM parsers, `src/presentation/viewport/viewport-controller.js` imports the Three.js renderer, `src/application/state/clip-store.js` reads and writes `localStorage`, `src/application/theme.js` uses `document` and `window`, and `src/main.js` still contains scene rendering (`drawScene`) and the `window.ClipKit`, `window.VrmRig`, `window.VrmView` and `window.__clipkit` globals. These are tracked in `TODO.md` (Milestone 1: Architecture Hardening). New code must not add to them, and changes that touch these areas should move them toward the rule.
+
+**Adding things.** New validation rules, panels, channel types and easing curves should be added as new modules that register themselves, rather than by extending an existing function or list. See `ROADMAP.md` Phase C0.
 
 ---
 
@@ -46,6 +57,7 @@ ClipKit Web follows **Clean Architecture** principles. When adding or modifying 
 2. **Formatting**: Ensure 2 spaces indentation, LF line endings, and trimmed whitespace (enforced via `.editorconfig`).
 3. **No Breakages in Single-File Bundling**: The project must always successfully build with `npm run build` using `vite-plugin-singlefile`.
 4. **Unit Tests**: Any change to domain logic (math, pose evaluation, validation rules, or exporter) must include corresponding test coverage under `tests/`.
+5. **Agent-Facing Output**: Validation output is consumed by AI agents as well as people. Messages should name the joint or channel, the measured value, the limit and the time. Once the structured issue model lands (`TODO.md` Milestone 2), rule codes are treated as public API and are not renamed or removed without a documented change.
 
 ---
 
