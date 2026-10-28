@@ -24,6 +24,23 @@ export function exportVrma(it = curItem(), rig = rigState.rig, ctx = rigState.ct
   setTimeout(() => URL.revokeObjectURL(a.href), 1500);
 }
 
+export function exportContactSheet(
+  it = curItem(),
+  rig = rigState.rig,
+  ctx = rigState.ctx,
+  renderer,
+) {
+  if (!it || !it.clip || typeof renderer !== 'function') return;
+  const res = renderer(rig, ctx, it.clip, { frameCount: 8 });
+  if (!res || !res.svg) return;
+  const blob = new Blob([res.svg], { type: 'image/svg+xml' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${it.clip.name || 'anim'}_sheet.svg`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+}
+
 export function initTransport({
   bPlay,
   bPrev,
@@ -35,7 +52,9 @@ export function initTransport({
   cOnion,
   cFollow,
   bVrma,
+  bSheet,
   onExportVrma,
+  onExportContactSheet,
   onDirty,
   onSelectClip,
 }) {
@@ -113,6 +132,14 @@ export function initTransport({
     bVrma.onclick = () => {
       if (onExportVrma) {
         onExportVrma(curItem(), rigState.rig, rigState.ctx);
+      }
+    };
+  }
+
+  if (bSheet) {
+    bSheet.onclick = () => {
+      if (onExportContactSheet) {
+        onExportContactSheet(curItem(), rigState.rig, rigState.ctx);
       }
     };
   }

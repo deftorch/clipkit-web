@@ -10,6 +10,7 @@ export function validate(
   clip,
   style = 'stylized',
   registry = defaultRuleRegistry,
+  options = {},
 ) {
   const dur = clip.duration,
     frames = Math.ceil(dur * FPS - 1e-9);
@@ -34,6 +35,7 @@ export function validate(
   };
 
   const lines = [];
+  const issues = [];
   let speedSeries = null;
   let rootSpeed = null;
 
@@ -44,11 +46,38 @@ export function validate(
     for (const line of ruleLines) {
       lines.push(line);
     }
+    if (result.issues && Array.isArray(result.issues)) {
+      for (const issue of result.issues) {
+        issues.push(issue);
+      }
+    }
     if (result.speedSeries) speedSeries = result.speedSeries;
     if (result.rootSpeed) rootSpeed = result.rootSpeed;
   }
 
-  const fail = lines.filter((l) => l[0] === 'FAIL').length,
-    warn = lines.filter((l) => l[0] === 'WARN').length;
-  return { lines, fail, warn, poses, floorY, speedSeries, rootSpeed, frames };
+  let filteredIssues = issues;
+  if (options.part && options.parts && options.parts[options.part]) {
+    const partDef = options.parts[options.part];
+    const chSet = new Set(partDef.channels || []);
+    const jtSet = new Set(partDef.joints || []);
+    filteredIssues = issues.filter((iss) => {
+      if (iss.channel && chSet.has(iss.channel)) return true;
+      if (iss.joint && jtSet.has(iss.joint)) return true;
+      return false;
+    });
+  }
+
+  const fail = lines.filter((l) => l[0] === 'FAIL').length;
+  const warn = lines.filter((l) => l[0] === 'WARN').length;
+  return {
+    lines,
+    fail,
+    warn,
+    poses,
+    floorY,
+    speedSeries,
+    rootSpeed,
+    frames,
+    issues: filteredIssues,
+  };
 }

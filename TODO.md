@@ -91,34 +91,34 @@ The former Milestone 1 (AI Vision & Contact Sheet) is merged into Milestone 2, b
 ## Milestone 2: Agent CLI & Structured Diagnostics (ROADMAP Phase C1, absorbs Phase 1)
 
 ### Diagnostics
-- [ ] Structured issue model `{ level, rule, channel, joint, t, value, limit, unit, keys, hint }` with stable rule codes; keep the text lines for the UI.
-- [ ] Compute actionable `hint` values (for example minimum key spacing for a speed limit, maximum amplitude for a joint).
-- [ ] Run schema validation first, reporting the location of the problem and "did you mean" suggestions for unknown channel names (for example `neck_pitch` to `head_pitch`).
-- [ ] Decide the canonical message language (see ROADMAP Open Decisions); rule codes are language-neutral either way.
+- [x] Structured issue model `{ level, rule, channel, joint, t, value, limit, unit, keys, hint }` with stable rule codes; keep the text lines for the UI.
+- [x] Compute actionable `hint` values (for example minimum key spacing for a speed limit, maximum amplitude for a joint).
+- [x] Run schema validation first, reporting the location of the problem and "did you mean" suggestions for unknown channel names (for example `neck_pitch` to `head_pitch`).
+- [x] Decide the canonical message language (see ROADMAP Open Decisions); rule codes are language-neutral either way.
 
 ### Commands and contract
-- [ ] `bin` entry in `package.json` and commands: `check`, `validate`, `schema`, `channels --part <part>`, `rules`, `export`, `sheet`.
-- [ ] `--help` on every command with one example.
-- [ ] Non-interactive contract: exit codes `0` pass, `1` validation failures, `2` usage or unreadable input, `3` internal error.
-- [ ] Options `--json`, `--fail-on warn|fail`, `--max-issues`, and `-` for stdin/stdout.
-- [ ] Deterministic output: no timestamps, no network, byte-identical JSON for identical input.
-- [ ] Compact default output: summary first, issues sorted by severity, repeated issues grouped with a count; per-frame data only with `--verbose`.
-- [ ] `--part face|hands|arms|legs|torso` runs only the relevant rules.
-- [ ] Output policy: write files only into explicitly named directories, refuse paths outside the working directory unless `--allow-outside`, never overwrite without `--force`.
-- [ ] Declare `engines` in `package.json` consistent with the Node version stated in the README.
+- [x] `bin` entry in `package.json` and commands: `check`, `validate`, `schema`, `channels --part <part>`, `rules`, `export`, `sheet`.
+- [x] `--help` on every command with one example.
+- [x] Non-interactive contract: exit codes `0` pass, `1` validation failures, `2` usage or unreadable input, `3` internal error.
+- [x] Options `--json`, `--fail-on warn|fail`, `--max-issues`, and `-` for stdin/stdout.
+- [x] Deterministic output: no timestamps, no network, byte-identical JSON for identical input.
+- [x] Compact default output: summary first, issues sorted by severity, repeated issues grouped with a count; per-frame data only with `--verbose`.
+- [x] `--part face|hands|arms|legs|torso` runs only the relevant rules.
+- [x] Output policy: write files only into explicitly named directories, refuse paths outside the working directory unless `--allow-outside`, never overwrite without `--force`.
+- [x] Declare `engines` in `package.json` consistent with the Node version stated in the README.
 
 ### Headless contact sheet (former Milestone 1)
-- [ ] Headless renderer reusing `drawFigure`, `drawTrails` and `drawTimeline` with a Node canvas implementation; SVG fallback if the native canvas is unavailable.
-- [ ] Configurable frame count (6 to 12 poses) with silhouette contrast mode and multi-view output.
-- [ ] Annotations inside the image: frame timestamps, gameplay window bands (`hitbox`, `cancel`, `parry`, `inv`), distal motion arcs (hands, feet, head), grid scale.
-- [ ] Fixed camera and scale so two variants are directly comparable.
-- [ ] JSON metadata sidecar: frame timestamps, camera, root travel and bounding box.
-- [ ] `Export Contact Sheet` button in the UI and `renderContactSheet(...)` on the agent API.
-- [ ] Combined command `check <clip> --sheet <dir> --json` returning a compact summary and absolute image paths.
+- [x] Headless renderer reusing `drawFigure`, `drawTrails` and `drawTimeline` with a Node canvas implementation; SVG fallback if the native canvas is unavailable.
+- [x] Configurable frame count (6 to 12 poses) with silhouette contrast mode and multi-view output.
+- [x] Annotations inside the image: frame timestamps, gameplay window bands (`hitbox`, `cancel`, `parry`, `inv`), distal motion arcs (hands, feet, head), grid scale.
+- [x] Fixed camera and scale so two variants are directly comparable.
+- [x] JSON metadata sidecar: frame timestamps, camera, root travel and bounding box.
+- [x] `Export Contact Sheet` button in the UI and `renderContactSheet(...)` on the agent API.
+- [x] Combined command `check <clip> --sheet <dir> --json` returning a compact summary and absolute image paths.
 
 ### Packaging
-- [ ] Bundle the CLI as a single file without three.js and record a start-up time budget.
-- [ ] CLI golden tests asserting JSON output and sheet metadata (not pixels).
+- [x] Bundle the CLI as a single file without three.js and record a start-up time budget.
+- [x] CLI golden tests asserting JSON output and sheet metadata (not pixels).
 
 **Done when**: an agent can run one command on a clip and receive structured issues plus an annotated image, and the same clip always yields identical JSON.
 

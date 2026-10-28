@@ -28,6 +28,7 @@ import { renderPipe } from './presentation/components/pipeline-status.js';
 import { initTransport, syncPlayBtn } from './presentation/components/transport.js';
 import { PlaybackController } from './presentation/controllers/playback-controller.js';
 import { $ } from './presentation/dom/h.js';
+import { renderContactSheet } from './presentation/export/contact-sheet-renderer.js';
 import { renderAbout } from './presentation/panels/about-panel.js';
 import { renderCurves, updatePlayhead } from './presentation/panels/curves-panel.js';
 import { renderEditor, syncEditor } from './presentation/panels/editor-panel.js';
@@ -220,12 +221,24 @@ initTransport({
   cOnion: $('#cOnion'),
   cFollow: $('#cFollow'),
   bVrma: $('#bVrma'),
+  bSheet: $('#bSheet'),
   onExportVrma: (it, rig, ctx) => {
     if (!it || !it.clip) return;
     const blob = buildVrmaGlb(rig, ctx, it.clip);
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = (it.clip.name || 'anim') + '.vrma';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+  },
+  onExportContactSheet: (it, rig, ctx) => {
+    if (!it || !it.clip) return;
+    const res = renderContactSheet(rig, ctx, it.clip, { frameCount: 8 });
+    if (!res || !res.svg) return;
+    const blob = new Blob([res.svg], { type: 'image/svg+xml' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `${it.clip.name || 'anim'}_sheet.svg`;
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 1500);
   },
@@ -333,6 +346,7 @@ requestAnimationFrame(renderFrame);
 const agentApi = createAgentApi({
   onExportVrma: (it, rig, ctx) => buildVrmaGlb(rig, ctx, it.clip),
   onRefreshAll: refreshAll,
+  onRenderContactSheet: (rig, ctx, clip, opts) => renderContactSheet(rig, ctx, clip, opts),
 });
 
 window.clipkit = agentApi;

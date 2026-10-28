@@ -1,7 +1,10 @@
+import { createIssue, RULE_CODES } from './rule-codes.js';
+
 export function check({ limits, clip, style = 'stylized', poses, frames, FPS = 30 }) {
   const lim = limits.styles[style];
   const dur = clip.duration;
   const lines = [];
+  const issues = [];
 
   const r0 = poses[0].root,
     r1 = poses[frames].root,
@@ -22,30 +25,84 @@ export function check({ limits, clip, style = 'stylized', poses, frames, FPS = 3
   }
   if (rMax > 0.01) {
     const t = `kecepatan root maks ${rMax.toFixed(1)} m/s @${rMaxT.toFixed(2)}s`;
-    if (rMax > lim.root_speed_fail)
+    if (rMax > lim.root_speed_fail) {
       lines.push(['FAIL', `${t} > ${lim.root_speed_fail} (terasa seperti teleport)`]);
-    else if (rMax > lim.root_speed_warn) lines.push(['WARN', `${t} > ${lim.root_speed_warn}`]);
-    else lines.push(['PASS', t]);
+      issues.push(
+        createIssue({
+          level: 'FAIL',
+          rule: RULE_CODES.ROOT_MOTION_SPEED,
+          joint: 'root',
+          t: rMaxT,
+          value: rMax,
+          limit: lim.root_speed_fail,
+          unit: 'm/s',
+          hint: `Smooth root motion translation or reduce displacement near t=${rMaxT.toFixed(2)}s.`,
+        }),
+      );
+    } else if (rMax > lim.root_speed_warn) {
+      lines.push(['WARN', `${t} > ${lim.root_speed_warn}`]);
+      issues.push(
+        createIssue({
+          level: 'WARN',
+          rule: RULE_CODES.ROOT_MOTION_SPEED,
+          joint: 'root',
+          t: rMaxT,
+          value: rMax,
+          limit: lim.root_speed_warn,
+          unit: 'm/s',
+          hint: `Smooth root motion translation or reduce displacement near t=${rMaxT.toFixed(2)}s.`,
+        }),
+      );
+    } else {
+      lines.push(['PASS', t]);
+    }
   }
   const cl = clip.claims || {};
   if (cl.distance != null) {
     const tol = cl.tolerance ?? 0.1;
+    const isDistPass = Math.abs(dist - cl.distance) <= cl.distance * tol;
     lines.push([
-      Math.abs(dist - cl.distance) <= cl.distance * tol ? 'PASS' : 'FAIL',
+      isDistPass ? 'PASS' : 'FAIL',
       `klaim jarak ${cl.distance.toFixed(2)} m (±${Math.round(tol * 100)}%): terukur ${dist.toFixed(
         2,
       )} m`,
     ]);
+    if (!isDistPass) {
+      issues.push(
+        createIssue({
+          level: 'FAIL',
+          rule: RULE_CODES.ROOT_MOTION_CLAIM_DIST,
+          joint: 'root',
+          value: dist,
+          limit: cl.distance,
+          unit: 'm',
+          hint: `Actual root travel ${dist.toFixed(2)}m does not match claimed distance ${cl.distance.toFixed(2)}m (±${Math.round(tol * 100)}%).`,
+        }),
+      );
+    }
   }
   if (cl.duration != null) {
     const tol = cl.tolerance ?? 0.1;
+    const isDurPass = Math.abs(dur - cl.duration) <= cl.duration * tol;
     lines.push([
-      Math.abs(dur - cl.duration) <= cl.duration * tol ? 'PASS' : 'FAIL',
+      isDurPass ? 'PASS' : 'FAIL',
       `klaim durasi ${cl.duration.toFixed(2)} s: terukur ${dur.toFixed(2)} s`,
     ]);
+    if (!isDurPass) {
+      issues.push(
+        createIssue({
+          level: 'FAIL',
+          rule: RULE_CODES.ROOT_MOTION_CLAIM_DUR,
+          value: dur,
+          limit: cl.duration,
+          unit: 's',
+          hint: `Actual duration ${dur.toFixed(2)}s does not match claimed duration ${cl.duration.toFixed(2)}s.`,
+        }),
+      );
+    }
   }
 
-  return { lines, rootSpeed };
+  return { lines, issues, rootSpeed };
 }
 
 export const rootMotionRule = {

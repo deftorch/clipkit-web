@@ -1,0 +1,109 @@
+{
+  "face": {
+    "channels": ["eye_yaw", "eye_pitch", "jaw_open"],
+    "expressions": true,
+    "joints": ["Head", "LeftEye", "RightEye", "Jaw"]
+  },
+  "hands": {
+    "channels": [
+      "thumbL",
+      "indexL",
+      "middleL",
+      "ringL",
+      "littleL",
+      "spreadL",
+      "thumbR",
+      "indexR",
+      "middleR",
+      "ringR",
+      "littleR",
+      "spreadR"
+    ],
+    "joints": [
+      "LeftHand",
+      "LeftHandThumb1",
+      "LeftHandThumb2",
+      "LeftHandThumb3",
+      "LeftHandIndex1",
+      "LeftHandIndex2",
+      "LeftHandIndex3",
+      "LeftHandMiddle1",
+      "LeftHandMiddle2",
+      "LeftHandMiddle3",
+      "LeftHandRing1",
+      "LeftHandRing2",
+      "LeftHandRing3",
+      "LeftHandPinky1",
+      "LeftHandPinky2",
+      "LeftHandPinky3",
+      "RightHand",
+      "RightHandThumb1",
+      "RightHandThumb2",
+      "RightHandThumb3",
+      "RightHandIndex1",
+      "RightHandIndex2",
+      "RightHandIndex3",
+      "RightHandMiddle1",
+      "RightHandMiddle2",
+      "RightHandMiddle3",
+      "RightHandRing1",
+      "RightHandRing2",
+      "RightHandRing3",
+      "RightHandPinky1",
+      "RightHandPinky2",
+      "RightHandPinky3"
+    ]
+  },
+  "arms": {
+    "channels": ["elbowL", "elbowR"],
+    "aims": ["armL", "armR"],
+    "joints": [
+      "LeftShoulder",
+      "LeftArm",
+      "LeftForeArm",
+      "RightShoulder",
+      "RightArm",
+      "RightForeArm"
+    ]
+  },
+  "torso": {
+    "channels": [
+      "lean",
+      "side_lean",
+      "twist",
+      "hip_pitch",
+      "hip_twist",
+      "hip_roll",
+      "head_pitch",
+      "head_yaw"
+    ],
+    "joints": ["Hips", "Spine", "Spine1", "Spine2", "Neck"]
+  },
+  "legs": {
+    "channels": [
+      "legL_swing",
+      "legL_abd",
+      "kneeL",
+      "footL_pitch",
+      "legR_swing",
+      "legR_abd",
+      "kneeR",
+      "footR_pitch"
+    ],
+    "joints": [
+      "LeftUpLeg",
+      "LeftLeg",
+      "LeftFoot",
+      "LeftToeBase",
+      "RightUpLeg",
+      "RightLeg",
+      "RightFoot",
+      "RightToeBase"
+    ]
+  },
+  "root": {
+    "channels": ["hip_x", "hip_y", "hip_z"],
+    "move": true,
+    "joints": ["Hips"]
+  }
+}

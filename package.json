@@ -15,9 +15,16 @@
     "ai-agent",
     "gameplay"
   ],
+  "bin": {
+    "clipkit": "bin/clipkit.mjs"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && vite build --config vite.cli.config.js",
+    "build:cli": "vite build --config vite.cli.config.js",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",

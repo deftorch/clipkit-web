@@ -1,10 +1,12 @@
 import { R2D } from '../../math/quat.js';
 import { vcross, vdot, vnorm, vsub } from '../../math/vec3.js';
+import { createIssue, RULE_CODES } from './rule-codes.js';
 
 export function check({ ctx, limits, poses, tAt }) {
   const an = limits.anatomy;
   const I = ctx.idx;
   const lines = [];
+  const issues = [];
   const fx = (v, d = 0) => v.toFixed(d);
 
   let kMin = Infinity,
@@ -63,16 +65,74 @@ export function check({ ctx, limits, poses, tAt }) {
         ]
       : ['PASS', `${kTxt} (dalam batas ${an.knee_flex_min}..${an.knee_flex_max}°)`],
   );
+  if (kMin < an.knee_flex_min) {
+    issues.push(
+      createIssue({
+        level: 'FAIL',
+        rule: RULE_CODES.ANATOMY_KNEE,
+        joint: kMinSide === 'kiri' ? 'LeftLeg' : 'RightLeg',
+        t: kMinT,
+        value: kMin,
+        limit: an.knee_flex_min,
+        unit: 'deg',
+        hint: `Increase knee angle by at least ${(an.knee_flex_min - kMin).toFixed(1)}° to avoid negative hyperextension.`,
+      }),
+    );
+  }
+  if (kMax > an.knee_flex_max) {
+    issues.push(
+      createIssue({
+        level: 'FAIL',
+        rule: RULE_CODES.ANATOMY_KNEE,
+        joint: kMaxSide === 'kiri' ? 'LeftLeg' : 'RightLeg',
+        t: kMaxT,
+        value: kMax,
+        limit: an.knee_flex_max,
+        unit: 'deg',
+        hint: `Reduce knee flexion by at least ${(kMax - an.knee_flex_max).toFixed(1)}° to stay within anatomical limit ${an.knee_flex_max}°.`,
+      }),
+    );
+  }
+
   lines.push([
     eMax > an.elbow_flex_max ? 'FAIL' : 'PASS',
     `siku: tekuk maks ${fx(eMax, 1)}° (${eMaxSide} @${eMaxT.toFixed(2)}s, batas maks ${an.elbow_flex_max}°)`,
   ]);
+  if (eMax > an.elbow_flex_max) {
+    issues.push(
+      createIssue({
+        level: 'FAIL',
+        rule: RULE_CODES.ANATOMY_ELBOW,
+        joint: eMaxSide === 'kiri' ? 'LeftForeArm' : 'RightForeArm',
+        t: eMaxT,
+        value: eMax,
+        limit: an.elbow_flex_max,
+        unit: 'deg',
+        hint: `Reduce elbow flexion by at least ${(eMax - an.elbow_flex_max).toFixed(1)}° to stay within ${an.elbow_flex_max}°.`,
+      }),
+    );
+  }
+
   lines.push([
     nMax > an.neck_bend_max ? 'FAIL' : 'PASS',
     `leher-kepala: tekuk maks ${fx(nMax, 1)}° (@${nMaxT.toFixed(2)}s, batas maks ${an.neck_bend_max}°)`,
   ]);
+  if (nMax > an.neck_bend_max) {
+    issues.push(
+      createIssue({
+        level: 'FAIL',
+        rule: RULE_CODES.ANATOMY_NECK,
+        joint: 'Neck',
+        t: nMaxT,
+        value: nMax,
+        limit: an.neck_bend_max,
+        unit: 'deg',
+        hint: `Reduce neck/head tilt by at least ${(nMax - an.neck_bend_max).toFixed(1)}° to stay within ${an.neck_bend_max}°.`,
+      }),
+    );
+  }
 
-  return { lines };
+  return { lines, issues };
 }
 
 export const anatomyRule = {

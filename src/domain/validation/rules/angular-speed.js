@@ -1,8 +1,10 @@
 import { qangle, R2D } from '../../math/quat.js';
+import { createIssue, RULE_CODES } from './rule-codes.js';
 
 export function check({ ctx, limits, style = 'stylized', poses, frames, FPS = 30 }) {
   const lim = limits.styles[style];
   const lines = [];
+  const issues = [];
   const fx = (v, d = 0) => v.toFixed(d);
 
   let mS = 0,
@@ -32,16 +34,62 @@ export function check({ ctx, limits, style = 'stylized', poses, frames, FPS = 30
     }
   }
   const spTxt = `kecepatan sudut maks ${fx(mS)} °/s (${mSb} @${mSt.toFixed(2)}s)`;
-  if (mS > lim.ang_speed_fail) lines.push(['FAIL', `${spTxt} > ${lim.ang_speed_fail}`]);
-  else if (mS > lim.ang_speed_warn)
+  if (mS > lim.ang_speed_fail) {
+    lines.push(['FAIL', `${spTxt} > ${lim.ang_speed_fail}`]);
+    const minSpacing = mS / (lim.ang_speed_warn * FPS);
+    const pctReduction = Math.round((1 - lim.ang_speed_warn / mS) * 100);
+    issues.push(
+      createIssue({
+        level: 'FAIL',
+        rule: RULE_CODES.SPEED_LIMIT,
+        joint: mSb,
+        t: mSt,
+        value: mS,
+        limit: lim.ang_speed_fail,
+        unit: 'deg/s',
+        hint: `Increase keyframe spacing near t=${mSt.toFixed(2)}s to at least ${minSpacing.toFixed(3)}s or reduce angular rotation by at least ${pctReduction}%.`,
+      }),
+    );
+  } else if (mS > lim.ang_speed_warn) {
     lines.push(['WARN', `${spTxt} > ${lim.ang_speed_warn} (menyentak?)`]);
-  else lines.push(['PASS', spTxt]);
+    const minSpacing = mS / (lim.ang_speed_warn * FPS);
+    const pctReduction = Math.round((1 - lim.ang_speed_warn / mS) * 100);
+    issues.push(
+      createIssue({
+        level: 'WARN',
+        rule: RULE_CODES.SPEED_LIMIT,
+        joint: mSb,
+        t: mSt,
+        value: mS,
+        limit: lim.ang_speed_warn,
+        unit: 'deg/s',
+        hint: `Increase keyframe spacing near t=${mSt.toFixed(2)}s to at least ${minSpacing.toFixed(3)}s or reduce angular rotation by at least ${pctReduction}%.`,
+      }),
+    );
+  } else {
+    lines.push(['PASS', spTxt]);
+  }
+
   lines.push([
     mA > lim.ang_accel_warn ? 'WARN' : 'PASS',
     `percepatan sudut maks ${fx(mA)} °/s² (${mAb} @${mAt.toFixed(2)}s)`,
   ]);
+  if (mA > lim.ang_accel_warn) {
+    issues.push(
+      createIssue({
+        level: 'WARN',
+        rule: RULE_CODES.ACCEL_LIMIT,
+        joint: mAb,
+        t: mAt,
+        value: mA,
+        limit: lim.ang_accel_warn,
+        unit: 'deg/s²',
+        hint: `Smooth out rapid acceleration changes on joint ${mAb} around t=${mAt.toFixed(2)}s.`,
+      }),
+    );
+  }
 
-  return { lines, speedSeries };
+  return { lines, issues, speedSeries };
 }
 
 export const angularSpeedRule = {
