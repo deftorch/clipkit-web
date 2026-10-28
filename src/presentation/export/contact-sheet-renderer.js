@@ -333,3 +333,133 @@ export function renderContactSheet(rig, ctx, clip, options = {}) {
     height: totalH,
   };
 }
+
+/**
+ * Renders a side-by-side comparative contact sheet for two clips (Row A vs Row B)
+ * with differently colored motion arcs.
+ */
+export function renderComparisonContactSheet(rig, ctx, clipA, clipB, options = {}) {
+  const frameCount = Math.min(16, Math.max(4, options.frameCount || 8));
+  const durA = clipA.duration || 1.0;
+  const durB = clipB.duration || 1.0;
+
+  const cellW = 180;
+  const cellH = 260;
+  const marginX = 24;
+  const marginY = 32;
+  const titleH = 40;
+
+  const totalW = marginX * 2 + frameCount * cellW;
+  const totalH = marginY * 2 + titleH + 2 * cellH;
+
+  const g = options.ctx2d || new SvgContext2D(totalW, totalH);
+  const C = { ...DEFAULT_PALETTE };
+
+  // Draw background
+  g.fillStyle = C['--view'] || '#111318';
+  g.fillRect(0, 0, totalW, totalH);
+
+  // Title header
+  g.fillStyle = C['--ink'] || '#e6edf3';
+  g.font = 'bold 15px sans-serif';
+  g.textAlign = 'left';
+  g.fillText(
+    `ClipKit Comparison — [A] ${clipA.name || 'Clip A'} vs [B] ${clipB.name || 'Clip B'}`,
+    marginX,
+    26,
+  );
+
+  const I = ctx.idx;
+  const yFloor = floorY({ res: { floorY: 0.03 } });
+  const KF = cellH / 2 / Math.tan((20 * Math.PI) / 180);
+
+  const rows = [
+    {
+      clip: clipA,
+      label: `[A] ${clipA.name || 'Clip A'} (${durA.toFixed(2)}s)`,
+      dur: durA,
+      arcColors: {
+        Head: '#e0fbfc',
+        LeftHand: '#00f0ff',
+        RightHand: '#70d6ff',
+        LeftFoot: '#3a86ff',
+        RightFoot: '#8338ec',
+      },
+      tagColor: '#00f0ff',
+    },
+    {
+      clip: clipB,
+      label: `[B] ${clipB.name || 'Clip B'} (${durB.toFixed(2)}s)`,
+      dur: durB,
+      arcColors: {
+        Head: '#ffd166',
+        LeftHand: '#ff007f',
+        RightHand: '#ff9e00',
+        LeftFoot: '#ef476f',
+        RightFoot: '#e76f51',
+      },
+      tagColor: '#ff007f',
+    },
+  ];
+
+  for (let rIdx = 0; rIdx < 2; rIdx++) {
+    const row = rows[rIdx];
+    const rowY = marginY + titleH + rIdx * cellH;
+
+    // Label for row
+    g.fillStyle = row.tagColor;
+    g.font = 'bold 12px sans-serif';
+    g.textAlign = 'left';
+    g.fillText(row.label, marginX, rowY + 16);
+
+    const poses = [];
+    for (let i = 0; i < frameCount; i++) {
+      const t = i / (frameCount - 1);
+      poses.push(evalPose(rig, ctx, row.clip, t * row.dur));
+    }
+
+    const midP = poses[Math.floor(poses.length / 2)];
+    const camTarget = [midP.root[0], 0.85, midP.root[2]];
+    const B = buildCamBasis(0.55, 0.15, 4.2, camTarget);
+
+    for (let i = 0; i < frameCount; i++) {
+      const colX = marginX + i * cellW;
+      const t = i / (frameCount - 1);
+      const P = poses[i];
+
+      // Cell border
+      g.strokeStyle = C['--grid'] || '#21262d';
+      g.lineWidth = 1;
+      g.strokeRect(colX, rowY, cellW, cellH);
+
+      // Floor line
+      const prjFn = (p) => projectPoint(p, colX, rowY, cellW, cellH, KF, B);
+      const fl0 = prjFn([-1.5 + midP.root[0], yFloor, midP.root[2]]);
+      const fl1 = prjFn([1.5 + midP.root[0], yFloor, midP.root[2]]);
+      if (fl0 && fl1) {
+        g.strokeStyle = C['--grid2'] || '#30363d';
+        g.lineWidth = 1;
+        g.beginPath();
+        g.moveTo(fl0[0], fl0[1]);
+        g.lineTo(fl1[0], fl1[1]);
+        g.stroke();
+      }
+
+      // Draw skeleton figure
+      drawFigure(g, P, ctx, rig, 1, false, prjFn, C, KF);
+
+      // Frame timestamp
+      g.fillStyle = C['--muted'] || '#8b949e';
+      g.font = '10px monospace';
+      g.textAlign = 'left';
+      g.fillText(`#${i} ${(t * row.dur).toFixed(2)}s`, colX + 8, rowY + 32);
+    }
+  }
+
+  const svg = g.toSvg ? g.toSvg() : null;
+  return {
+    svg,
+    width: totalW,
+    height: totalH,
+  };
+}

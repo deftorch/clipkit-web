@@ -126,22 +126,22 @@ The former Milestone 1 (AI Vision & Contact Sheet) is merged into Milestone 2, b
 
 ## Milestone 3: Modular Composition & Variants (ROADMAP Phase C2)
 
-- [ ] `src/data/parts.json`: partition every channel, `expressions`, `aims` and `move` into face, hands, arms, torso, legs and root.
-- [ ] Add `layers: [{ ref, channels, mode, offset }]` to the clip schema (`channels` supports globs; `mode` is `override` or `additive`); decide `format_version` (see ROADMAP Open Decisions).
-- [ ] `src/domain/animation/compose.js`: a pure `composeClips()` returning an ordinary clip.
-- [ ] WARN when two layers write the same channel; require `additive` mode for shared torso channels.
-- [ ] Validate each layer with only its relevant rules, then validate the composite as a whole.
-- [ ] Variants: a folder per clip with immutable versions and a `manifest.json` (`parent`, `note`, metrics).
-- [ ] `clipkit version <clip> --parent <v> --note "..."` creates a child version and refuses to overwrite without `--force`.
-- [ ] `clipkit compare a b`: per-joint metric differences (peak angular speed, airtime, root travel, FAIL/WARN counts) plus a side-by-side image with differently colored motion arcs.
-- [ ] Deterministic edit operations: `mirror`, `retime`, `scale-amplitude`, `close-loop`.
-- [ ] `clipkit compose <clip>` flattens layers into a normal clip.
-- [ ] Add `layers` to `behaviorKeys` in `src/data/keys.json` so the version diff and the behavior-change check see layer edits.
-- [ ] Write and review the per-field merge semantics (channels, aims, positions, windows, events, move, expressions, duration) before implementing `composeClips()`; add one test per rule (ROADMAP Open Decision 6).
-- [ ] `mirror`: implement the rule table in ROADMAP C2.6 (swap L/R; negate `side_lean`, `twist`, `hip_twist`, `hip_roll`, `head_yaw`, `hip_x` and aim `_roll`; keep the rest), including expression and `planted_L`/`planted_R` swapping.
-- [ ] Mirror tests: `mirror(mirror(clip))` equals `clip`, and joint positions equal their reflection within 1e-4 m on a set of poses.
-- [ ] Pose library: `src/data/poses/*.json` (single-keyframe poses tagged by part), `ref` support in layers, and `clipkit poses list|show`.
-- [ ] UI: variant tree or switcher and an A/B overlay in the viewport.
+- [x] `src/data/parts.json`: partition every channel, `expressions`, `aims` and `move` into face, hands, arms, torso, legs and root.
+- [x] Add `layers: [{ ref, channels, mode, offset }]` to the clip schema (`channels` supports globs; `mode` is `override` or `additive`); decide `format_version` (see ROADMAP Open Decisions).
+- [x] `src/domain/animation/compose.js`: a pure `composeClips()` returning an ordinary clip.
+- [x] WARN when two layers write the same channel; require `additive` mode for shared torso channels.
+- [x] Validate each layer with only its relevant rules, then validate the composite as a whole.
+- [x] Variants: a folder per clip with immutable versions and a `manifest.json` (`parent`, `note`, metrics).
+- [x] `clipkit version <clip> --parent <v> --note "..."` creates a child version and refuses to overwrite without `--force`.
+- [x] `clipkit compare a b`: per-joint metric differences (peak angular speed, airtime, root travel, FAIL/WARN counts) plus a side-by-side image with differently colored motion arcs.
+- [x] Deterministic edit operations: `mirror`, `retime`, `scale-amplitude`, `close-loop`.
+- [x] `clipkit compose <clip>` flattens layers into a normal clip.
+- [x] Add `layers` to `behaviorKeys` in `src/data/keys.json` so the version diff and the behavior-change check see layer edits.
+- [x] Write and review the per-field merge semantics (channels, aims, positions, windows, events, move, expressions, duration) before implementing `composeClips()`; add one test per rule (ROADMAP Open Decision 6).
+- [x] `mirror`: implement the rule table in ROADMAP C2.6 (swap L/R; negate `side_lean`, `twist`, `hip_twist`, `hip_roll`, `head_yaw`, `hip_x` and aim `_roll`; keep the rest), including expression and `planted_L`/`planted_R` swapping.
+- [x] Mirror tests: `mirror(mirror(clip))` equals `clip`, and joint positions equal their reflection within 1e-4 m on a set of poses.
+- [x] Pose library: `src/data/poses/*.json` (single-keyframe poses tagged by part), `ref` support in layers, and `clipkit poses list|show`.
+- [x] UI: variant tree or switcher and an A/B overlay in the viewport.
 
 **Done when**: a jump clip, a punch-arm layer and a face layer compose into one clip that validates and exports to `.vrma`, and two variants of the jump can be compared by metrics and image without losing either.
 

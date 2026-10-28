@@ -10,6 +10,8 @@ export const playbackState = {
   follow: false,
   mesh: false,
   skel: true,
+  overlayClip: null,
+  showOverlay: false,
 };
 
 const listeners = new Set();
@@ -57,5 +59,11 @@ export function stepFrame(n, curItem) {
   let f = Math.round(playbackState.t * FPS) + n;
   f = Math.max(0, Math.min(nf, f));
   playbackState.t = Math.min(f / FPS, curItem.clip.duration);
+  notify();
+}
+
+export function setOverlayClip(clip, show = true) {
+  playbackState.overlayClip = clip;
+  playbackState.showOverlay = !!show;
   notify();
 }

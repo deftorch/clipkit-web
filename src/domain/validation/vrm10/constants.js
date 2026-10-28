@@ -1,5 +1,5 @@
 export const FPS = 30;
-export const FORMAT_VERSION = 1;
+export const FORMAT_VERSION = 2;
 
 export const VRM10_BONES = [
   'hips',

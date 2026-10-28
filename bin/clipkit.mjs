@@ -1,25 +1,25 @@
 #!/usr/bin/env node
 import fs from "node:fs";
 import path from "node:path";
-const name$1 = "MotusMan_v55";
+const name$o = "MotusMan_v55";
 const skeleton_scene = "res://characters/motus_man/MotusMan_v55.fbx";
 const path_prefix = "Skeleton3D";
 const frame = "model: +X kiri karakter, +Y atas, +Z depan (diverifikasi oleh tests/test_clip_rig.gd)";
 const animated_bones = ["Hips", "Spine", "Spine1", "Spine2", "LeftShoulder", "LeftArm", "LeftForeArm", "LeftHand", "RightShoulder", "RightArm", "RightForeArm", "RightHand", "Neck", "Head", "LeftUpLeg", "LeftLeg", "LeftFoot", "LeftToeBase", "RightUpLeg", "RightLeg", "RightFoot", "RightToeBase", "LeftHandThumb1", "LeftHandThumb2", "LeftHandThumb3", "LeftHandIndex1", "LeftHandIndex2", "LeftHandIndex3", "LeftHandMiddle1", "LeftHandMiddle2", "LeftHandMiddle3", "LeftHandRing1", "LeftHandRing2", "LeftHandRing3", "LeftHandPinky1", "LeftHandPinky2", "LeftHandPinky3", "RightHandThumb1", "RightHandThumb2", "RightHandThumb3", "RightHandIndex1", "RightHandIndex2", "RightHandIndex3", "RightHandMiddle1", "RightHandMiddle2", "RightHandMiddle3", "RightHandRing1", "RightHandRing2", "RightHandRing3", "RightHandPinky1", "RightHandPinky2", "RightHandPinky3", "LeftEye", "RightEye", "Jaw"];
-const channels = { "lean": { "type": "axis", "bones": { "Spine": 0.4, "Spine1": 0.3, "Spine2": 0.3 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": [-30, 60], "unit": "deg", "desc": "+ = membungkuk ke depan" }, "side_lean": { "type": "axis", "bones": { "Spine": 0.4, "Spine1": 0.3, "Spine2": 0.3 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": [-35, 35], "unit": "deg", "desc": "+ = miring ke kanan karakter" }, "twist": { "type": "axis", "bones": { "Spine": 0.4, "Spine1": 0.3, "Spine2": 0.3 }, "axis": [0, 1, 0], "sign": 1, "default": 0, "range": [-60, 60], "unit": "deg", "desc": "+ = dada berputar ke kiri karakter" }, "hip_pitch": { "type": "axis", "bones": { "Hips": 1 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": [-30, 45], "unit": "deg", "desc": "+ = panggul condong ke depan" }, "hip_twist": { "type": "axis", "bones": { "Hips": 1 }, "axis": [0, 1, 0], "sign": 1, "default": 0, "range": [-60, 60], "unit": "deg", "desc": "+ = panggul berputar ke kiri" }, "hip_roll": { "type": "axis", "bones": { "Hips": 1 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": [-25, 25], "unit": "deg", "desc": "+ = panggul miring ke kanan" }, "head_pitch": { "type": "axis", "bones": { "Neck": 0.4, "Head": 0.6 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": [-40, 45], "unit": "deg", "desc": "+ = kepala menunduk" }, "head_yaw": { "type": "axis", "bones": { "Neck": 0.4, "Head": 0.6 }, "axis": [0, 1, 0], "sign": 1, "default": 0, "range": [-70, 70], "unit": "deg", "desc": "+ = menoleh ke kiri" }, "legL_swing": { "type": "axis", "bones": { "LeftUpLeg": 1 }, "axis": [1, 0, 0], "sign": -1, "default": 0, "range": [-45, 120], "unit": "deg", "desc": "+ = paha terangkat ke depan" }, "legL_abd": { "type": "axis", "bones": { "LeftUpLeg": 1 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": [-30, 60], "unit": "deg", "desc": "+ = paha membuka ke luar" }, "kneeL": { "type": "axis", "bones": { "LeftLeg": 1 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": [-5, 150], "unit": "deg", "desc": "+ = lutut menekuk" }, "footL_pitch": { "type": "axis", "bones": { "LeftFoot": 1 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": [-45, 60], "unit": "deg", "desc": "+ = ujung kaki turun" }, "elbowL": { "type": "axis", "bones": { "LeftForeArm": 1 }, "axis": [0, 1, 0], "sign": -1, "default": 10, "range": [-5, 150], "unit": "deg", "desc": "+ = siku menekuk" }, "legR_swing": { "type": "axis", "bones": { "RightUpLeg": 1 }, "axis": [1, 0, 0], "sign": -1, "default": 0, "range": [-45, 120], "unit": "deg", "desc": "+ = paha terangkat ke depan" }, "legR_abd": { "type": "axis", "bones": { "RightUpLeg": 1 }, "axis": [0, 0, 1], "sign": -1, "default": 0, "range": [-30, 60], "unit": "deg", "desc": "+ = paha membuka ke luar" }, "kneeR": { "type": "axis", "bones": { "RightLeg": 1 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": [-5, 150], "unit": "deg", "desc": "+ = lutut menekuk" }, "footR_pitch": { "type": "axis", "bones": { "RightFoot": 1 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": [-45, 60], "unit": "deg", "desc": "+ = ujung kaki turun" }, "elbowR": { "type": "axis", "bones": { "RightForeArm": 1 }, "axis": [0, 1, 0], "sign": 1, "default": 10, "range": [-5, 150], "unit": "deg", "desc": "+ = siku menekuk" }, "hip_x": { "type": "pos", "bone": "Hips", "axis": [1, 0, 0], "default": 0, "range": [-1.5, 1.5], "unit": "m", "desc": "offset posisi panggul (frame model: X kiri, Y atas, Z depan)" }, "hip_y": { "type": "pos", "bone": "Hips", "axis": [0, 1, 0], "default": 0, "range": [-0.6, 0.5], "unit": "m", "desc": "offset posisi panggul (frame model: X kiri, Y atas, Z depan)" }, "hip_z": { "type": "pos", "bone": "Hips", "axis": [0, 0, 1], "default": 0, "range": [-1.5, 1.5], "unit": "m", "desc": "offset posisi panggul (frame model: X kiri, Y atas, Z depan)" }, "thumbL": { "type": "axis", "bones": { "LeftHandThumb1": 0.3, "LeftHandThumb2": 0.9, "LeftHandThumb3": 0.9 }, "axis": [0, 0, 1], "sign": -1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = thumb left menekuk (kepal)" }, "indexL": { "type": "axis", "bones": { "LeftHandIndex1": 1, "LeftHandIndex2": 1.1, "LeftHandIndex3": 0.7 }, "axis": [0, 0, 1], "sign": -1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = index left menekuk (kepal)" }, "middleL": { "type": "axis", "bones": { "LeftHandMiddle1": 1, "LeftHandMiddle2": 1.1, "LeftHandMiddle3": 0.7 }, "axis": [0, 0, 1], "sign": -1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = middle left menekuk (kepal)" }, "ringL": { "type": "axis", "bones": { "LeftHandRing1": 1, "LeftHandRing2": 1.1, "LeftHandRing3": 0.7 }, "axis": [0, 0, 1], "sign": -1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = ring left menekuk (kepal)" }, "littleL": { "type": "axis", "bones": { "LeftHandPinky1": 1, "LeftHandPinky2": 1.1, "LeftHandPinky3": 0.7 }, "axis": [0, 0, 1], "sign": -1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = little left menekuk (kepal)" }, "spreadL": { "type": "axis", "bones": { "LeftHandIndex1": -0.5, "LeftHandRing1": 0.5, "LeftHandPinky1": 1 }, "axis": [0, 1, 0], "sign": 1, "default": 0, "range": [-10, 30], "unit": "deg", "desc": "+ = jari tangan left merenggang" }, "thumbR": { "type": "axis", "bones": { "RightHandThumb1": 0.3, "RightHandThumb2": 0.9, "RightHandThumb3": 0.9 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = thumb right menekuk (kepal)" }, "indexR": { "type": "axis", "bones": { "RightHandIndex1": 1, "RightHandIndex2": 1.1, "RightHandIndex3": 0.7 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = index right menekuk (kepal)" }, "middleR": { "type": "axis", "bones": { "RightHandMiddle1": 1, "RightHandMiddle2": 1.1, "RightHandMiddle3": 0.7 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = middle right menekuk (kepal)" }, "ringR": { "type": "axis", "bones": { "RightHandRing1": 1, "RightHandRing2": 1.1, "RightHandRing3": 0.7 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = ring right menekuk (kepal)" }, "littleR": { "type": "axis", "bones": { "RightHandPinky1": 1, "RightHandPinky2": 1.1, "RightHandPinky3": 0.7 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = little right menekuk (kepal)" }, "spreadR": { "type": "axis", "bones": { "RightHandIndex1": -0.5, "RightHandRing1": 0.5, "RightHandPinky1": 1 }, "axis": [0, 1, 0], "sign": -1, "default": 0, "range": [-10, 30], "unit": "deg", "desc": "+ = jari tangan right merenggang" }, "eye_yaw": { "type": "axis", "bones": { "LeftEye": 1, "RightEye": 1 }, "axis": [0, 1, 0], "sign": 1, "default": 0, "range": [-35, 35], "unit": "deg", "desc": "+ = melirik ke kiri karakter" }, "eye_pitch": { "type": "axis", "bones": { "LeftEye": 1, "RightEye": 1 }, "axis": [1, 0, 0], "sign": -1, "default": 0, "range": [-30, 30], "unit": "deg", "desc": "+ = melirik ke atas" }, "jaw_open": { "type": "axis", "bones": { "Jaw": 1 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": [0, 35], "unit": "deg", "desc": "+ = rahang terbuka" } };
+const channels$n = { "lean": { "type": "axis", "bones": { "Spine": 0.4, "Spine1": 0.3, "Spine2": 0.3 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": [-30, 60], "unit": "deg", "desc": "+ = membungkuk ke depan" }, "side_lean": { "type": "axis", "bones": { "Spine": 0.4, "Spine1": 0.3, "Spine2": 0.3 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": [-35, 35], "unit": "deg", "desc": "+ = miring ke kanan karakter" }, "twist": { "type": "axis", "bones": { "Spine": 0.4, "Spine1": 0.3, "Spine2": 0.3 }, "axis": [0, 1, 0], "sign": 1, "default": 0, "range": [-60, 60], "unit": "deg", "desc": "+ = dada berputar ke kiri karakter" }, "hip_pitch": { "type": "axis", "bones": { "Hips": 1 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": [-30, 45], "unit": "deg", "desc": "+ = panggul condong ke depan" }, "hip_twist": { "type": "axis", "bones": { "Hips": 1 }, "axis": [0, 1, 0], "sign": 1, "default": 0, "range": [-60, 60], "unit": "deg", "desc": "+ = panggul berputar ke kiri" }, "hip_roll": { "type": "axis", "bones": { "Hips": 1 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": [-25, 25], "unit": "deg", "desc": "+ = panggul miring ke kanan" }, "head_pitch": { "type": "axis", "bones": { "Neck": 0.4, "Head": 0.6 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": [-40, 45], "unit": "deg", "desc": "+ = kepala menunduk" }, "head_yaw": { "type": "axis", "bones": { "Neck": 0.4, "Head": 0.6 }, "axis": [0, 1, 0], "sign": 1, "default": 0, "range": [-70, 70], "unit": "deg", "desc": "+ = menoleh ke kiri" }, "legL_swing": { "type": "axis", "bones": { "LeftUpLeg": 1 }, "axis": [1, 0, 0], "sign": -1, "default": 0, "range": [-45, 120], "unit": "deg", "desc": "+ = paha terangkat ke depan" }, "legL_abd": { "type": "axis", "bones": { "LeftUpLeg": 1 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": [-30, 60], "unit": "deg", "desc": "+ = paha membuka ke luar" }, "kneeL": { "type": "axis", "bones": { "LeftLeg": 1 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": [-5, 150], "unit": "deg", "desc": "+ = lutut menekuk" }, "footL_pitch": { "type": "axis", "bones": { "LeftFoot": 1 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": [-45, 60], "unit": "deg", "desc": "+ = ujung kaki turun" }, "elbowL": { "type": "axis", "bones": { "LeftForeArm": 1 }, "axis": [0, 1, 0], "sign": -1, "default": 10, "range": [-5, 150], "unit": "deg", "desc": "+ = siku menekuk" }, "legR_swing": { "type": "axis", "bones": { "RightUpLeg": 1 }, "axis": [1, 0, 0], "sign": -1, "default": 0, "range": [-45, 120], "unit": "deg", "desc": "+ = paha terangkat ke depan" }, "legR_abd": { "type": "axis", "bones": { "RightUpLeg": 1 }, "axis": [0, 0, 1], "sign": -1, "default": 0, "range": [-30, 60], "unit": "deg", "desc": "+ = paha membuka ke luar" }, "kneeR": { "type": "axis", "bones": { "RightLeg": 1 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": [-5, 150], "unit": "deg", "desc": "+ = lutut menekuk" }, "footR_pitch": { "type": "axis", "bones": { "RightFoot": 1 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": [-45, 60], "unit": "deg", "desc": "+ = ujung kaki turun" }, "elbowR": { "type": "axis", "bones": { "RightForeArm": 1 }, "axis": [0, 1, 0], "sign": 1, "default": 10, "range": [-5, 150], "unit": "deg", "desc": "+ = siku menekuk" }, "hip_x": { "type": "pos", "bone": "Hips", "axis": [1, 0, 0], "default": 0, "range": [-1.5, 1.5], "unit": "m", "desc": "offset posisi panggul (frame model: X kiri, Y atas, Z depan)" }, "hip_y": { "type": "pos", "bone": "Hips", "axis": [0, 1, 0], "default": 0, "range": [-0.6, 0.5], "unit": "m", "desc": "offset posisi panggul (frame model: X kiri, Y atas, Z depan)" }, "hip_z": { "type": "pos", "bone": "Hips", "axis": [0, 0, 1], "default": 0, "range": [-1.5, 1.5], "unit": "m", "desc": "offset posisi panggul (frame model: X kiri, Y atas, Z depan)" }, "thumbL": { "type": "axis", "bones": { "LeftHandThumb1": 0.3, "LeftHandThumb2": 0.9, "LeftHandThumb3": 0.9 }, "axis": [0, 0, 1], "sign": -1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = thumb left menekuk (kepal)" }, "indexL": { "type": "axis", "bones": { "LeftHandIndex1": 1, "LeftHandIndex2": 1.1, "LeftHandIndex3": 0.7 }, "axis": [0, 0, 1], "sign": -1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = index left menekuk (kepal)" }, "middleL": { "type": "axis", "bones": { "LeftHandMiddle1": 1, "LeftHandMiddle2": 1.1, "LeftHandMiddle3": 0.7 }, "axis": [0, 0, 1], "sign": -1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = middle left menekuk (kepal)" }, "ringL": { "type": "axis", "bones": { "LeftHandRing1": 1, "LeftHandRing2": 1.1, "LeftHandRing3": 0.7 }, "axis": [0, 0, 1], "sign": -1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = ring left menekuk (kepal)" }, "littleL": { "type": "axis", "bones": { "LeftHandPinky1": 1, "LeftHandPinky2": 1.1, "LeftHandPinky3": 0.7 }, "axis": [0, 0, 1], "sign": -1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = little left menekuk (kepal)" }, "spreadL": { "type": "axis", "bones": { "LeftHandIndex1": -0.5, "LeftHandRing1": 0.5, "LeftHandPinky1": 1 }, "axis": [0, 1, 0], "sign": 1, "default": 0, "range": [-10, 30], "unit": "deg", "desc": "+ = jari tangan left merenggang" }, "thumbR": { "type": "axis", "bones": { "RightHandThumb1": 0.3, "RightHandThumb2": 0.9, "RightHandThumb3": 0.9 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = thumb right menekuk (kepal)" }, "indexR": { "type": "axis", "bones": { "RightHandIndex1": 1, "RightHandIndex2": 1.1, "RightHandIndex3": 0.7 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = index right menekuk (kepal)" }, "middleR": { "type": "axis", "bones": { "RightHandMiddle1": 1, "RightHandMiddle2": 1.1, "RightHandMiddle3": 0.7 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = middle right menekuk (kepal)" }, "ringR": { "type": "axis", "bones": { "RightHandRing1": 1, "RightHandRing2": 1.1, "RightHandRing3": 0.7 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = ring right menekuk (kepal)" }, "littleR": { "type": "axis", "bones": { "RightHandPinky1": 1, "RightHandPinky2": 1.1, "RightHandPinky3": 0.7 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = little right menekuk (kepal)" }, "spreadR": { "type": "axis", "bones": { "RightHandIndex1": -0.5, "RightHandRing1": 0.5, "RightHandPinky1": 1 }, "axis": [0, 1, 0], "sign": -1, "default": 0, "range": [-10, 30], "unit": "deg", "desc": "+ = jari tangan right merenggang" }, "eye_yaw": { "type": "axis", "bones": { "LeftEye": 1, "RightEye": 1 }, "axis": [0, 1, 0], "sign": 1, "default": 0, "range": [-35, 35], "unit": "deg", "desc": "+ = melirik ke kiri karakter" }, "eye_pitch": { "type": "axis", "bones": { "LeftEye": 1, "RightEye": 1 }, "axis": [1, 0, 0], "sign": -1, "default": 0, "range": [-30, 30], "unit": "deg", "desc": "+ = melirik ke atas" }, "jaw_open": { "type": "axis", "bones": { "Jaw": 1 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": [0, 35], "unit": "deg", "desc": "+ = rahang terbuka" } };
 const aims = { "armL": { "bone": "LeftArm", "child": "LeftForeArm", "lateral": [1, 0, 0], "default": { "elev": -75, "azim": 0, "roll": 0 }, "range": { "elev": [-95, 175], "azim": [-100, 140], "roll": [-120, 120] }, "desc": "elev: sudut di atas horizontal (-90 = tergantung); azim: 0 = ke samping, 90 = ke depan; roll: putar sekitar lengan" }, "armR": { "bone": "RightArm", "child": "RightForeArm", "lateral": [-1, 0, 0], "default": { "elev": -75, "azim": 0, "roll": 0 }, "range": { "elev": [-95, 175], "azim": [-100, 140], "roll": [-120, 120] }, "desc": "elev: sudut di atas horizontal (-90 = tergantung); azim: 0 = ke samping, 90 = ke depan; roll: putar sekitar lengan" } };
 const rest$1 = { "parents": [-1, 0, 1, 2, 3, 4, 5, 6, 3, 8, 9, 10, 3, 12, 0, 14, 15, 16, 0, 18, 19, 20, 7, 22, 23, 7, 25, 26, 7, 28, 29, 7, 31, 32, 7, 34, 35, 11, 37, 38, 11, 40, 41, 11, 43, 44, 11, 46, 47, 11, 49, 50, 13, 13, 13], "offsets": [[0, 0.9675, -0.01057], [0, 0.10807, 891e-5], [0, 0.19205, -0.01352], [0, 0.13268, -0.01981], [0.03781, 0.1217, 738e-5], [0.13919, -0.02671, -0.06951], [0.30339, -1e-5, 0], [0.26976, 0, -1e-5], [-0.03781, 0.1217, 738e-5], [-0.13919, -0.02671, -0.06951], [-0.3034, -1e-5, 0], [-0.26975, 1e-5, -1e-5], [0, 0.1639, -0.02378], [0, 0.09096, 0.01897], [0.09009, -0.01451, 526e-5], [0.05211, -0.42231, -0.01271], [0.0286, -0.39602, -0.06271], [-8e-4, -0.10454, 0.16578], [-0.09009, -0.01451, 527e-5], [-0.05211, -0.42232, -0.01271], [-0.02859, -0.39602, -0.06271], [8e-4, -0.10454, 0.16578], [0.02, -4e-3, 0.026], [0.021, -15e-4, 0.021], [0.0224, -16e-4, 0.0224], [0.075, 0, 0.022], [0.04, 0, 0], [0.025, 0, 0], [0.078, 0, 7e-3], [0.045, 0, 0], [0.028, 0, 0], [0.074, 0, -8e-3], [0.042, 0, 0], [0.026, 0, 0], [0.068, 0, -0.022], [0.032, 0, 0], [0.02, 0, 0], [-0.02, -4e-3, 0.026], [-0.021, -15e-4, 0.021], [-0.0224, -16e-4, 0.0224], [-0.075, 0, 0.022], [-0.04, 0, 0], [-0.025, 0, 0], [-0.078, 0, 7e-3], [-0.045, 0, 0], [-0.028, 0, 0], [-0.074, 0, -8e-3], [-0.042, 0, 0], [-0.026, 0, 0], [-0.068, 0, -0.022], [-0.032, 0, 0], [-0.02, 0, 0], [0.032, 0.07, 0.08], [-0.032, 0.07, 0.08], [0, 0.02, 0.015]] };
 const motus = {
-  name: name$1,
+  name: name$o,
   skeleton_scene,
   path_prefix,
   frame,
   animated_bones,
-  channels,
+  channels: channels$n,
   aims,
   rest: rest$1
 };
-const name = "VRM1_Constraint_Twist_Sample";
+const name$n = "VRM1_Constraint_Twist_Sample";
 const kind = "vrm1";
 const humanoid = { "Hips": "hips", "Spine": "spine", "Spine1": "chest", "Spine2": "upperChest", "Neck": "neck", "Head": "head", "LeftShoulder": "leftShoulder", "LeftArm": "leftUpperArm", "LeftForeArm": "leftLowerArm", "LeftHand": "leftHand", "RightShoulder": "rightShoulder", "RightArm": "rightUpperArm", "RightForeArm": "rightLowerArm", "RightHand": "rightHand", "LeftUpLeg": "leftUpperLeg", "LeftLeg": "leftLowerLeg", "LeftFoot": "leftFoot", "LeftToeBase": "leftToes", "RightUpLeg": "rightUpperLeg", "RightLeg": "rightLowerLeg", "RightFoot": "rightFoot", "RightToeBase": "rightToes", "LeftHandThumb1": "leftThumbMetacarpal", "LeftHandThumb2": "leftThumbProximal", "LeftHandThumb3": "leftThumbDistal", "LeftHandIndex1": "leftIndexProximal", "LeftHandIndex2": "leftIndexIntermediate", "LeftHandIndex3": "leftIndexDistal", "LeftHandMiddle1": "leftMiddleProximal", "LeftHandMiddle2": "leftMiddleIntermediate", "LeftHandMiddle3": "leftMiddleDistal", "LeftHandRing1": "leftRingProximal", "LeftHandRing2": "leftRingIntermediate", "LeftHandRing3": "leftRingDistal", "LeftHandPinky1": "leftLittleProximal", "LeftHandPinky2": "leftLittleIntermediate", "LeftHandPinky3": "leftLittleDistal", "RightHandThumb1": "rightThumbMetacarpal", "RightHandThumb2": "rightThumbProximal", "RightHandThumb3": "rightThumbDistal", "RightHandIndex1": "rightIndexProximal", "RightHandIndex2": "rightIndexIntermediate", "RightHandIndex3": "rightIndexDistal", "RightHandMiddle1": "rightMiddleProximal", "RightHandMiddle2": "rightMiddleIntermediate", "RightHandMiddle3": "rightMiddleDistal", "RightHandRing1": "rightRingProximal", "RightHandRing2": "rightRingIntermediate", "RightHandRing3": "rightRingDistal", "RightHandPinky1": "rightLittleProximal", "RightHandPinky2": "rightLittleIntermediate", "RightHandPinky3": "rightLittleDistal", "LeftEye": "leftEye", "RightEye": "rightEye", "Jaw": "jaw" };
 const rest = { "offsets": [[0, 0.90808, 358e-5], [0, 0.05207, 0.01252], [0, 0.11301, 305e-5], [0, 0.10764, -0.01465], [0.0224, 0.10569, -0.02997], [0.08616, -0.01226, 0], [0.21985, 0, 0], [0.21469, 0, -37e-5], [-0.0224, 0.10569, -0.02997], [-0.08616, -0.01226, 0], [-0.21985, 0, 0], [-0.21469, 0, 37e-5], [0, 0.13229, -0.03836], [0, 0.07317, 915e-5], [0.07716, -0.03977, -366e-5], [0, -0.35291, -739e-5], [0, -0.41474, -0.02494], [0, -0.06305, 0.11069], [-0.07716, -0.03977, -366e-5], [0, -0.35291, -739e-5], [0, -0.41474, -0.02494], [0, -0.06305, 0.11069], [0.01877, -375e-5, 0.0244], [0.01971, -141e-5, 0.01971], [0.02102, -15e-4, 0.02102], [0.07039, 0, 0.02065], [0.03754, 0, 0], [0.02346, 0, 0], [0.07321, 0, 657e-5], [0.04224, 0, 0], [0.02628, 0, 0], [0.06946, 0, -751e-5], [0.03942, 0, 0], [0.0244, 0, 0], [0.06382, 0, -0.02065], [0.03004, 0, 0], [0.01877, 0, 0], [-0.01877, -375e-5, 0.0244], [-0.01971, -141e-5, 0.01971], [-0.02102, -15e-4, 0.02102], [-0.07039, 0, 0.02065], [-0.03754, 0, 0], [-0.02346, 0, 0], [-0.07321, 0, 657e-5], [-0.04224, 0, 0], [-0.02628, 0, 0], [-0.06946, 0, -751e-5], [-0.03942, 0, 0], [-0.0244, 0, 0], [-0.06382, 0, -0.02065], [-0.03004, 0, 0], [-0.01877, 0, 0], [0.03004, 0.0657, 0.07509], [-0.03004, 0.0657, 0.07509], [0, 0.01877, 0.01408]] };
@@ -27,7 +27,7 @@ const scale = 0.9386;
 const pos_scale = 0.9391;
 const info = { "name": "VRM1_Constraint_Twist_Sample", "spec": "1.0", "nodes": 171, "hipsY": 0.9080763, "legLen": 0.7684779899116934, "scale": 0.9386, "posScale": 0.9391, "synth": [], "warns": [], "height": 1.386266881653605, "present": 22, "total": 22, "extraBones": 32, "license": "https://vrm.dev/licenses/1.0/", "droop": 4120740451177791e-19, "extraPresent": 0 };
 const vrmSamplePatch = {
-  name,
+  name: name$n,
   kind,
   humanoid,
   rest,
@@ -83,6 +83,11 @@ function resolveSafeOutputPath(targetPath, { allowOutside = false, force = false
   }
   return absPath;
 }
+function writeOutputFile(targetPath, content, options = {}) {
+  const safePath = resolveSafeOutputPath(targetPath, options);
+  fs.writeFileSync(safePath, content, typeof content === "string" ? "utf8" : void 0);
+  return safePath;
+}
 function readInput(inputPath) {
   if (inputPath === "-" || !inputPath) {
     return fs.readFileSync(0, "utf8");
@@ -116,19 +121,19 @@ function runChannels(_args, options = {}) {
   }
   const results = [];
   for (const [name2, def] of Object.entries(motus2.channels)) {
-    let part = "torso";
+    let part2 = "torso";
     for (const [pName, pDef] of Object.entries(partsData)) {
       if (pDef.channels && pDef.channels.includes(name2)) {
-        part = pName;
+        part2 = pName;
         break;
       }
     }
-    if (partFilter && part !== partFilter) {
+    if (partFilter && part2 !== partFilter) {
       continue;
     }
     results.push({
       name: name2,
-      part,
+      part: part2,
       bone: def.bone || null,
       type: def.type || "rot",
       min: def.min ?? -180,
@@ -350,7 +355,14 @@ const RULE_CODES = {
   VERSION_FORMAT: "VERSION_FORMAT",
   CHANGELOG_INVALID: "CHANGELOG_INVALID",
   CHANGELOG_VERSION_MISMATCH: "CHANGELOG_VERSION_MISMATCH",
-  SCHEMA_ERROR: "SCHEMA_ERROR"
+  SCHEMA_ERROR: "SCHEMA_ERROR",
+  LAYER_NOT_FOUND: "LAYER_NOT_FOUND",
+  LAYER_DURATION_CLIPPED: "LAYER_DURATION_CLIPPED",
+  AIM_ADDITIVE_APPROX: "AIM_ADDITIVE_APPROX",
+  CHANNEL_COLLISION: "CHANNEL_COLLISION",
+  TORSO_OVERRIDE_CONFLICT: "TORSO_OVERRIDE_CONFLICT",
+  WINDOW_COLLISION: "WINDOW_COLLISION",
+  MOVE_COLLISION: "MOVE_COLLISION"
 };
 function createIssue({
   level = "FAIL",
@@ -379,7 +391,7 @@ function createIssue({
   };
 }
 const FPS = 30;
-const FORMAT_VERSION = 1;
+const FORMAT_VERSION = 2;
 const VRM10_BONES = [
   "hips",
   "spine",
@@ -719,9 +731,239 @@ function validateSchema(clip, rig = null) {
       }
     }
   }
+  if (clip.layers != null) {
+    if (!Array.isArray(clip.layers)) {
+      addError(
+        "layers",
+        "Layers must be an array of layer objects [{ ref, channels, mode, offset }]."
+      );
+    } else {
+      for (let i = 0; i < clip.layers.length; i++) {
+        const l = clip.layers[i];
+        if (!l || typeof l !== "object" || Array.isArray(l)) {
+          addError(`layers[${i}]`, "Layer must be an object.");
+          continue;
+        }
+        if (!l.ref && !l.clip) {
+          addError(
+            `layers[${i}]`,
+            'Layer must define a "ref" string or an embedded "clip" object.',
+            'Provide "ref": "pose_name" or "ref": "clip_name"'
+          );
+        }
+        if (l.mode != null && l.mode !== "override" && l.mode !== "additive") {
+          addError(
+            `layers[${i}].mode`,
+            `Layer mode must be 'override' or 'additive' (received: '${l.mode}').`,
+            'Use "override" or "additive"'
+          );
+        }
+        if (l.channels != null && !Array.isArray(l.channels)) {
+          addError(
+            `layers[${i}].channels`,
+            "Layer channels must be an array of channel patterns/globs.",
+            'Provide an array like ["armR_*", "elbowR"]'
+          );
+        }
+        if (l.offset != null && typeof l.offset !== "number") {
+          addError(`layers[${i}].offset`, "Layer offset must be a number in seconds.");
+        }
+      }
+    }
+  }
   return {
     valid: errors.length === 0,
     errors
+  };
+}
+function matchChannelPattern(channelName, pattern) {
+  if (pattern === "*" || pattern === channelName) return true;
+  if (pattern.endsWith("*")) {
+    const prefix = pattern.slice(0, -1);
+    return channelName.startsWith(prefix);
+  }
+  return false;
+}
+function matchesAnyPattern(channelName, patterns) {
+  if (!patterns || !patterns.length) return true;
+  return patterns.some((pat) => matchChannelPattern(channelName, pat));
+}
+function composeClips(baseClip, layers = [], options = {}) {
+  const warnings = [];
+  const addWarn = (code, message, extra = {}) => {
+    warnings.push({ code, message, ...extra });
+  };
+  const dur = baseClip.duration || 1;
+  const FPS2 = options.FPS || 30;
+  const frames = Math.ceil(dur * FPS2);
+  const composite = {
+    name: baseClip.name ? `${baseClip.name}_composite` : "composite",
+    duration: dur,
+    loop: !!baseClip.loop,
+    format_version: baseClip.format_version || 1,
+    channels: JSON.parse(JSON.stringify(baseClip.channels || {})),
+    expressions: JSON.parse(JSON.stringify(baseClip.expressions || {})),
+    windows: JSON.parse(JSON.stringify(baseClip.windows || {})),
+    events: JSON.parse(JSON.stringify(baseClip.events || [])),
+    claims: baseClip.claims ? JSON.parse(JSON.stringify(baseClip.claims)) : void 0,
+    validate: baseClip.validate ? JSON.parse(JSON.stringify(baseClip.validate)) : void 0,
+    move: baseClip.move ? [...baseClip.move] : void 0
+  };
+  const channelOwners = /* @__PURE__ */ new Map();
+  for (const ch of Object.keys(composite.channels)) {
+    channelOwners.set(ch, "base");
+  }
+  const TORSO_CHANNELS = /* @__PURE__ */ new Set([
+    "lean",
+    "side_lean",
+    "twist",
+    "hip_pitch",
+    "hip_twist",
+    "hip_roll",
+    "head_pitch",
+    "head_yaw"
+  ]);
+  for (let layerIdx = 0; layerIdx < layers.length; layerIdx++) {
+    const layer = layers[layerIdx];
+    let layerClip = layer.clip;
+    if (!layerClip && layer.ref && options.resolveRef) {
+      layerClip = options.resolveRef(layer.ref);
+    }
+    if (!layerClip) {
+      addWarn(
+        "LAYER_NOT_FOUND",
+        `Layer [${layerIdx}] reference '${layer.ref}' could not be resolved.`
+      );
+      continue;
+    }
+    const layerDur = layerClip.duration || dur;
+    const offset = layer.offset || 0;
+    const mode = layer.mode || "override";
+    const channelPatterns = layer.channels || ["*"];
+    if (layerDur + offset > dur + 1e-4) {
+      addWarn(
+        "LAYER_DURATION_CLIPPED",
+        `Layer [${layerIdx}] duration (${layerDur}s + ${offset}s offset) exceeds base clip duration (${dur}s) and was clipped.`
+      );
+    }
+    const layerChannels = layerClip.channels || {};
+    for (const [chName, layerKfs] of Object.entries(layerChannels)) {
+      if (!matchesAnyPattern(chName, channelPatterns)) {
+        continue;
+      }
+      const isAim = chName.includes("_elev") || chName.includes("_azim") || chName.includes("_roll");
+      if (isAim && mode === "additive") {
+        addWarn(
+          "AIM_ADDITIVE_APPROX",
+          `Additive composition on aim channel '${chName}' in layer [${layerIdx}] is an angular approximation. 'override' is recommended.`,
+          { channel: chName }
+        );
+      }
+      if (channelOwners.has(chName) && channelOwners.get(chName) !== "base") {
+        addWarn(
+          "CHANNEL_COLLISION",
+          `Multiple layers write to channel '${chName}' (layer [${layerIdx}] and ${channelOwners.get(chName)}).`,
+          { channel: chName }
+        );
+      }
+      if (TORSO_CHANNELS.has(chName) && channelOwners.has(chName) && mode !== "additive") {
+        addWarn(
+          "TORSO_OVERRIDE_CONFLICT",
+          `Shared torso channel '${chName}' in layer [${layerIdx}] uses 'override' mode instead of 'additive', which may distort balance.`,
+          { channel: chName }
+        );
+      }
+      channelOwners.set(chName, `layer_${layerIdx}`);
+      if (mode === "override") {
+        composite.channels[chName] = layerKfs.map(([t, val, easing]) => {
+          const newT = Number((t + offset).toFixed(4));
+          return easing ? [newT, val, easing] : [newT, val];
+        }).filter(([t]) => t >= 0 && t <= dur + 1e-4);
+      } else if (mode === "additive") {
+        const baseKfs = composite.channels[chName] || [
+          [0, 0],
+          [dur, 0]
+        ];
+        const combinedKfs = [];
+        for (let f = 0; f <= frames; f++) {
+          const t = Math.min(f / FPS2, dur);
+          const baseVal = sampleKeys(baseKfs, t);
+          const layerT = t - offset;
+          let layerVal = 0;
+          if (layerT >= 0 && layerT <= layerDur) {
+            layerVal = sampleKeys(layerKfs, layerT);
+          } else if (layerT > layerDur && !layerClip.loop) {
+            layerVal = sampleKeys(layerKfs, layerDur);
+          }
+          combinedKfs.push([Number(t.toFixed(4)), Number((baseVal + layerVal).toFixed(4))]);
+        }
+        composite.channels[chName] = combinedKfs;
+      }
+    }
+    if (layerClip.expressions) {
+      for (const [exprName, layerKfs] of Object.entries(layerClip.expressions)) {
+        if (mode === "additive" && composite.expressions[exprName]) {
+          const baseKfs = composite.expressions[exprName];
+          const combinedKfs = [];
+          for (let f = 0; f <= frames; f++) {
+            const t = Math.min(f / FPS2, dur);
+            const baseVal = sampleKeys(baseKfs, t);
+            const layerT = t - offset;
+            const layerVal = layerT >= 0 ? sampleKeys(layerKfs, layerT) : 0;
+            const clamped = Math.max(0, Math.min(1, baseVal + layerVal));
+            combinedKfs.push([Number(t.toFixed(4)), Number(clamped.toFixed(4))]);
+          }
+          composite.expressions[exprName] = combinedKfs;
+        } else {
+          composite.expressions[exprName] = layerKfs.map(([t, val, easing]) => {
+            const newT = Number((t + offset).toFixed(4));
+            const clamped = Math.max(0, Math.min(1, val));
+            return easing ? [newT, clamped, easing] : [newT, clamped];
+          });
+        }
+      }
+    }
+    if (layerClip.windows) {
+      for (const [wn, [start, end]] of Object.entries(layerClip.windows)) {
+        if (composite.windows[wn]) {
+          addWarn(
+            "WINDOW_COLLISION",
+            `Window '${wn}' defined in both base and layer [${layerIdx}]. Base window retained.`
+          );
+        } else {
+          composite.windows[wn] = [
+            Number(Math.max(0, start + offset).toFixed(4)),
+            Number(Math.min(dur, end + offset).toFixed(4))
+          ];
+        }
+      }
+    }
+    if (layerClip.events) {
+      for (const ev of layerClip.events) {
+        const shiftedT = Number((ev.t + offset).toFixed(4));
+        if (shiftedT >= 0 && shiftedT <= dur + 1e-4) {
+          composite.events.push({
+            ...ev,
+            t: shiftedT
+          });
+        }
+      }
+    }
+    if (layerClip.move) {
+      if (composite.move) {
+        addWarn(
+          "MOVE_COLLISION",
+          `Multiple sources define root motion 'move'. Base motion retained; layer [${layerIdx}] move ignored.`
+        );
+      } else {
+        composite.move = [...layerClip.move];
+      }
+    }
+  }
+  composite.events.sort((a, b) => a.t - b.t);
+  return {
+    clip: composite,
+    warnings
   };
 }
 function rootMotion(clip, t) {
@@ -1325,7 +1567,7 @@ const rootMotionRule = {
   name: "root-motion",
   check: check$2
 };
-function versionIssues(version, changelog, fv = 1) {
+function versionIssues(version2, changelog2, fv = 1) {
   const out = [];
   const issues = [];
   if (fv > FORMAT_VERSION) {
@@ -1340,19 +1582,19 @@ function versionIssues(version, changelog, fv = 1) {
       })
     );
   }
-  if (!Array.isArray(changelog) || !changelog.length) {
-    out.push(["WARN", `v${version} tanpa changelog`]);
+  if (!Array.isArray(changelog2) || !changelog2.length) {
+    out.push(["WARN", `v${version2} tanpa changelog`]);
     issues.push(
       createIssue({
         level: "WARN",
         rule: RULE_CODES.CHANGELOG_INVALID,
-        hint: `Provide a changelog array detailing changes for v${version}.`
+        hint: `Provide a changelog array detailing changes for v${version2}.`
       })
     );
     return { lines: out, issues };
   }
   let ok = true;
-  changelog.forEach((e, i) => {
+  changelog2.forEach((e, i) => {
     if (!e || +e.v !== i + 1 || !String(e.catatan || "").trim()) ok = false;
   });
   if (!ok) {
@@ -1364,22 +1606,22 @@ function versionIssues(version, changelog, fv = 1) {
         hint: "Changelog must be sequential from v1..vN with a non-empty catatan note."
       })
     );
-  } else if (changelog[changelog.length - 1].v !== version) {
-    const lastV = changelog[changelog.length - 1].v;
-    out.push(["FAIL", `version ${version} tetapi changelog berakhir di v${lastV}`]);
+  } else if (changelog2[changelog2.length - 1].v !== version2) {
+    const lastV = changelog2[changelog2.length - 1].v;
+    out.push(["FAIL", `version ${version2} tetapi changelog berakhir di v${lastV}`]);
     issues.push(
       createIssue({
         level: "FAIL",
         rule: RULE_CODES.CHANGELOG_VERSION_MISMATCH,
-        value: version,
+        value: version2,
         limit: lastV,
-        hint: `Clip version ${version} does not match last changelog entry v${lastV}.`
+        hint: `Clip version ${version2} does not match last changelog entry v${lastV}.`
       })
     );
   } else {
     out.push([
       "PASS",
-      `versi v${version}, format ${fv}, changelog ${changelog.length} entri konsisten`
+      `versi v${version2}, format ${fv}, changelog ${changelog2.length} entri konsisten`
     ]);
   }
   return { lines: out, issues };
@@ -1487,18 +1729,63 @@ function createDefaultRuleRegistry() {
   return registry;
 }
 const defaultRuleRegistry = createDefaultRuleRegistry();
-function validate(rig, ctx, limits, clip, style = "stylized", registry = defaultRuleRegistry, options = {}) {
-  const dur = clip.duration, frames = Math.ceil(dur * FPS - 1e-9);
+function validate$7(rig, ctx, limits, clip, style = "stylized", registry = defaultRuleRegistry, options = {}) {
+  let targetClip = clip;
+  const compIssues = [];
+  const compLines = [];
+  const layerReports = [];
+  if (clip.layers && Array.isArray(clip.layers) && clip.layers.length > 0 && !options.isLayerPass) {
+    for (let i = 0; i < clip.layers.length; i++) {
+      const layer = clip.layers[i];
+      let layerClip = layer.clip;
+      if (!layerClip && layer.ref && options.resolveRef) {
+        layerClip = options.resolveRef(layer.ref);
+      }
+      if (layerClip) {
+        let layerPart = layer.part;
+        if (!layerPart && options.parts && layerClip.channels) {
+          const lChannels = Object.keys(layerClip.channels);
+          for (const [pName, pDef] of Object.entries(options.parts)) {
+            const set = new Set(pDef.channels || []);
+            if (lChannels.some((ch) => set.has(ch))) {
+              layerPart = pName;
+              break;
+            }
+          }
+        }
+        const layerRes = validate$7(rig, ctx, limits, layerClip, style, registry, {
+          ...options,
+          part: layerPart,
+          isLayerPass: true
+        });
+        layerReports.push({ layerIdx: i, part: layerPart, report: layerRes });
+      }
+    }
+    const { clip: composed, warnings } = composeClips(clip, clip.layers, options);
+    targetClip = composed;
+    for (const w of warnings) {
+      compLines.push(["WARN", `[${w.code}] ${w.message}`]);
+      compIssues.push(
+        createIssue({
+          level: "WARN",
+          rule: RULE_CODES[w.code] || w.code,
+          channel: w.channel || null,
+          hint: w.message
+        })
+      );
+    }
+  }
+  const dur = targetClip.duration, frames = Math.ceil(dur * FPS - 1e-9);
   const tAt = (f) => Math.min(f / FPS, dur);
   const poses = [];
-  for (let f = 0; f <= frames; f++) poses.push(evalPose(rig, ctx, clip, tAt(f)));
+  for (let f = 0; f <= frames; f++) poses.push(evalPose(rig, ctx, targetClip, tAt(f)));
   const I = ctx.idx, restPos = restPositions(ctx);
   const floorY2 = Math.min(restPos[I.LeftToeBase][1], restPos[I.RightToeBase][1]);
   const ruleContext = {
     rig,
     ctx,
     limits,
-    clip,
+    clip: targetClip,
     style,
     poses,
     floorY: floorY2,
@@ -1506,8 +1793,8 @@ function validate(rig, ctx, limits, clip, style = "stylized", registry = default
     tAt,
     FPS
   };
-  const lines = [];
-  const issues = [];
+  const lines = [...compLines];
+  const issues = [...compIssues];
   let speedSeries = null;
   let rootSpeed = null;
   for (const rule of registry.getRules()) {
@@ -1547,7 +1834,9 @@ function validate(rig, ctx, limits, clip, style = "stylized", registry = default
     speedSeries,
     rootSpeed,
     frames,
-    issues: filteredIssues
+    issues: filteredIssues,
+    compositeClip: targetClip,
+    layerReports
   };
 }
 const DEFAULT_PALETTE = {
@@ -1665,7 +1954,7 @@ const ClipKit = {
   evalPose,
   evalChannels,
   restPositions,
-  validate,
+  validate: validate$7,
   allChannelNames,
   channelDefault,
   channelRange,
@@ -2163,6 +2452,107 @@ function renderContactSheet(rig, ctx, clip, options = {}) {
     height: totalH
   };
 }
+function renderComparisonContactSheet(rig, ctx, clipA, clipB, options = {}) {
+  const frameCount = Math.min(16, Math.max(4, options.frameCount || 8));
+  const durA = clipA.duration || 1;
+  const durB = clipB.duration || 1;
+  const cellW = 180;
+  const cellH = 260;
+  const marginX = 24;
+  const marginY = 32;
+  const titleH = 40;
+  const totalW = marginX * 2 + frameCount * cellW;
+  const totalH = marginY * 2 + titleH + 2 * cellH;
+  const g = options.ctx2d || new SvgContext2D(totalW, totalH);
+  const C2 = { ...DEFAULT_PALETTE };
+  g.fillStyle = C2["--view"] || "#111318";
+  g.fillRect(0, 0, totalW, totalH);
+  g.fillStyle = C2["--ink"] || "#e6edf3";
+  g.font = "bold 15px sans-serif";
+  g.textAlign = "left";
+  g.fillText(
+    `ClipKit Comparison — [A] ${clipA.name || "Clip A"} vs [B] ${clipB.name || "Clip B"}`,
+    marginX,
+    26
+  );
+  ctx.idx;
+  const yFloor = floorY({ res: { floorY: 0.03 } });
+  const KF = cellH / 2 / Math.tan(20 * Math.PI / 180);
+  const rows = [
+    {
+      clip: clipA,
+      label: `[A] ${clipA.name || "Clip A"} (${durA.toFixed(2)}s)`,
+      dur: durA,
+      arcColors: {
+        Head: "#e0fbfc",
+        LeftHand: "#00f0ff",
+        RightHand: "#70d6ff",
+        LeftFoot: "#3a86ff",
+        RightFoot: "#8338ec"
+      },
+      tagColor: "#00f0ff"
+    },
+    {
+      clip: clipB,
+      label: `[B] ${clipB.name || "Clip B"} (${durB.toFixed(2)}s)`,
+      dur: durB,
+      arcColors: {
+        Head: "#ffd166",
+        LeftHand: "#ff007f",
+        RightHand: "#ff9e00",
+        LeftFoot: "#ef476f",
+        RightFoot: "#e76f51"
+      },
+      tagColor: "#ff007f"
+    }
+  ];
+  for (let rIdx = 0; rIdx < 2; rIdx++) {
+    const row = rows[rIdx];
+    const rowY = marginY + titleH + rIdx * cellH;
+    g.fillStyle = row.tagColor;
+    g.font = "bold 12px sans-serif";
+    g.textAlign = "left";
+    g.fillText(row.label, marginX, rowY + 16);
+    const poses = [];
+    for (let i = 0; i < frameCount; i++) {
+      const t = i / (frameCount - 1);
+      poses.push(evalPose(rig, ctx, row.clip, t * row.dur));
+    }
+    const midP = poses[Math.floor(poses.length / 2)];
+    const camTarget = [midP.root[0], 0.85, midP.root[2]];
+    const B = buildCamBasis(0.55, 0.15, 4.2, camTarget);
+    for (let i = 0; i < frameCount; i++) {
+      const colX = marginX + i * cellW;
+      const t = i / (frameCount - 1);
+      const P = poses[i];
+      g.strokeStyle = C2["--grid"] || "#21262d";
+      g.lineWidth = 1;
+      g.strokeRect(colX, rowY, cellW, cellH);
+      const prjFn = (p) => projectPoint(p, colX, rowY, cellW, cellH, KF, B);
+      const fl0 = prjFn([-1.5 + midP.root[0], yFloor, midP.root[2]]);
+      const fl1 = prjFn([1.5 + midP.root[0], yFloor, midP.root[2]]);
+      if (fl0 && fl1) {
+        g.strokeStyle = C2["--grid2"] || "#30363d";
+        g.lineWidth = 1;
+        g.beginPath();
+        g.moveTo(fl0[0], fl0[1]);
+        g.lineTo(fl1[0], fl1[1]);
+        g.stroke();
+      }
+      drawFigure(g, P, ctx, rig, 1, false, prjFn, C2, KF);
+      g.fillStyle = C2["--muted"] || "#8b949e";
+      g.font = "10px monospace";
+      g.textAlign = "left";
+      g.fillText(`#${i} ${(t * row.dur).toFixed(2)}s`, colX + 8, rowY + 32);
+    }
+  }
+  const svg = g.toSvg ? g.toSvg() : null;
+  return {
+    svg,
+    width: totalW,
+    height: totalH
+  };
+}
 function runCheck(args, options = {}) {
   const inputPath = args[0];
   if (!inputPath) {
@@ -2202,7 +2592,7 @@ function runCheck(args, options = {}) {
     }
     return 1;
   }
-  const valRes = validate(motus2, ctx, limitsData, clip, style, void 0, {
+  const valRes = validate$7(motus2, ctx, limitsData, clip, style, void 0, {
     part: options.part,
     parts: partsData
   });
@@ -2278,6 +2668,1019 @@ function runCheck(args, options = {}) {
     }
   }
   return isPass ? 0 : 1;
+}
+const name$m = "dodge";
+const vrm_spec$d = "1.0";
+const format_version$d = 1;
+const version$d = 2;
+const changelog$d = [{ "v": 1, "catatan": "Versi awal pada rig lama." }, { "v": 2, "catatan": "Dikonversi penuh ke VRM 1.0 Humanoid + preset ekspresi surprised & blink saat melompat mundur 2.5 m." }];
+const group$d = "locomotion";
+const tags$d = ["vrm-1.0", "defense", "i-frame"];
+const duration$m = 0.8;
+const loop$d = false;
+const channels$m = { "hip_y": [[0, 0], [0.12, -0.108, "outQuad"], [0.18, -8e-3, "outQuad"], [0.34, 0.16, "outQuad"], [0.5, -8e-3, "inQuad"], [0.6, -0.108, "outQuad"], [0.8, 0, "inOutSine"]], "hip_z": [[0, 0], [0.12, -0.107, "outQuad"], [0.18, -0.039, "outQuad"], [0.34, -0.2, "outQuad"], [0.5, -0.039, "inQuad"], [0.6, -0.107, "outQuad"], [0.8, 0, "inOutSine"]], "lean": [[0, 0], [0.12, 25, "outQuad"], [0.34, 10, "inOutSine"], [0.6, 25, "outQuad"], [0.8, 0, "outBack"]], "armL_elev": [[0, -75], [0.12, -60, "outQuad"], [0.34, -25, "outQuad"], [0.6, -60, "inOutSine"], [0.8, -75, "inOutSine"]], "armR_elev": [[0, -75], [0.12, -60, "outQuad"], [0.34, -25, "outQuad"], [0.6, -60, "inOutSine"], [0.8, -75, "inOutSine"]], "armL_azim": [[0, 0], [0.12, -35, "outQuad"], [0.34, 35, "outQuad"], [0.6, -30, "inOutSine"], [0.8, 0, "inOutSine"]], "armR_azim": [[0, 0], [0.12, -35, "outQuad"], [0.34, 35, "outQuad"], [0.6, -30, "inOutSine"], [0.8, 0, "inOutSine"]], "elbowL": [[0, 10], [0.34, 50, "outQuad"], [0.8, 10, "inOutSine"]], "elbowR": [[0, 10], [0.34, 50, "outQuad"], [0.8, 10, "inOutSine"]], "legL_swing": [[0, 0], [0.12, 35, "outQuad"], [0.18, 10, "outQuad"], [0.34, 50, "outQuad"], [0.5, 10, "inQuad"], [0.6, 35, "outQuad"], [0.8, 0, "inOutSine"]], "legR_swing": [[0, 0], [0.12, 35, "outQuad"], [0.18, 10, "outQuad"], [0.34, 50, "outQuad"], [0.5, 10, "inQuad"], [0.6, 35, "outQuad"], [0.8, 0, "inOutSine"]], "kneeL": [[0, 3], [0.12, 55, "outQuad"], [0.18, 15, "outQuad"], [0.34, 90, "outQuad"], [0.5, 15, "inQuad"], [0.6, 55, "outQuad"], [0.8, 3, "inOutSine"]], "kneeR": [[0, 3], [0.12, 55, "outQuad"], [0.18, 15, "outQuad"], [0.34, 90, "outQuad"], [0.5, 15, "inQuad"], [0.6, 55, "outQuad"], [0.8, 3, "inOutSine"]], "footL_pitch": [[0, 0], [0.12, -20, "outQuad"], [0.18, -5, "outQuad"], [0.34, 20, "outQuad"], [0.5, -5, "inQuad"], [0.6, -20, "outQuad"], [0.8, 0, "inOutSine"]], "footR_pitch": [[0, 0], [0.12, -20, "outQuad"], [0.18, -5, "outQuad"], [0.34, 20, "outQuad"], [0.5, -5, "inQuad"], [0.6, -20, "outQuad"], [0.8, 0, "inOutSine"]] };
+const expressions$f = { "surprised": [[0, 0], [0.15, 0.85, "outQuad"], [0.5, 0.2, "inOutSine"], [0.8, 0, "linear"]], "blink": [[0, 0], [0.08, 1, "outQuad"], [0.18, 0, "inQuad"]] };
+const move$4 = { "dir": [0, 0, -1], "distance": 2.5, "t0": 0.18, "t1": 0.5, "ease": "linear" };
+const windows$8 = { "inv": [0.1, 0.45], "cancel": [0.6, 0.8] };
+const events$d = [{ "t": 0.18, "type": "sfx", "id": "whoosh" }, { "t": 0.5, "type": "vfx", "id": "dust" }];
+const claims$d = { "distance": 2.5, "tolerance": 0.1, "duration": 0.8 };
+const dodge = {
+  name: name$m,
+  vrm_spec: vrm_spec$d,
+  format_version: format_version$d,
+  version: version$d,
+  changelog: changelog$d,
+  group: group$d,
+  tags: tags$d,
+  duration: duration$m,
+  loop: loop$d,
+  channels: channels$m,
+  expressions: expressions$f,
+  move: move$4,
+  windows: windows$8,
+  events: events$d,
+  claims: claims$d
+};
+const name$l = "hands_eyes_jaw";
+const vrm_spec$c = "1.0";
+const format_version$c = 1;
+const version$c = 1;
+const changelog$c = [{ "v": 1, "catatan": "Klip demo: kepalan, tunjuk, spread jari, lirikan mata, rahang terbuka." }];
+const group$c = "locomotion";
+const tags$c = ["demo", "jari", "mata", "rahang"];
+const duration$l = 3;
+const loop$c = true;
+const channels$l = { "lean": [[0, 1], [1, 3.5, "inOutSine"], [2, 1, "inOutSine"]], "side_lean": [[0, -1.5], [1, 1.5, "inOutSine"], [2, -1.5, "inOutSine"]], "head_pitch": [[0, 0], [1, -3, "inOutSine"], [2, 0, "inOutSine"]], "head_yaw": [[0, -3], [1, 3, "inOutSine"], [2, -3, "inOutSine"]], "armL_elev": [[0, -76], [1, -73, "inOutSine"], [2, -76, "inOutSine"]], "armR_elev": [[0, -76], [1, -73, "inOutSine"], [2, -76, "inOutSine"]], "elbowL": [[0, 12], [1, 16, "inOutSine"], [2, 12, "inOutSine"]], "elbowR": [[0, 12], [1, 16, "inOutSine"], [2, 12, "inOutSine"]], "kneeL": [[0, 3], [2, 3]], "kneeR": [[0, 3], [2, 3]], "indexR": [[0, 0], [0.8, 0], [1, 0, "linear"], [3, 0, "linear"]], "middleR": [[0, 0], [0.8, 90, "outQuad"], [2.2, 90], [3, 0, "inOutSine"]], "ringR": [[0, 0], [0.8, 90, "outQuad"], [2.2, 90], [3, 0, "inOutSine"]], "littleR": [[0, 0], [0.8, 90, "outQuad"], [2.2, 90], [3, 0, "inOutSine"]], "thumbR": [[0, 0], [0.8, 70, "outQuad"], [2.2, 70], [3, 0, "inOutSine"]], "indexL": [[0, 0], [1.5, 80, "inOutSine"], [3, 0, "inOutSine"]], "middleL": [[0, 0], [1.5, 80, "inOutSine"], [3, 0, "inOutSine"]], "ringL": [[0, 0], [1.5, 80, "inOutSine"], [3, 0, "inOutSine"]], "littleL": [[0, 0], [1.5, 80, "inOutSine"], [3, 0, "inOutSine"]], "spreadR": [[0, 0], [2.2, 0], [2.6, 25, "outQuad"], [3, 0, "inOutSine"]], "eye_yaw": [[0, 0], [0.75, -25, "inOutSine"], [2.25, 25, "inOutSine"], [3, 0, "inOutSine"]], "eye_pitch": [[0, 0], [1.5, 12, "inOutSine"], [3, 0, "inOutSine"]], "jaw_open": [[0, 0], [0.4, 20, "outQuad"], [0.8, 0, "inQuad"], [1.2, 20, "outQuad"], [1.6, 0, "inQuad"], [3, 0]] };
+const expressions$e = { "happy": [[0, 0], [1.5, 0.6, "inOutSine"], [3, 0, "inOutSine"]] };
+const events$c = [{ "t": 1.5, "type": "sfx", "id": "demo_mid" }];
+const claims$c = { "duration": 3 };
+const hands_eyes_jaw = {
+  name: name$l,
+  vrm_spec: vrm_spec$c,
+  format_version: format_version$c,
+  version: version$c,
+  changelog: changelog$c,
+  group: group$c,
+  tags: tags$c,
+  duration: duration$l,
+  loop: loop$c,
+  channels: channels$l,
+  expressions: expressions$e,
+  events: events$c,
+  claims: claims$c
+};
+const name$k = "idle";
+const vrm_spec$b = "1.0";
+const format_version$b = 1;
+const version$b = 1;
+const changelog$b = [{ "v": 1, "catatan": "Siklus berdiri bernapas halus VRM 1.0 dengan kedipan mata (blink) dan ekspresi relaxed." }];
+const group$b = "locomotion";
+const tags$b = ["vrm-1.0", "idle", "loop", "vtuber"];
+const duration$k = 2;
+const loop$b = true;
+const channels$k = { "lean": [[0, 1], [1, 3.5, "inOutSine"], [2, 1, "inOutSine"]], "side_lean": [[0, -1.5], [1, 1.5, "inOutSine"], [2, -1.5, "inOutSine"]], "head_pitch": [[0, 0], [1, -3, "inOutSine"], [2, 0, "inOutSine"]], "head_yaw": [[0, -3], [1, 3, "inOutSine"], [2, -3, "inOutSine"]], "armL_elev": [[0, -76], [1, -73, "inOutSine"], [2, -76, "inOutSine"]], "armR_elev": [[0, -76], [1, -73, "inOutSine"], [2, -76, "inOutSine"]], "elbowL": [[0, 12], [1, 16, "inOutSine"], [2, 12, "inOutSine"]], "elbowR": [[0, 12], [1, 16, "inOutSine"], [2, 12, "inOutSine"]], "kneeL": [[0, 3], [2, 3]], "kneeR": [[0, 3], [2, 3]] };
+const expressions$d = { "relaxed": [[0, 0.35], [1, 0.55, "inOutSine"], [2, 0.35, "inOutSine"]], "blink": [[0, 0], [0.85, 0, "hold"], [0.93, 1, "outQuad"], [1.05, 0, "inQuad"], [2, 0, "linear"]] };
+const events$b = [{ "t": 1, "type": "breath", "id": "inhale_peak" }];
+const claims$b = { "duration": 2, "tolerance": 0.1 };
+const idle = {
+  name: name$k,
+  vrm_spec: vrm_spec$b,
+  format_version: format_version$b,
+  version: version$b,
+  changelog: changelog$b,
+  group: group$b,
+  tags: tags$b,
+  duration: duration$k,
+  loop: loop$b,
+  channels: channels$k,
+  expressions: expressions$d,
+  events: events$b,
+  claims: claims$b
+};
+const name$j = "jump";
+const vrm_spec$a = "1.0";
+const format_version$a = 1;
+const version$a = 1;
+const changelog$a = [{ "v": 1, "catatan": "Lompatan maju 1.5 m dengan ancang-ancang jongkok, melayang di udara, dan mendarat stabil." }];
+const group$a = "locomotion";
+const tags$a = ["vrm-1.0", "jump", "air"];
+const duration$j = 0.9;
+const loop$a = false;
+const channels$j = { "hip_y": [[0, 0], [0.18, -0.105, "outQuad"], [0.45, 0.34, "outQuad"], [0.72, -0.105, "inQuad"], [0.9, 0, "inOutSine"]], "lean": [[0, 0], [0.18, 22, "outQuad"], [0.45, -8, "inOutSine"], [0.72, 22, "outQuad"], [0.9, 0, "inOutSine"]], "head_pitch": [[0, 0], [0.18, 10, "outQuad"], [0.45, -15, "outQuad"], [0.72, 8, "inQuad"], [0.9, 0, "inOutSine"]], "armL_elev": [[0, -75], [0.18, -80, "outQuad"], [0.45, 35, "outQuad"], [0.72, -55, "inQuad"], [0.9, -75, "inOutSine"]], "armR_elev": [[0, -75], [0.18, -80, "outQuad"], [0.45, 35, "outQuad"], [0.72, -55, "inQuad"], [0.9, -75, "inOutSine"]], "armL_azim": [[0, 0], [0.18, -25, "outQuad"], [0.45, 45, "outQuad"], [0.72, 15, "inQuad"], [0.9, 0, "inOutSine"]], "armR_azim": [[0, 0], [0.18, -25, "outQuad"], [0.45, 45, "outQuad"], [0.72, 15, "inQuad"], [0.9, 0, "inOutSine"]], "elbowL": [[0, 10], [0.18, 35, "outQuad"], [0.45, 25, "outQuad"], [0.72, 45, "inQuad"], [0.9, 10, "inOutSine"]], "elbowR": [[0, 10], [0.18, 35, "outQuad"], [0.45, 25, "outQuad"], [0.72, 45, "inQuad"], [0.9, 10, "inOutSine"]], "legL_swing": [[0, 0], [0.18, 35, "outQuad"], [0.45, 45, "outQuad"], [0.72, 35, "inQuad"], [0.9, 0, "inOutSine"]], "legR_swing": [[0, 0], [0.18, 35, "outQuad"], [0.45, 20, "outQuad"], [0.72, 35, "inQuad"], [0.9, 0, "inOutSine"]], "kneeL": [[0, 3], [0.18, 55, "outQuad"], [0.45, 80, "outQuad"], [0.72, 55, "inQuad"], [0.9, 3, "inOutSine"]], "kneeR": [[0, 3], [0.18, 55, "outQuad"], [0.45, 45, "outQuad"], [0.72, 55, "inQuad"], [0.9, 3, "inOutSine"]], "footL_pitch": [[0, 0], [0.18, -20, "outQuad"], [0.45, 25, "outQuad"], [0.72, -20, "inQuad"], [0.9, 0, "inOutSine"]], "footR_pitch": [[0, 0], [0.18, -20, "outQuad"], [0.45, 25, "outQuad"], [0.72, -20, "inQuad"], [0.9, 0, "inOutSine"]] };
+const expressions$c = { "surprised": [[0, 0], [0.2, 0.8, "outQuad"], [0.65, 0.2, "inQuad"], [0.9, 0, "linear"]], "aa": [[0, 0], [0.22, 0.6, "outQuad"], [0.6, 0, "inQuad"]], "blink": [[0, 0], [0.7, 0], [0.76, 1, "outQuad"], [0.86, 0, "inQuad"]] };
+const move$3 = { "dir": [0, 0, 1], "distance": 1.5, "t0": 0.18, "t1": 0.72, "ease": "inOutSine" };
+const events$a = [{ "t": 0.18, "type": "sfx", "id": "jump_launch" }, { "t": 0.72, "type": "vfx", "id": "land_dust" }];
+const claims$a = { "distance": 1.5, "duration": 0.9, "tolerance": 0.1 };
+const jump = {
+  name: name$j,
+  vrm_spec: vrm_spec$a,
+  format_version: format_version$a,
+  version: version$a,
+  changelog: changelog$a,
+  group: group$a,
+  tags: tags$a,
+  duration: duration$j,
+  loop: loop$a,
+  channels: channels$j,
+  expressions: expressions$c,
+  move: move$3,
+  events: events$a,
+  claims: claims$a
+};
+const name$i = "kick_axe";
+const vrm_spec$9 = "1.0";
+const format_version$9 = 1;
+const version$9 = 1;
+const changelog$9 = [{ "v": 1, "catatan": "Tendangan kapak melompat (Jumping Axe Kick / Kakato Otoshi): melompat maju sambil mengayunkan kaki kanan tinggi ke atas lalu menghantam lurus ke bawah." }];
+const group$9 = "combat";
+const tags$9 = ["vrm-1.0", "combat", "kick", "axe-kick", "air"];
+const duration$i = 1;
+const loop$9 = false;
+const channels$i = { "hip_y": [[0, 0], [0.16, -0.05, "inOutSine"], [0.4, 0.22, "outSine"], [0.62, -0.02, "inSine"], [1, 0, "inOutSine"]], "lean": [[0, 0], [0.16, 14, "inOutSine"], [0.4, -12, "inOutSine"], [0.62, 22, "inOutSine"], [1, 0, "inOutSine"]], "twist": [[0, 0], [0.16, -18, "inOutSine"], [0.4, 15, "inOutSine"], [0.62, 22, "inOutSine"], [1, 0, "inOutSine"]], "hip_twist": [[0, 0], [0.16, -15, "inOutSine"], [0.4, 18, "inOutSine"], [0.62, 15, "inOutSine"], [1, 0, "inOutSine"]], "armL_elev": [[0, -75], [0.16, -60, "inOutSine"], [0.4, 20, "inOutSine"], [0.62, -45, "inOutSine"], [1, -75, "inOutSine"]], "armR_elev": [[0, -75], [0.16, -60, "inOutSine"], [0.4, 10, "inOutSine"], [0.62, -55, "inOutSine"], [1, -75, "inOutSine"]], "armL_azim": [[0, 0], [0.4, 45, "inOutSine"], [0.62, 20, "inOutSine"], [1, 0, "inOutSine"]], "armR_azim": [[0, 0], [0.4, 30, "inOutSine"], [0.62, -25, "inOutSine"], [1, 0, "inOutSine"]], "elbowL": [[0, 10], [0.4, 65, "inOutSine"], [1, 10, "inOutSine"]], "elbowR": [[0, 10], [0.4, 55, "inOutSine"], [1, 10, "inOutSine"]], "legR_swing": [[0, 0], [0.16, 22, "inOutSine"], [0.4, 112, "inOutSine"], [0.62, 22, "inOutSine"], [1, 0, "inOutSine"]], "kneeR": [[0, 3], [0.16, 35, "inOutSine"], [0.4, 8, "inOutSine"], [0.62, 25, "inOutSine"], [1, 3, "inOutSine"]], "footR_pitch": [[0, 0], [0.16, -10, "inOutSine"], [0.4, -12, "inOutSine"], [0.62, -8, "inOutSine"], [1, 0, "inOutSine"]], "legL_swing": [[0, 0], [0.16, 26, "inOutSine"], [0.4, 18, "inOutSine"], [0.62, 18, "inOutSine"], [1, 0, "inOutSine"]], "kneeL": [[0, 3], [0.16, 42, "inOutSine"], [0.4, 38, "inOutSine"], [0.62, 28, "inOutSine"], [1, 3, "inOutSine"]], "footL_pitch": [[0, 0], [0.16, -16, "inOutSine"], [0.4, 15, "inOutSine"], [0.62, -10, "inOutSine"], [1, 0, "inOutSine"]] };
+const expressions$b = { "angry": [[0, 0], [0.2, 0.95, "outQuad"], [0.7, 0.95, "hold"], [1, 0, "inOutSine"]], "aa": [[0, 0], [0.35, 0.9, "outQuad"], [0.68, 0, "inQuad"]] };
+const move$2 = { "dir": [0, 0, 1], "distance": 1.1, "t0": 0.16, "t1": 0.62, "ease": "inOutSine" };
+const windows$7 = { "hitbox": [0.42, 0.6], "cancel": [0.72, 1] };
+const events$9 = [{ "t": 0.18, "type": "sfx", "id": "axe_jump" }, { "t": 0.52, "type": "vfx", "id": "heavy_slam" }];
+const claims$9 = { "distance": 1.1, "duration": 1, "tolerance": 0.1 };
+const validate$6 = { "foot_slide": false };
+const kick_axe = {
+  name: name$i,
+  vrm_spec: vrm_spec$9,
+  format_version: format_version$9,
+  version: version$9,
+  changelog: changelog$9,
+  group: group$9,
+  tags: tags$9,
+  duration: duration$i,
+  loop: loop$9,
+  channels: channels$i,
+  expressions: expressions$b,
+  move: move$2,
+  windows: windows$7,
+  events: events$9,
+  claims: claims$9,
+  validate: validate$6
+};
+const name$h = "kick_back";
+const vrm_spec$8 = "1.0";
+const format_version$8 = 1;
+const version$8 = 1;
+const changelog$8 = [{ "v": 1, "catatan": "Tendangan belakang berputar (Ushiro Geri / Spinning Back Kick): badan memutar dan mencondong ke depan sambil menghentakkan kaki kanan ke arah belakang." }];
+const group$8 = "combat";
+const tags$8 = ["vrm-1.0", "combat", "kick", "back-kick"];
+const duration$h = 0.95;
+const loop$8 = false;
+const channels$h = { "hip_y": [[0, 0], [0.22, 0.01, "inOutSine"], [0.45, 0.03, "inOutSine"], [0.68, 0.01, "inOutSine"], [0.95, 0, "inOutSine"]], "hip_pitch": [[0, 0], [0.22, 10, "inOutSine"], [0.45, 22, "inOutSine"], [0.68, 10, "inOutSine"], [0.95, 0, "inOutSine"]], "lean": [[0, 0], [0.22, 12, "inOutSine"], [0.45, 28, "inOutSine"], [0.68, 12, "inOutSine"], [0.95, 0, "inOutSine"]], "twist": [[0, 0], [0.22, -25, "inOutSine"], [0.45, -45, "inOutSine"], [0.68, -20, "inOutSine"], [0.95, 0, "inOutSine"]], "hip_twist": [[0, 0], [0.22, -30, "inOutSine"], [0.45, -55, "inOutSine"], [0.68, -25, "inOutSine"], [0.95, 0, "inOutSine"]], "head_yaw": [[0, 0], [0.22, -30, "inOutSine"], [0.45, -58, "inOutSine"], [0.68, -25, "inOutSine"], [0.95, 0, "inOutSine"]], "armL_elev": [[0, -75], [0.45, -35, "inOutSine"], [0.95, -75, "inOutSine"]], "armR_elev": [[0, -75], [0.45, -30, "inOutSine"], [0.95, -75, "inOutSine"]], "armL_azim": [[0, 0], [0.45, 40, "inOutSine"], [0.95, 0, "inOutSine"]], "armR_azim": [[0, 0], [0.45, 45, "inOutSine"], [0.95, 0, "inOutSine"]], "elbowL": [[0, 10], [0.45, 80, "inOutSine"], [0.95, 10, "inOutSine"]], "elbowR": [[0, 10], [0.45, 85, "inOutSine"], [0.95, 10, "inOutSine"]], "legR_swing": [[0, 0], [0.22, 25, "inOutSine"], [0.45, -42, "inOutSine"], [0.68, 15, "inOutSine"], [0.95, 0, "inOutSine"]], "legR_abd": [[0, 0], [0.22, 10, "inOutSine"], [0.45, 18, "inOutSine"], [0.68, 8, "inOutSine"], [0.95, 0, "inOutSine"]], "kneeR": [[0, 3], [0.22, 80, "inOutSine"], [0.45, 8, "inOutSine"], [0.68, 65, "inOutSine"], [0.95, 3, "inOutSine"]], "footR_pitch": [[0, 0], [0.45, -18, "inOutSine"], [0.95, 0, "inOutSine"]], "legL_swing": [[0, 0], [0.22, 12, "inOutSine"], [0.45, 26, "inOutSine"], [0.68, 12, "inOutSine"], [0.95, 0, "inOutSine"]], "kneeL": [[0, 3], [0.22, 8, "inOutSine"], [0.45, 12, "inOutSine"], [0.68, 8, "inOutSine"], [0.95, 3, "inOutSine"]], "footL_pitch": [[0, 0], [0.45, -6, "inOutSine"], [0.95, 0, "inOutSine"]] };
+const expressions$a = { "angry": [[0, 0], [0.22, 0.9, "outQuad"], [0.65, 0.9, "hold"], [0.95, 0, "inOutSine"]], "oh": [[0, 0], [0.38, 0.85, "outQuad"], [0.62, 0, "inQuad"]] };
+const windows$6 = { "hitbox": [0.38, 0.52], "cancel": [0.68, 0.95] };
+const events$8 = [{ "t": 0.38, "type": "sfx", "id": "back_kick_thrust" }];
+const claims$8 = { "duration": 0.95, "tolerance": 0.1 };
+const validate$5 = { "foot_slide": false };
+const kick_back = {
+  name: name$h,
+  vrm_spec: vrm_spec$8,
+  format_version: format_version$8,
+  version: version$8,
+  changelog: changelog$8,
+  group: group$8,
+  tags: tags$8,
+  duration: duration$h,
+  loop: loop$8,
+  channels: channels$h,
+  expressions: expressions$a,
+  windows: windows$6,
+  events: events$8,
+  claims: claims$8,
+  validate: validate$5
+};
+const name$g = "kick_front";
+const vrm_spec$7 = "1.0";
+const format_version$7 = 1;
+const version$7 = 1;
+const changelog$7 = [{ "v": 1, "catatan": "Tendangan depan cepat (Mae Geri / Front Snap Kick): angkat lutut (chamber), hentak lurus ke depan, lalu tarik kembali." }];
+const group$7 = "combat";
+const tags$7 = ["vrm-1.0", "combat", "kick", "front-kick"];
+const duration$g = 0.85;
+const loop$7 = false;
+const channels$g = { "hip_y": [[0, 0], [0.2, 0.01, "inOutSine"], [0.38, 0.02, "inOutSine"], [0.58, 0.01, "inOutSine"], [0.85, 0, "inOutSine"]], "hip_z": [[0, 0], [0.2, 0.04, "inOutSine"], [0.38, 0.12, "outSine"], [0.58, 0.05, "inOutSine"], [0.85, 0, "inOutSine"]], "lean": [[0, 0], [0.2, 4, "inOutSine"], [0.38, -14, "outSine"], [0.58, -4, "inOutSine"], [0.85, 0, "inOutSine"]], "twist": [[0, 0], [0.2, -12, "inOutSine"], [0.38, 18, "outSine"], [0.85, 0, "inOutSine"]], "hip_twist": [[0, 0], [0.2, -10, "inOutSine"], [0.38, 16, "outSine"], [0.85, 0, "inOutSine"]], "armL_elev": [[0, -75], [0.2, -35, "inOutSine"], [0.38, -25, "outSine"], [0.85, -75, "inOutSine"]], "armR_elev": [[0, -75], [0.2, -40, "inOutSine"], [0.38, -45, "outSine"], [0.85, -75, "inOutSine"]], "armL_azim": [[0, 0], [0.2, 45, "inOutSine"], [0.38, 55, "outSine"], [0.85, 0, "inOutSine"]], "armR_azim": [[0, 0], [0.2, 35, "inOutSine"], [0.38, -25, "outSine"], [0.85, 0, "inOutSine"]], "elbowL": [[0, 10], [0.2, 85, "inOutSine"], [0.38, 90, "outSine"], [0.85, 10, "inOutSine"]], "elbowR": [[0, 10], [0.2, 80, "inOutSine"], [0.38, 65, "outSine"], [0.85, 10, "inOutSine"]], "legR_swing": [[0, 0], [0.2, 58, "inOutSine"], [0.38, 88, "outSine"], [0.58, 45, "inOutSine"], [0.85, 0, "inOutSine"]], "kneeR": [[0, 3], [0.2, 92, "inOutSine"], [0.38, 8, "outSine"], [0.58, 78, "inOutSine"], [0.85, 3, "inOutSine"]], "footR_pitch": [[0, 0], [0.2, 15, "inOutSine"], [0.38, 28, "outSine"], [0.58, 10, "inOutSine"], [0.85, 0, "inOutSine"]], "legL_swing": [[0, 0], [0.38, 12, "inOutSine"], [0.85, 0, "inOutSine"]], "kneeL": [[0, 3], [0.38, 14, "inOutSine"], [0.85, 3, "inOutSine"]], "footL_pitch": [[0, 0], [0.38, -4, "inOutSine"], [0.85, 0, "inOutSine"]] };
+const expressions$9 = { "angry": [[0, 0], [0.2, 0.85, "outQuad"], [0.55, 0.85, "hold"], [0.85, 0, "inOutSine"]], "aa": [[0, 0], [0.3, 0.75, "outQuad"], [0.52, 0, "inQuad"]] };
+const windows$5 = { "hitbox": [0.32, 0.45], "cancel": [0.6, 0.85] };
+const events$7 = [{ "t": 0.32, "type": "sfx", "id": "front_kick_snap" }];
+const claims$7 = { "duration": 0.85, "tolerance": 0.1 };
+const validate$4 = { "foot_slide": false };
+const kick_front = {
+  name: name$g,
+  vrm_spec: vrm_spec$7,
+  format_version: format_version$7,
+  version: version$7,
+  changelog: changelog$7,
+  group: group$7,
+  tags: tags$7,
+  duration: duration$g,
+  loop: loop$7,
+  channels: channels$g,
+  expressions: expressions$9,
+  windows: windows$5,
+  events: events$7,
+  claims: claims$7,
+  validate: validate$4
+};
+const name$f = "kick_low";
+const vrm_spec$6 = "1.0";
+const format_version$6 = 1;
+const version$6 = 1;
+const changelog$6 = [{ "v": 1, "catatan": "Tendangan sapuan bawah (Low Kick / Leg Sweep) mengarah ke betis lawan dengan tumpuan kaki kiri merendah." }];
+const group$6 = "combat";
+const tags$6 = ["vrm-1.0", "combat", "kick", "low-kick"];
+const duration$f = 0.8;
+const loop$6 = false;
+const channels$f = { "hip_y": [[0, 0], [0.2, -0.015, "inOutSine"], [0.4, -0.02, "inOutSine"], [0.8, 0, "inOutSine"]], "lean": [[0, 0], [0.2, 8, "inOutSine"], [0.4, 15, "inOutSine"], [0.8, 0, "inOutSine"]], "side_lean": [[0, 0], [0.2, 6, "inOutSine"], [0.4, -10, "inOutSine"], [0.8, 0, "inOutSine"]], "twist": [[0, 0], [0.2, -24, "inOutSine"], [0.4, 28, "inOutSine"], [0.8, 0, "inOutSine"]], "hip_twist": [[0, 0], [0.2, -28, "inOutSine"], [0.4, 38, "inOutSine"], [0.8, 0, "inOutSine"]], "armL_elev": [[0, -75], [0.2, -40, "inOutSine"], [0.4, -30, "inOutSine"], [0.8, -75, "inOutSine"]], "armR_elev": [[0, -75], [0.2, -35, "inOutSine"], [0.4, -50, "inOutSine"], [0.8, -75, "inOutSine"]], "armL_azim": [[0, 0], [0.4, 50, "inOutSine"], [0.8, 0, "inOutSine"]], "armR_azim": [[0, 0], [0.2, 35, "inOutSine"], [0.4, -30, "inOutSine"], [0.8, 0, "inOutSine"]], "elbowL": [[0, 10], [0.4, 80, "inOutSine"], [0.8, 10, "inOutSine"]], "elbowR": [[0, 10], [0.4, 45, "inOutSine"], [0.8, 10, "inOutSine"]], "legR_swing": [[0, 0], [0.2, -12, "inOutSine"], [0.4, 42, "inOutSine"], [0.6, 18, "inOutSine"], [0.8, 0, "inOutSine"]], "legR_abd": [[0, 0], [0.2, 18, "inOutSine"], [0.4, 28, "inOutSine"], [0.6, 10, "inOutSine"], [0.8, 0, "inOutSine"]], "kneeR": [[0, 3], [0.2, 38, "inOutSine"], [0.4, 16, "inOutSine"], [0.6, 30, "inOutSine"], [0.8, 3, "inOutSine"]], "footR_pitch": [[0, 0], [0.4, 22, "inOutSine"], [0.8, 0, "inOutSine"]], "legL_swing": [[0, 0], [0.2, 18, "inOutSine"], [0.4, 22, "inOutSine"], [0.8, 0, "inOutSine"]], "kneeL": [[0, 3], [0.2, 28, "inOutSine"], [0.4, 34, "inOutSine"], [0.8, 3, "inOutSine"]], "footL_pitch": [[0, 0], [0.2, -10, "inOutSine"], [0.4, -14, "inOutSine"], [0.8, 0, "inOutSine"]] };
+const expressions$8 = { "angry": [[0, 0], [0.18, 0.75, "outQuad"], [0.55, 0.75, "hold"], [0.8, 0, "inOutSine"]], "ih": [[0, 0], [0.3, 0.65, "outQuad"], [0.52, 0, "inQuad"]] };
+const windows$4 = { "hitbox": [0.32, 0.45], "cancel": [0.55, 0.8] };
+const events$6 = [{ "t": 0.32, "type": "sfx", "id": "low_sweep" }];
+const claims$6 = { "duration": 0.8, "tolerance": 0.1 };
+const validate$3 = { "foot_slide": false };
+const kick_low = {
+  name: name$f,
+  vrm_spec: vrm_spec$6,
+  format_version: format_version$6,
+  version: version$6,
+  changelog: changelog$6,
+  group: group$6,
+  tags: tags$6,
+  duration: duration$f,
+  loop: loop$6,
+  channels: channels$f,
+  expressions: expressions$8,
+  windows: windows$4,
+  events: events$6,
+  claims: claims$6,
+  validate: validate$3
+};
+const name$e = "kick_roundhouse";
+const vrm_spec$5 = "1.0";
+const format_version$5 = 1;
+const version$5 = 1;
+const changelog$5 = [{ "v": 1, "catatan": "Tendangan sabit memutar (Mawashi Geri / Roundhouse Kick) dengan rotasi pinggul penuh dan ayunan kaki kanan menyamping." }];
+const group$5 = "combat";
+const tags$5 = ["vrm-1.0", "combat", "kick", "roundhouse"];
+const duration$e = 0.95;
+const loop$5 = false;
+const channels$e = { "hip_y": [[0, 0], [0.22, 0.02, "inOutSine"], [0.44, 0.03, "inOutSine"], [0.65, 0.01, "inOutSine"], [0.95, 0, "inOutSine"]], "lean": [[0, 0], [0.22, 6, "inOutSine"], [0.44, -14, "inOutSine"], [0.65, -5, "inOutSine"], [0.95, 0, "inOutSine"]], "side_lean": [[0, 0], [0.22, -8, "inOutSine"], [0.44, -18, "inOutSine"], [0.65, -8, "inOutSine"], [0.95, 0, "inOutSine"]], "twist": [[0, 0], [0.22, -22, "inOutSine"], [0.44, 32, "inOutSine"], [0.65, 12, "inOutSine"], [0.95, 0, "inOutSine"]], "hip_twist": [[0, 0], [0.22, -25, "inOutSine"], [0.44, 44, "inOutSine"], [0.65, 16, "inOutSine"], [0.95, 0, "inOutSine"]], "hip_roll": [[0, 0], [0.22, -6, "inOutSine"], [0.44, -12, "inOutSine"], [0.65, -4, "inOutSine"], [0.95, 0, "inOutSine"]], "head_yaw": [[0, 0], [0.22, 12, "inOutSine"], [0.44, -24, "inOutSine"], [0.95, 0, "inOutSine"]], "armL_elev": [[0, -75], [0.22, -30, "inOutSine"], [0.44, -20, "inOutSine"], [0.95, -75, "inOutSine"]], "armR_elev": [[0, -75], [0.22, -35, "inOutSine"], [0.44, -30, "inOutSine"], [0.95, -75, "inOutSine"]], "armL_azim": [[0, 0], [0.22, 40, "inOutSine"], [0.44, 60, "inOutSine"], [0.95, 0, "inOutSine"]], "armR_azim": [[0, 0], [0.22, 30, "inOutSine"], [0.44, -35, "inOutSine"], [0.95, 0, "inOutSine"]], "elbowL": [[0, 10], [0.22, 85, "inOutSine"], [0.44, 95, "inOutSine"], [0.95, 10, "inOutSine"]], "elbowR": [[0, 10], [0.22, 75, "inOutSine"], [0.44, 55, "inOutSine"], [0.95, 10, "inOutSine"]], "legR_swing": [[0, 0], [0.22, 45, "inOutSine"], [0.44, 78, "inOutSine"], [0.65, 40, "inOutSine"], [0.95, 0, "inOutSine"]], "legR_abd": [[0, 0], [0.22, 34, "inOutSine"], [0.44, 46, "inOutSine"], [0.65, 22, "inOutSine"], [0.95, 0, "inOutSine"]], "kneeR": [[0, 3], [0.22, 90, "inOutSine"], [0.44, 10, "inOutSine"], [0.65, 75, "inOutSine"], [0.95, 3, "inOutSine"]], "footR_pitch": [[0, 0], [0.22, 20, "inOutSine"], [0.44, 35, "inOutSine"], [0.65, 10, "inOutSine"], [0.95, 0, "inOutSine"]], "legL_swing": [[0, 0], [0.44, 14, "inOutSine"], [0.95, 0, "inOutSine"]], "kneeL": [[0, 3], [0.44, 16, "inOutSine"], [0.95, 3, "inOutSine"]], "footL_pitch": [[0, 0], [0.44, -4, "inOutSine"], [0.95, 0, "inOutSine"]] };
+const expressions$7 = { "angry": [[0, 0], [0.2, 0.9, "outQuad"], [0.6, 0.9, "hold"], [0.95, 0, "inOutSine"]], "oh": [[0, 0], [0.34, 0.8, "outQuad"], [0.58, 0, "inQuad"]] };
+const move$1 = { "dir": [0, 0, 1], "distance": 0.35, "t0": 0.15, "t1": 0.45, "ease": "inOutSine" };
+const windows$3 = { "hitbox": [0.36, 0.5], "cancel": [0.65, 0.95] };
+const events$5 = [{ "t": 0.36, "type": "sfx", "id": "roundhouse_whoosh" }, { "t": 0.42, "type": "trail", "id": "leg_arc" }];
+const claims$5 = { "distance": 0.35, "duration": 0.95, "tolerance": 0.1 };
+const validate$2 = { "foot_slide": false };
+const kick_roundhouse = {
+  name: name$e,
+  vrm_spec: vrm_spec$5,
+  format_version: format_version$5,
+  version: version$5,
+  changelog: changelog$5,
+  group: group$5,
+  tags: tags$5,
+  duration: duration$e,
+  loop: loop$5,
+  channels: channels$e,
+  expressions: expressions$7,
+  move: move$1,
+  windows: windows$3,
+  events: events$5,
+  claims: claims$5,
+  validate: validate$2
+};
+const name$d = "kick_side";
+const vrm_spec$4 = "1.0";
+const format_version$4 = 1;
+const version$4 = 1;
+const changelog$4 = [{ "v": 1, "catatan": "Tendangan samping lurus (Yoko Geri / Side Thrust Kick) dengan bukaan abduksi paha tinggi dan kemiringan torso penyeimbang." }];
+const group$4 = "combat";
+const tags$4 = ["vrm-1.0", "combat", "kick", "side-kick"];
+const duration$d = 0.9;
+const loop$4 = false;
+const channels$d = { "hip_y": [[0, 0], [0.22, 0.02, "inOutSine"], [0.42, 0.04, "inOutSine"], [0.62, 0.02, "inOutSine"], [0.9, 0, "inOutSine"]], "side_lean": [[0, 0], [0.22, -16, "inOutSine"], [0.42, -28, "inOutSine"], [0.62, -14, "inOutSine"], [0.9, 0, "inOutSine"]], "twist": [[0, 0], [0.22, -15, "inOutSine"], [0.42, -26, "inOutSine"], [0.62, -12, "inOutSine"], [0.9, 0, "inOutSine"]], "hip_twist": [[0, 0], [0.22, 32, "inOutSine"], [0.42, 50, "inOutSine"], [0.62, 24, "inOutSine"], [0.9, 0, "inOutSine"]], "hip_roll": [[0, 0], [0.22, -6, "inOutSine"], [0.42, -12, "inOutSine"], [0.62, -5, "inOutSine"], [0.9, 0, "inOutSine"]], "head_yaw": [[0, 0], [0.22, -18, "inOutSine"], [0.42, -35, "inOutSine"], [0.62, -15, "inOutSine"], [0.9, 0, "inOutSine"]], "armL_elev": [[0, -75], [0.22, -35, "inOutSine"], [0.42, -30, "inOutSine"], [0.9, -75, "inOutSine"]], "armR_elev": [[0, -75], [0.22, -30, "inOutSine"], [0.42, -15, "inOutSine"], [0.9, -75, "inOutSine"]], "armL_azim": [[0, 0], [0.42, 45, "inOutSine"], [0.9, 0, "inOutSine"]], "armR_azim": [[0, 0], [0.42, 30, "inOutSine"], [0.9, 0, "inOutSine"]], "elbowL": [[0, 10], [0.42, 85, "inOutSine"], [0.9, 10, "inOutSine"]], "elbowR": [[0, 10], [0.42, 75, "inOutSine"], [0.9, 10, "inOutSine"]], "legR_swing": [[0, 0], [0.22, 38, "inOutSine"], [0.42, 26, "inOutSine"], [0.62, 30, "inOutSine"], [0.9, 0, "inOutSine"]], "legR_abd": [[0, 0], [0.22, 25, "inOutSine"], [0.42, 56, "inOutSine"], [0.62, 28, "inOutSine"], [0.9, 0, "inOutSine"]], "kneeR": [[0, 3], [0.22, 92, "inOutSine"], [0.42, 6, "inOutSine"], [0.62, 72, "inOutSine"], [0.9, 3, "inOutSine"]], "footR_pitch": [[0, 0], [0.22, -10, "inOutSine"], [0.42, -18, "inOutSine"], [0.62, -8, "inOutSine"], [0.9, 0, "inOutSine"]], "legL_swing": [[0, 0], [0.42, 10, "inOutSine"], [0.9, 0, "inOutSine"]], "kneeL": [[0, 3], [0.42, 12, "inOutSine"], [0.9, 3, "inOutSine"]] };
+const expressions$6 = { "angry": [[0, 0], [0.2, 0.85, "outQuad"], [0.6, 0.85, "hold"], [0.9, 0, "inOutSine"]], "ee": [[0, 0], [0.32, 0.75, "outQuad"], [0.55, 0, "inQuad"]] };
+const windows$2 = { "hitbox": [0.35, 0.48], "cancel": [0.62, 0.9] };
+const events$4 = [{ "t": 0.35, "type": "sfx", "id": "side_kick_thrust" }];
+const claims$4 = { "duration": 0.9, "tolerance": 0.1 };
+const validate$1 = { "foot_slide": false };
+const kick_side = {
+  name: name$d,
+  vrm_spec: vrm_spec$4,
+  format_version: format_version$4,
+  version: version$4,
+  changelog: changelog$4,
+  group: group$4,
+  tags: tags$4,
+  duration: duration$d,
+  loop: loop$4,
+  channels: channels$d,
+  expressions: expressions$6,
+  windows: windows$2,
+  events: events$4,
+  claims: claims$4,
+  validate: validate$1
+};
+const name$c = "parry";
+const vrm_spec$3 = "1.0";
+const format_version$3 = 1;
+const version$3 = 3;
+const changelog$3 = [{ "v": 1, "catatan": "Versi awal." }, { "v": 2, "catatan": "Perbaikan lipatan siku." }, { "v": 3, "catatan": "Standar VRM 1.0: blok silang di depan dada (upperChest/rightUpperArm/rightLowerArm) dengan ekspresi fokus." }];
+const group$3 = "combat";
+const tags$3 = ["vrm-1.0", "defense", "parry"];
+const duration$c = 0.6;
+const loop$3 = false;
+const channels$c = { "lean": [[0, 0], [0.04, 3, "outQuad"], [0.16, -10, "outQuad"], [0.34, -6, "inOutSine"], [0.6, 0, "inOutSine"]], "twist": [[0, 0], [0.16, 15, "outQuad"], [0.34, 5, "inOutSine"], [0.6, 0, "inOutSine"]], "armR_elev": [[0, -75], [0.04, -85, "outQuad"], [0.16, -10, "outQuad"], [0.34, -10, "inOutSine"], [0.6, -75, "inOutSine"]], "armR_azim": [[0, 0], [0.04, -10, "outQuad"], [0.16, 55, "outQuad"], [0.34, 55, "inOutSine"], [0.6, 0, "inOutSine"]], "elbowR": [[0, 10], [0.04, 10, "outQuad"], [0.16, 95, "outQuad"], [0.34, 95, "inOutSine"], [0.6, 10, "inOutSine"]], "armL_elev": [[0, -75], [0.16, -20, "outQuad"], [0.6, -75, "inOutSine"]], "armL_azim": [[0, 0], [0.16, 50, "outQuad"], [0.6, 0, "inOutSine"]], "elbowL": [[0, 10], [0.16, 80, "outQuad"], [0.6, 10, "inOutSine"]], "hip_y": [[0, 0], [0.16, -0.039, "outQuad"], [0.6, 0, "inOutSine"]], "hip_z": [[0, 0], [0.16, -0.042, "outQuad"], [0.6, 0, "inOutSine"]], "legL_swing": [[0, 0], [0.16, 20, "outQuad"], [0.6, 0, "inOutSine"]], "legR_swing": [[0, 0], [0.16, 20, "outQuad"], [0.6, 0, "inOutSine"]], "kneeL": [[0, 3], [0.16, 35, "outQuad"], [0.6, 3, "inOutSine"]], "kneeR": [[0, 3], [0.16, 35, "outQuad"], [0.6, 3, "inOutSine"]], "footL_pitch": [[0, 0], [0.16, -15, "outQuad"], [0.6, 0, "inOutSine"]], "footR_pitch": [[0, 0], [0.16, -15, "outQuad"], [0.6, 0, "inOutSine"]] };
+const expressions$5 = { "angry": [[0, 0], [0.14, 0.65, "outQuad"], [0.34, 0.65, "hold"], [0.6, 0, "inOutSine"]] };
+const windows$1 = { "parry": [0.16, 0.32], "cancel": [0.42, 0.6] };
+const events$3 = [{ "t": 0.16, "type": "sfx", "id": "clang_ready" }];
+const claims$3 = { "duration": 0.6, "tolerance": 0.1 };
+const parry = {
+  name: name$c,
+  vrm_spec: vrm_spec$3,
+  format_version: format_version$3,
+  version: version$3,
+  changelog: changelog$3,
+  group: group$3,
+  tags: tags$3,
+  duration: duration$c,
+  loop: loop$3,
+  channels: channels$c,
+  expressions: expressions$5,
+  windows: windows$1,
+  events: events$3,
+  claims: claims$3
+};
+const name$b = "slash";
+const vrm_spec$2 = "1.0";
+const format_version$2 = 1;
+const version$2 = 2;
+const changelog$2 = [{ "v": 1, "catatan": "Versi awal pada rig lama." }, { "v": 2, "catatan": "Disesuaikan ke rig VRM 1.0 dengan preset ekspresi angry dan vokal aa saat menebas." }];
+const group$2 = "combat";
+const tags$2 = ["vrm-1.0", "attack"];
+const duration$b = 0.9;
+const loop$2 = false;
+const channels$b = { "twist": [[0, 0], [0.25, -35, "inOutSine"], [0.45, 35, "inQuad"], [0.9, 0, "inOutSine"]], "hip_twist": [[0, 0], [0.25, -28, "inOutSine"], [0.45, 32, "inQuad"], [0.9, 0, "inOutSine"]], "lean": [[0, 0], [0.25, -8, "inOutSine"], [0.45, 22, "inQuad"], [0.9, 0, "inOutSine"]], "head_yaw": [[0, 0], [0.25, 10, "inOutSine"], [0.45, -15, "inQuad"], [0.9, 0, "inOutSine"]], "armR_elev": [[0, -75], [0.25, 45, "outQuad"], [0.45, -10, "inQuad"], [0.9, -75, "inOutSine"]], "armR_azim": [[0, 0], [0.25, -30, "outQuad"], [0.45, 80, "inQuad"], [0.9, 0, "inOutSine"]], "elbowR": [[0, 10], [0.25, 90, "outQuad"], [0.45, 15, "inQuad"], [0.9, 10, "inOutSine"]], "armL_elev": [[0, -75], [0.25, -40, "outQuad"], [0.45, -60, "inQuad"], [0.9, -75, "inOutSine"]], "armL_azim": [[0, 0], [0.25, 40, "outQuad"], [0.45, -20, "inQuad"], [0.9, 0, "inOutSine"]], "elbowL": [[0, 10], [0.25, 70, "outQuad"], [0.9, 10, "inOutSine"]], "hip_y": [[0, 0], [0.15, -0.01, "outQuad"], [0.3, -0.05, "inOutSine"], [0.45, -0.112, "inQuad"], [0.9, 0, "inOutSine"]], "hip_z": [[0, 0], [0.15, 0.05, "outQuad"], [0.3, 0.25, "inOutSine"], [0.45, 0.414, "inQuad"], [0.9, 0, "inOutSine"]], "legL_swing": [[0, 0], [0.15, 5, "outQuad"], [0.3, 40, "inOutSine"], [0.45, 33, "inQuad"], [0.9, 0, "inOutSine"]], "kneeL": [[0, 3], [0.15, 20, "outQuad"], [0.3, 70, "inOutSine"], [0.45, 60, "inQuad"], [0.9, 3, "inOutSine"]], "footL_pitch": [[0, 0], [0.3, -20, "inOutSine"], [0.45, -27, "inQuad"], [0.9, 0, "inOutSine"]], "legR_swing": [[0, 0], [0.15, -5, "outQuad"], [0.3, -22, "inOutSine"], [0.45, -30, "inQuad"], [0.9, 0, "inOutSine"]], "kneeR": [[0, 3], [0.3, 3, "inOutSine"], [0.45, 0, "inQuad"], [0.9, 3, "inOutSine"]], "footR_pitch": [[0, 0], [0.45, -30, "inQuad"], [0.9, 0, "inOutSine"]] };
+const expressions$4 = { "angry": [[0, 0], [0.25, 0.9, "outQuad"], [0.65, 0.9, "hold"], [0.9, 0, "inOutSine"]], "aa": [[0, 0], [0.32, 0], [0.38, 0.8, "outQuad"], [0.55, 0, "inQuad"]] };
+const windows = { "hitbox": [0.36, 0.47], "cancel": [0.6, 0.9] };
+const events$2 = [{ "t": 0.32, "type": "sfx", "id": "swoosh" }, { "t": 0.4, "type": "trail", "id": "blade_on" }, { "t": 0.5, "type": "trail", "id": "blade_off" }];
+const claims$2 = { "duration": 0.9, "tolerance": 0.1 };
+const slash = {
+  name: name$b,
+  vrm_spec: vrm_spec$2,
+  format_version: format_version$2,
+  version: version$2,
+  changelog: changelog$2,
+  group: group$2,
+  tags: tags$2,
+  duration: duration$b,
+  loop: loop$2,
+  channels: channels$b,
+  expressions: expressions$4,
+  windows,
+  events: events$2,
+  claims: claims$2
+};
+const name$a = "walk";
+const vrm_spec$1 = "1.0";
+const format_version$1 = 1;
+const version$1 = 1;
+const changelog$1 = [{ "v": 1, "catatan": "Siklus jalan kaki maju 1.3 m/detik dengan ayunan tangan bersilang dan ekspresi ceria." }];
+const group$1 = "locomotion";
+const tags$1 = ["vrm-1.0", "walk", "loop"];
+const duration$a = 1;
+const loop$1 = true;
+const channels$a = { "hip_y": [[0, -0.015], [0.25, 0.018, "inOutSine"], [0.5, -0.015, "inOutSine"], [0.75, 0.018, "inOutSine"], [1, -0.015, "inOutSine"]], "lean": [[0, 4], [1, 4]], "twist": [[0, -8], [0.5, 8, "inOutSine"], [1, -8, "inOutSine"]], "hip_twist": [[0, 8], [0.5, -8, "inOutSine"], [1, 8, "inOutSine"]], "hip_roll": [[0, -3], [0.5, 3, "inOutSine"], [1, -3, "inOutSine"]], "armL_elev": [[0, -72], [0.5, -70, "inOutSine"], [1, -72, "inOutSine"]], "armR_elev": [[0, -70], [0.5, -72, "inOutSine"], [1, -70, "inOutSine"]], "armL_azim": [[0, -22], [0.5, 26, "inOutSine"], [1, -22, "inOutSine"]], "armR_azim": [[0, 26], [0.5, -22, "inOutSine"], [1, 26, "inOutSine"]], "elbowL": [[0, 18], [0.5, 30, "inOutSine"], [1, 18, "inOutSine"]], "elbowR": [[0, 30], [0.5, 18, "inOutSine"], [1, 30, "inOutSine"]], "legL_swing": [[0, 26], [0.5, -20, "inOutSine"], [1, 26, "inOutSine"]], "legR_swing": [[0, -20], [0.5, 26, "inOutSine"], [1, -20, "inOutSine"]], "kneeL": [[0, 8], [0.25, 14, "inOutSine"], [0.5, 18, "inOutSine"], [0.75, 48, "outSine"], [1, 8, "inSine"]], "kneeR": [[0, 18], [0.25, 48, "outSine"], [0.5, 8, "inSine"], [0.75, 14, "inOutSine"], [1, 18, "inOutSine"]], "footL_pitch": [[0, -10], [0.5, 14, "inOutSine"], [1, -10, "inOutSine"]], "footR_pitch": [[0, 14], [0.5, -10, "inOutSine"], [1, 14, "inOutSine"]] };
+const expressions$3 = { "happy": [[0, 0.25], [1, 0.25]] };
+const move = { "dir": [0, 0, 1], "distance": 1.3, "t0": 0, "t1": 1, "ease": "linear" };
+const events$1 = [{ "t": 0.05, "type": "sfx", "id": "step_L" }, { "t": 0.55, "type": "sfx", "id": "step_R" }];
+const claims$1 = { "distance": 1.3, "duration": 1, "tolerance": 0.1 };
+const validate = { "foot_slide": false };
+const walk = {
+  name: name$a,
+  vrm_spec: vrm_spec$1,
+  format_version: format_version$1,
+  version: version$1,
+  changelog: changelog$1,
+  group: group$1,
+  tags: tags$1,
+  duration: duration$a,
+  loop: loop$1,
+  channels: channels$a,
+  expressions: expressions$3,
+  move,
+  events: events$1,
+  claims: claims$1,
+  validate
+};
+const name$9 = "wave";
+const vrm_spec = "1.0";
+const format_version = 1;
+const version = 1;
+const changelog = [{ "v": 1, "catatan": "Emote VTuber VRM 1.0: melambaikan tangan kanan disertai senyum happy, kedipan sebelah mata, dan vokal sapaan." }];
+const group = "emote";
+const tags = ["vrm-1.0", "vtuber", "emote", "loop"];
+const duration$9 = 1.6;
+const loop = true;
+const channels$9 = { "side_lean": [[0, 0], [0.4, -6, "inOutSine"], [1.2, 4, "inOutSine"], [1.6, 0, "inOutSine"]], "head_yaw": [[0, 0], [0.4, -8, "inOutSine"], [1.2, 6, "inOutSine"], [1.6, 0, "inOutSine"]], "head_pitch": [[0, 0], [0.4, -5, "inOutSine"], [1.2, 2, "inOutSine"], [1.6, 0, "inOutSine"]], "armR_elev": [[0, -75], [0.3, 35, "outQuad"], [1.3, 35, "inOutSine"], [1.6, -75, "inOutSine"]], "armR_azim": [[0, 0], [0.3, 30, "outQuad"], [0.55, 15, "inOutSine"], [0.8, 40, "inOutSine"], [1.05, 15, "inOutSine"], [1.3, 35, "inOutSine"], [1.6, 0, "inOutSine"]], "elbowR": [[0, 10], [0.3, 95, "outQuad"], [0.55, 60, "inOutSine"], [0.8, 105, "inOutSine"], [1.05, 60, "inOutSine"], [1.3, 95, "inOutSine"], [1.6, 10, "inOutSine"]], "armL_elev": [[0, -75], [0.8, -68, "inOutSine"], [1.6, -75, "inOutSine"]], "elbowL": [[0, 10], [0.8, 22, "inOutSine"], [1.6, 10, "inOutSine"]], "kneeL": [[0, 3], [1.6, 3]], "kneeR": [[0, 3], [1.6, 3]] };
+const expressions$2 = { "happy": [[0, 0.2], [0.3, 0.95, "outQuad"], [1.3, 0.95, "hold"], [1.6, 0.2, "inOutSine"]], "aa": [[0, 0], [0.35, 0.75, "outQuad"], [0.7, 0.15, "inOutSine"], [1, 0.65, "outQuad"], [1.35, 0, "inQuad"], [1.6, 0]], "blinkLeft": [[0, 0], [0.4, 1, "outQuad"], [0.9, 1, "hold"], [1.1, 0, "inQuad"], [1.6, 0]] };
+const events = [{ "t": 0.35, "type": "voice", "id": "halo_sapa" }];
+const claims = { "duration": 1.6, "tolerance": 0.1 };
+const wave = {
+  name: name$9,
+  vrm_spec,
+  format_version,
+  version,
+  changelog,
+  group,
+  tags,
+  duration: duration$9,
+  loop,
+  channels: channels$9,
+  expressions: expressions$2,
+  events,
+  claims
+};
+const name$8 = "face_angry";
+const part$8 = "face";
+const description$8 = "Fierce combat facial expression";
+const duration$8 = 0.1;
+const channels$8 = { "jaw_open": [[0, 15]] };
+const expressions$1 = { "angry": [[0, 1]], "blink": [[0, 0]] };
+const face_angry = {
+  name: name$8,
+  part: part$8,
+  description: description$8,
+  duration: duration$8,
+  channels: channels$8,
+  expressions: expressions$1
+};
+const name$7 = "face_happy";
+const part$7 = "face";
+const description$7 = "Happy smiling facial expression";
+const duration$7 = 0.1;
+const channels$7 = { "jaw_open": [[0, 5]] };
+const expressions = { "happy": [[0, 1]], "blink": [[0, 0]] };
+const face_happy = {
+  name: name$7,
+  part: part$7,
+  description: description$7,
+  duration: duration$7,
+  channels: channels$7,
+  expressions
+};
+const name$6 = "fist_L";
+const part$6 = "hands";
+const description$6 = "Clenched left fist";
+const duration$6 = 0.1;
+const channels$6 = { "thumbL": [[0, 50]], "indexL": [[0, 90]], "middleL": [[0, 90]], "ringL": [[0, 90]], "littleL": [[0, 90]], "spreadL": [[0, 0]] };
+const fist_L = {
+  name: name$6,
+  part: part$6,
+  description: description$6,
+  duration: duration$6,
+  channels: channels$6
+};
+const name$5 = "fist_R";
+const part$5 = "hands";
+const description$5 = "Clenched right fist";
+const duration$5 = 0.1;
+const channels$5 = { "thumbR": [[0, 50]], "indexR": [[0, 90]], "middleR": [[0, 90]], "ringR": [[0, 90]], "littleR": [[0, 90]], "spreadR": [[0, 0]] };
+const fist_R = {
+  name: name$5,
+  part: part$5,
+  description: description$5,
+  duration: duration$5,
+  channels: channels$5
+};
+const name$4 = "guard_arms";
+const part$4 = "arms";
+const description$4 = "Defensive combat arm guard position";
+const duration$4 = 0.1;
+const channels$4 = { "armL_elev": [[0, 45]], "armL_azim": [[0, 20]], "elbowL": [[0, 95]], "armR_elev": [[0, 40]], "armR_azim": [[0, 25]], "elbowR": [[0, 100]] };
+const guard_arms = {
+  name: name$4,
+  part: part$4,
+  description: description$4,
+  duration: duration$4,
+  channels: channels$4
+};
+const name$3 = "open_hand_L";
+const part$3 = "hands";
+const description$3 = "Open relaxed left hand";
+const duration$3 = 0.1;
+const channels$3 = { "thumbL": [[0, 0]], "indexL": [[0, 10]], "middleL": [[0, 10]], "ringL": [[0, 10]], "littleL": [[0, 10]], "spreadL": [[0, 15]] };
+const open_hand_L = {
+  name: name$3,
+  part: part$3,
+  description: description$3,
+  duration: duration$3,
+  channels: channels$3
+};
+const name$2 = "open_hand_R";
+const part$2 = "hands";
+const description$2 = "Open relaxed right hand";
+const duration$2 = 0.1;
+const channels$2 = { "thumbR": [[0, 0]], "indexR": [[0, 10]], "middleR": [[0, 10]], "ringR": [[0, 10]], "littleR": [[0, 10]], "spreadR": [[0, 15]] };
+const open_hand_R = {
+  name: name$2,
+  part: part$2,
+  description: description$2,
+  duration: duration$2,
+  channels: channels$2
+};
+const name$1 = "punch_arm_R";
+const part$1 = "arms";
+const description$1 = "Extended right straight punch pose";
+const duration$1 = 0.1;
+const channels$1 = { "armR_elev": [[0, 75]], "armR_azim": [[0, 5]], "armR_roll": [[0, 15]], "elbowR": [[0, 10]] };
+const punch_arm_R = {
+  name: name$1,
+  part: part$1,
+  description: description$1,
+  duration: duration$1,
+  channels: channels$1
+};
+const name = "t_pose";
+const part = "torso";
+const description = "Standard neutral T-pose";
+const duration = 0.1;
+const channels = { "lean": [[0, 0]], "side_lean": [[0, 0]], "twist": [[0, 0]], "armL_elev": [[0, 0]], "armL_azim": [[0, 90]], "armR_elev": [[0, 0]], "armR_azim": [[0, 90]], "elbowL": [[0, 0]], "elbowR": [[0, 0]] };
+const t_pose = {
+  name,
+  part,
+  description,
+  duration,
+  channels
+};
+const defaultPoses = {
+  face_angry,
+  face_happy,
+  fist_L,
+  fist_R,
+  guard_arms,
+  open_hand_L,
+  open_hand_R,
+  punch_arm_R,
+  t_pose
+};
+const defaultClips = {
+  dodge,
+  slash,
+  parry,
+  idle,
+  walk,
+  jump,
+  wave,
+  kick_front,
+  kick_roundhouse,
+  kick_side,
+  kick_low,
+  kick_axe,
+  kick_back,
+  hands_eyes_jaw
+};
+function computeClipMetrics(rig, ctx, limits, clip, style = "stylized") {
+  const dur = clip.duration || 1;
+  const frames = Math.ceil(dur * FPS - 1e-9);
+  const tAt = (f) => Math.min(f / FPS, dur);
+  const poses = [];
+  for (let f = 0; f <= frames; f++) {
+    poses.push(evalPose(rig, ctx, clip, tAt(f)));
+  }
+  const I = ctx.idx;
+  const restPos = restPositions(ctx);
+  const floorY2 = Math.min(restPos[I.LeftToeBase][1], restPos[I.RightToeBase][1]);
+  const p0 = poses[0].pos[I.Hips];
+  const pEnd = poses[frames].pos[I.Hips];
+  const rootTravel = Number(
+    Math.hypot(pEnd[0] - p0[0], pEnd[1] - p0[1], pEnd[2] - p0[2]).toFixed(4)
+  );
+  let airFrames = 0;
+  const footThreshold = floorY2 + 0.02;
+  for (let f = 0; f <= frames; f++) {
+    const lY = poses[f].pos[I.LeftToeBase][1];
+    const rY = poses[f].pos[I.RightToeBase][1];
+    if (lY > footThreshold && rY > footThreshold) {
+      airFrames++;
+    }
+  }
+  const airtime = Number((airFrames / (frames + 1) * dur).toFixed(4));
+  let peakSpeed = 0;
+  let peakJoint = "";
+  const jointSpeeds = {};
+  for (let i = 0; i < ctx.n; i++) {
+    const jName = ctx.names[i];
+    let jPeak = 0;
+    for (let f = 1; f <= frames; f++) {
+      const s = qangle(poses[f - 1].local[i], poses[f].local[i]) * R2D * FPS;
+      if (s > jPeak) jPeak = s;
+      if (s > peakSpeed) {
+        peakSpeed = s;
+        peakJoint = jName;
+      }
+    }
+    jointSpeeds[jName] = Number(jPeak.toFixed(2));
+  }
+  const valResult = validate$7(rig, ctx, limits, clip, style);
+  return {
+    name: clip.name || "unnamed",
+    duration: dur,
+    rootTravel,
+    airtime,
+    peakAngularSpeed: Number(peakSpeed.toFixed(2)),
+    peakJoint,
+    jointSpeeds,
+    issues: {
+      fail: valResult.fail,
+      warn: valResult.warn
+    }
+  };
+}
+function compareClips(rig, ctx, limits, clipA, clipB, style = "stylized") {
+  const metricsA = computeClipMetrics(rig, ctx, limits, clipA, style);
+  const metricsB = computeClipMetrics(rig, ctx, limits, clipB, style);
+  const jointDiffs = {};
+  for (const jName of ctx.names) {
+    const spA = metricsA.jointSpeeds[jName] || 0;
+    const spB = metricsB.jointSpeeds[jName] || 0;
+    jointDiffs[jName] = Number((spB - spA).toFixed(2));
+  }
+  const diff = {
+    duration: Number((metricsB.duration - metricsA.duration).toFixed(4)),
+    rootTravel: Number((metricsB.rootTravel - metricsA.rootTravel).toFixed(4)),
+    airtime: Number((metricsB.airtime - metricsA.airtime).toFixed(4)),
+    peakAngularSpeed: Number((metricsB.peakAngularSpeed - metricsA.peakAngularSpeed).toFixed(2)),
+    jointSpeeds: jointDiffs,
+    failCount: metricsB.issues.fail - metricsA.issues.fail,
+    warnCount: metricsB.issues.warn - metricsA.issues.warn
+  };
+  return {
+    clipA: metricsA.name,
+    clipB: metricsB.name,
+    metricsA,
+    metricsB,
+    diff
+  };
+}
+async function runCompare(args, options = {}) {
+  const targetA = args[0];
+  const targetB = args[1];
+  if (!targetA || !targetB) {
+    console.error('Error: "clipkit compare" requires two clips to compare.');
+    console.error("Example: clipkit compare jump jump_v2.json --sheet ./out");
+    return 2;
+  }
+  const { motus: motus2 } = loadRigs();
+  const ctx = makeCtx(motus2);
+  const style = options.style || "stylized";
+  async function loadClip(target) {
+    if (defaultClips[target]) {
+      return JSON.parse(JSON.stringify(defaultClips[target]));
+    }
+    const raw = await readInput(target);
+    return JSON.parse(raw);
+  }
+  let clipA, clipB;
+  try {
+    clipA = await loadClip(targetA);
+  } catch (e) {
+    console.error(`Error reading clip A (${targetA}): ${e.message}`);
+    return 2;
+  }
+  try {
+    clipB = await loadClip(targetB);
+  } catch (e) {
+    console.error(`Error reading clip B (${targetB}): ${e.message}`);
+    return 2;
+  }
+  const comparison = compareClips(motus2, ctx, limitsData, clipA, clipB, style);
+  let sheetPath = null;
+  if (options.sheet) {
+    const sheetResult = renderComparisonContactSheet(motus2, ctx, clipA, clipB, options);
+    const nameA = clipA.name || "clipA";
+    const nameB = clipB.name || "clipB";
+    const svgFileName = `compare_${nameA}_vs_${nameB}.svg`;
+    sheetPath = path.resolve(options.sheet, svgFileName);
+    try {
+      writeOutputFile(sheetPath, sheetResult.svg, options);
+    } catch (e) {
+      console.error(`Error writing comparison sheet: ${e.message}`);
+      return 2;
+    }
+  }
+  const outputData = {
+    ...comparison,
+    sheet: sheetPath
+  };
+  if (options.json) {
+    console.log(formatDeterministicJson(outputData));
+  } else {
+    console.log(`
+Comparison: [A] ${clipA.name || targetA} vs [B] ${clipB.name || targetB}`);
+    console.log("=".repeat(60));
+    console.log(
+      `Duration:            ${comparison.metricsA.duration.toFixed(2)}s  ->  ${comparison.metricsB.duration.toFixed(2)}s  (${comparison.diff.duration >= 0 ? "+" : ""}${comparison.diff.duration}s)`
+    );
+    console.log(
+      `Root Travel:         ${comparison.metricsA.rootTravel.toFixed(2)}m  ->  ${comparison.metricsB.rootTravel.toFixed(2)}m  (${comparison.diff.rootTravel >= 0 ? "+" : ""}${comparison.diff.rootTravel}m)`
+    );
+    console.log(
+      `Airtime:             ${comparison.metricsA.airtime.toFixed(2)}s  ->  ${comparison.metricsB.airtime.toFixed(2)}s  (${comparison.diff.airtime >= 0 ? "+" : ""}${comparison.diff.airtime}s)`
+    );
+    console.log(
+      `Peak Angular Speed:  ${comparison.metricsA.peakAngularSpeed.toFixed(0)}°/s (${comparison.metricsA.peakJoint})  ->  ${comparison.metricsB.peakAngularSpeed.toFixed(0)}°/s (${comparison.metricsB.peakJoint})`
+    );
+    console.log(
+      `Issues (Fail/Warn):  ${comparison.metricsA.issues.fail}/${comparison.metricsA.issues.warn}  ->  ${comparison.metricsB.issues.fail}/${comparison.metricsB.issues.warn}`
+    );
+    if (sheetPath) {
+      console.log(`
+Comparison contact sheet saved to:
+  ${sheetPath}`);
+    }
+    console.log("");
+  }
+  return 0;
+}
+async function runCompose(args, options = {}) {
+  const target = args[0];
+  if (!target) {
+    console.error('Error: "clipkit compose" requires a clip path or clip name.');
+    return 2;
+  }
+  let clip;
+  if (defaultClips[target]) {
+    clip = JSON.parse(JSON.stringify(defaultClips[target]));
+  } else {
+    try {
+      const raw = await readInput(target);
+      clip = JSON.parse(raw);
+    } catch (e) {
+      console.error(`Error reading clip '${target}': ${e.message}`);
+      return 2;
+    }
+  }
+  if (!clip.layers || !Array.isArray(clip.layers) || clip.layers.length === 0) {
+    console.error(`Clip '${target}' has no layers to compose.`);
+    if (options.output) {
+      writeOutputFile(options.output, formatDeterministicJson(clip), options);
+    } else {
+      console.log(formatDeterministicJson(clip));
+    }
+    return 0;
+  }
+  const resolveRef = (ref) => {
+    if (defaultPoses[ref]) return defaultPoses[ref];
+    if (defaultClips[ref]) return defaultClips[ref];
+    const candidatePath = path.resolve(process.cwd(), ref);
+    if (fs.existsSync(candidatePath)) {
+      return JSON.parse(fs.readFileSync(candidatePath, "utf8"));
+    }
+    return null;
+  };
+  const { clip: composed, warnings } = composeClips(clip, clip.layers, {
+    resolveRef
+  });
+  delete composed.layers;
+  if (warnings.length > 0) {
+    for (const w of warnings) {
+      console.warn(`[WARN] ${w.code}: ${w.message}`);
+    }
+    if (options.failOn === "warn") {
+      return 1;
+    }
+  }
+  const jsonStr = formatDeterministicJson(composed);
+  if (options.output) {
+    try {
+      writeOutputFile(options.output, jsonStr, options);
+      console.log(`Successfully composed and wrote clip to: ${options.output}`);
+    } catch (e) {
+      console.error(`Error writing output: ${e.message}`);
+      return 2;
+    }
+  } else {
+    console.log(jsonStr);
+  }
+  return 0;
+}
+const SWAP_LR_CHANNELS = [
+  ["legL_swing", "legR_swing"],
+  ["legL_abd", "legR_abd"],
+  ["kneeL", "kneeR"],
+  ["footL_pitch", "footR_pitch"],
+  ["elbowL", "elbowR"],
+  ["thumbL", "thumbR"],
+  ["indexL", "indexR"],
+  ["middleL", "middleR"],
+  ["ringL", "ringR"],
+  ["littleL", "littleR"],
+  ["spreadL", "spreadR"],
+  ["armL_elev", "armR_elev"],
+  ["armL_azim", "armR_azim"],
+  ["armL_roll", "armR_roll"]
+];
+const NEGATE_CHANNELS = /* @__PURE__ */ new Set([
+  "side_lean",
+  "twist",
+  "hip_twist",
+  "hip_roll",
+  "head_yaw",
+  "hip_x",
+  "armL_roll",
+  "armR_roll",
+  "eye_yaw"
+]);
+const SWAP_EXPRESSIONS = [
+  ["blinkLeft", "blinkRight"],
+  ["lookLeft", "lookRight"]
+];
+function mirrorClip(clip) {
+  const mirrored = JSON.parse(JSON.stringify(clip));
+  const oldChannels = clip.channels || {};
+  const newChannels = {};
+  const swapMap = /* @__PURE__ */ new Map();
+  for (const [l, r] of SWAP_LR_CHANNELS) {
+    swapMap.set(l, r);
+    swapMap.set(r, l);
+  }
+  for (const [ch, kfs] of Object.entries(oldChannels)) {
+    const targetCh = swapMap.get(ch) || ch;
+    const shouldNegate = NEGATE_CHANNELS.has(targetCh);
+    newChannels[targetCh] = kfs.map((kf) => {
+      const t = kf[0];
+      const val = shouldNegate ? Object.is(kf[1], 0) || kf[1] === 0 ? 0 : -kf[1] : kf[1];
+      const easing = kf[2];
+      return easing ? [t, val, easing] : [t, val];
+    });
+  }
+  mirrored.channels = newChannels;
+  if (clip.expressions) {
+    const oldExpr = clip.expressions;
+    const newExpr = {};
+    const exprSwap = /* @__PURE__ */ new Map();
+    for (const [l, r] of SWAP_EXPRESSIONS) {
+      exprSwap.set(l, r);
+      exprSwap.set(r, l);
+    }
+    for (const [name2, kfs] of Object.entries(oldExpr)) {
+      const targetName = exprSwap.get(name2) || name2;
+      newExpr[targetName] = JSON.parse(JSON.stringify(kfs));
+    }
+    mirrored.expressions = newExpr;
+  }
+  if (clip.windows) {
+    const wins = { ...clip.windows };
+    if (wins.planted_L || wins.planted_R) {
+      const l = wins.planted_L;
+      const r = wins.planted_R;
+      if (l) wins.planted_R = [...l];
+      else delete wins.planted_R;
+      if (r) wins.planted_L = [...r];
+      else delete wins.planted_L;
+    }
+    mirrored.windows = wins;
+  }
+  if (clip.move && Array.isArray(clip.move)) {
+    mirrored.move = [clip.move[0] === 0 ? 0 : -clip.move[0], clip.move[1], clip.move[2]];
+  }
+  if (mirrored.name) {
+    mirrored.name = `${mirrored.name}_mirror`;
+  }
+  return mirrored;
+}
+function retimeClip(clip, timeScale) {
+  if (timeScale <= 0) throw new Error("Time scale must be positive.");
+  const retimed = JSON.parse(JSON.stringify(clip));
+  retimed.duration = Number((clip.duration * timeScale).toFixed(4));
+  if (retimed.channels) {
+    for (const [ch, kfs] of Object.entries(retimed.channels)) {
+      retimed.channels[ch] = kfs.map(([t, val, easing]) => {
+        const newT = Number((t * timeScale).toFixed(4));
+        return easing ? [newT, val, easing] : [newT, val];
+      });
+    }
+  }
+  if (retimed.expressions) {
+    for (const [name2, kfs] of Object.entries(retimed.expressions)) {
+      retimed.expressions[name2] = kfs.map(([t, val, easing]) => {
+        const newT = Number((t * timeScale).toFixed(4));
+        return easing ? [newT, val, easing] : [newT, val];
+      });
+    }
+  }
+  if (retimed.windows) {
+    for (const [w, [start, end]] of Object.entries(retimed.windows)) {
+      retimed.windows[w] = [
+        Number((start * timeScale).toFixed(4)),
+        Number((end * timeScale).toFixed(4))
+      ];
+    }
+  }
+  if (retimed.events) {
+    retimed.events = retimed.events.map((ev) => ({
+      ...ev,
+      t: Number((ev.t * timeScale).toFixed(4))
+    }));
+  }
+  return retimed;
+}
+function scaleAmplitude(clip, factor, channelFilter = null) {
+  const scaled = JSON.parse(JSON.stringify(clip));
+  const filterSet = channelFilter ? new Set(channelFilter) : null;
+  if (scaled.channels) {
+    for (const [ch, kfs] of Object.entries(scaled.channels)) {
+      if (!filterSet || filterSet.has(ch)) {
+        scaled.channels[ch] = kfs.map(([t, val, easing]) => {
+          const newVal = Number((val * factor).toFixed(4));
+          return easing ? [t, newVal, easing] : [t, newVal];
+        });
+      }
+    }
+  }
+  return scaled;
+}
+function closeLoop(clip) {
+  const looped = JSON.parse(JSON.stringify(clip));
+  looped.loop = true;
+  if (looped.channels) {
+    for (const [ch, kfs] of Object.entries(looped.channels)) {
+      if (kfs.length > 0) {
+        const firstVal = kfs[0][1];
+        const lastIdx = kfs.length - 1;
+        const lastT = kfs[lastIdx][0];
+        const lastEasing = kfs[lastIdx][2];
+        looped.channels[ch][lastIdx] = lastEasing ? [lastT, firstVal, lastEasing] : [lastT, firstVal];
+      }
+    }
+  }
+  return looped;
+}
+async function runEdit(args, options = {}) {
+  const operation = args[0];
+  const target = args[1];
+  if (!operation || !["mirror", "retime", "scale-amplitude", "close-loop"].includes(operation)) {
+    console.error(
+      'Error: "clipkit edit" requires an operation: "mirror", "retime", "scale-amplitude", or "close-loop".'
+    );
+    console.error("Example: clipkit edit mirror slash.json --output slash_mirrored.json");
+    return 2;
+  }
+  if (!target) {
+    console.error(`Error: "clipkit edit ${operation}" requires a clip path or clip name.`);
+    return 2;
+  }
+  let clip;
+  if (defaultClips[target]) {
+    clip = JSON.parse(JSON.stringify(defaultClips[target]));
+  } else {
+    try {
+      const raw = await readInput(target);
+      clip = JSON.parse(raw);
+    } catch (e) {
+      console.error(`Error reading clip '${target}': ${e.message}`);
+      return 2;
+    }
+  }
+  let result;
+  if (operation === "mirror") {
+    result = mirrorClip(clip);
+  } else if (operation === "retime") {
+    const scale2 = options.scale != null ? Number(options.scale) : null;
+    if (!scale2 || Number.isNaN(scale2) || scale2 <= 0) {
+      console.error('Error: "clipkit edit retime" requires "--scale <factor>" (e.g. --scale 1.5).');
+      return 2;
+    }
+    result = retimeClip(clip, scale2);
+  } else if (operation === "scale-amplitude") {
+    const scale2 = options.scale != null ? Number(options.scale) : null;
+    if (scale2 == null || Number.isNaN(scale2)) {
+      console.error(
+        'Error: "clipkit edit scale-amplitude" requires "--scale <factor>" (e.g. --scale 0.8).'
+      );
+      return 2;
+    }
+    const filter = options.channels ? options.channels.split(",").map((s) => s.trim()) : null;
+    result = scaleAmplitude(clip, scale2, filter);
+  } else if (operation === "close-loop") {
+    result = closeLoop(clip);
+  }
+  const jsonStr = formatDeterministicJson(result);
+  if (options.output) {
+    try {
+      writeOutputFile(options.output, jsonStr, options);
+      console.log(`Successfully edited clip and wrote to: ${options.output}`);
+    } catch (e) {
+      console.error(`Error writing output: ${e.message}`);
+      return 2;
+    }
+  } else {
+    console.log(jsonStr);
+  }
+  return 0;
 }
 function buildVrmaGlb(rig, ctx, clip) {
   const dur = clip.duration, frames = Math.ceil(dur * FPS - 1e-9), count = frames + 1;
@@ -2455,6 +3858,66 @@ async function runExport(args, options = {}) {
     return 2;
   }
 }
+function runPoses(args, options = {}) {
+  const sub = args[0];
+  if (!sub || sub === "list") {
+    const partFilter = options.part;
+    const poses = Object.values(defaultPoses).filter((p) => !partFilter || p.part === partFilter).map((p) => ({
+      name: p.name,
+      part: p.part,
+      description: p.description,
+      channelCount: Object.keys(p.channels || {}).length,
+      hasExpressions: !!p.expressions
+    }));
+    if (options.json) {
+      console.log(formatDeterministicJson(poses));
+    } else {
+      console.log(`
+ClipKit Pose Library (${poses.length} poses):
+`);
+      for (const p of poses) {
+        console.log(`  - ${p.name.padEnd(16)} [${p.part}] ${p.description || ""}`);
+      }
+      console.log("");
+    }
+    return 0;
+  }
+  if (sub === "show") {
+    const name2 = args[1];
+    if (!name2) {
+      console.error('Error: "poses show" requires a pose name, e.g. "clipkit poses show fist_L"');
+      return 2;
+    }
+    const pose = defaultPoses[name2];
+    if (!pose) {
+      console.error(
+        `Error: Unknown pose "${name2}". Use "clipkit poses list" to view available poses.`
+      );
+      return 1;
+    }
+    if (options.json) {
+      console.log(formatDeterministicJson(pose));
+    } else {
+      console.log(`
+Pose: ${pose.name} [part: ${pose.part}]`);
+      if (pose.description) console.log(`Description: ${pose.description}`);
+      console.log("\nChannels:");
+      for (const [ch, kfs] of Object.entries(pose.channels || {})) {
+        console.log(`  ${ch.padEnd(16)}: ${JSON.stringify(kfs)}`);
+      }
+      if (pose.expressions) {
+        console.log("\nExpressions:");
+        for (const [expr, kfs] of Object.entries(pose.expressions)) {
+          console.log(`  ${expr.padEnd(16)}: ${JSON.stringify(kfs)}`);
+        }
+      }
+      console.log("");
+    }
+    return 0;
+  }
+  console.error(`Error: Unknown poses subcommand "${sub}". Expected "list" or "show <name>".`);
+  return 2;
+}
 function runRules(_args, options = {}) {
   const registered = defaultRuleRegistry.getRules();
   const ruleDescriptions = {
@@ -2607,7 +4070,7 @@ function runValidate(args, options = {}) {
   const ctx = makeCtx(motus2);
   const style = options.style || "stylized";
   const failOn = options.failOn || "fail";
-  const res = validate(motus2, ctx, limitsData, clip, style, void 0, {
+  const res = validate$7(motus2, ctx, limitsData, clip, style, void 0, {
     part: options.part,
     parts: partsData
   });
@@ -2660,6 +4123,99 @@ function runValidate(args, options = {}) {
   }
   return isPass ? 0 : 1;
 }
+async function runVersion(args, options = {}) {
+  const target = args[0];
+  if (!target) {
+    console.error('Error: "clipkit version" requires a clip file or clip name.');
+    console.error('Example: clipkit version jump.json --parent 1 --note "Floatier apex"');
+    return 2;
+  }
+  let clip;
+  if (defaultClips[target]) {
+    clip = JSON.parse(JSON.stringify(defaultClips[target]));
+  } else {
+    try {
+      const raw = await readInput(target);
+      clip = JSON.parse(raw);
+    } catch (e) {
+      console.error(`Error reading clip '${target}': ${e.message}`);
+      return 2;
+    }
+  }
+  const clipName = clip.name || "unnamed_clip";
+  const versionNum = clip.version || 1;
+  const parentVer = options.parent != null ? Number(options.parent) : versionNum > 1 ? versionNum - 1 : null;
+  const note = options.note || (clip.changelog && clip.changelog.length ? clip.changelog[clip.changelog.length - 1].catatan : "Version snapshot");
+  const destDir = options.dir ? path.resolve(process.cwd(), options.dir) : path.resolve(process.cwd(), "variants", clipName);
+  const versionFileName = `v${versionNum}.json`;
+  const versionFilePath = path.join(destDir, versionFileName);
+  if (fs.existsSync(versionFilePath) && !options.force) {
+    console.error(
+      `Error: Version file '${versionFileName}' already exists in ${destDir}. Refusing to overwrite without --force.`
+    );
+    return 1;
+  }
+  const { motus: motus2 } = loadRigs();
+  const ctx = makeCtx(motus2);
+  const metrics = computeClipMetrics(motus2, ctx, limitsData, clip, options.style || "stylized");
+  const manifestPath = path.join(destDir, "manifest.json");
+  let manifest = {
+    name: clipName,
+    defaultVersion: versionNum,
+    versions: {}
+  };
+  if (fs.existsSync(manifestPath)) {
+    try {
+      manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+    } catch (_e) {
+    }
+  }
+  manifest.defaultVersion = versionNum;
+  manifest.versions[String(versionNum)] = {
+    version: versionNum,
+    file: versionFileName,
+    parent: parentVer,
+    note,
+    metrics: {
+      duration: metrics.duration,
+      rootTravel: metrics.rootTravel,
+      airtime: metrics.airtime,
+      peakAngularSpeed: metrics.peakAngularSpeed,
+      issues: metrics.issues
+    }
+  };
+  try {
+    writeOutputFile(versionFilePath, formatDeterministicJson(clip), options);
+    writeOutputFile(manifestPath, formatDeterministicJson(manifest), { ...options, force: true });
+  } catch (e) {
+    console.error(`Error saving version or manifest: ${e.message}`);
+    return 2;
+  }
+  const result = {
+    clip: clipName,
+    version: versionNum,
+    parent: parentVer,
+    note,
+    path: versionFilePath,
+    manifest: manifestPath,
+    metrics: manifest.versions[String(versionNum)].metrics
+  };
+  if (options.json) {
+    console.log(formatDeterministicJson(result));
+  } else {
+    console.log(`
+Created immutable version v${versionNum} for '${clipName}':`);
+    console.log(`  File:     ${versionFilePath}`);
+    console.log(`  Parent:   ${parentVer != null ? `v${parentVer}` : "None (root)"}`);
+    console.log(`  Note:     ${note}`);
+    console.log(`  Manifest: ${manifestPath}`);
+    console.log(
+      `  Metrics:  dur=${metrics.duration}s, travel=${metrics.rootTravel}m, air=${metrics.airtime}s, peakSpeed=${metrics.peakAngularSpeed}°/s`
+    );
+    console.log("");
+  }
+  return 0;
+}
 const CLI_VERSION = "1.0.0";
 function parseArgs(rawArgs) {
   const args = [];
@@ -2683,8 +4239,13 @@ function parseArgs(rawArgs) {
         "sheet",
         "dir",
         "out",
+        "output",
         "frames",
-        "view"
+        "view",
+        "scale",
+        "note",
+        "parent",
+        "channels"
       ].includes(key)) {
         options[camelCase(key)] = rawArgs[++i];
       } else {
@@ -2818,10 +4379,102 @@ Example:
 `);
     return;
   }
+  if (command === "poses") {
+    console.log(`clipkit poses <subcommand> [options]
+
+Inspects and lists named single-keyframe poses from the ClipKit Pose Library.
+
+Subcommands:
+  list                     List all available poses (can filter by --part)
+  show <name>              Show detailed channel and expression values for a pose
+
+Options:
+  --part <part>            Filter poses by body part (face | hands | arms | torso | legs)
+  --json                   Output pose data as JSON
+
+Example:
+  clipkit poses list --part hands
+  clipkit poses show fist_L --json
+`);
+    return;
+  }
+  if (command === "compose") {
+    console.log(`clipkit compose <clip-file> [options]
+
+Flattens layered animation clips into a regular standalone clip with merge semantics.
+
+Options:
+  --output <file>          Path to write the composed clip JSON
+  --fail-on <level>        Fail on composition warnings ('warn')
+  --json                   Output composed clip JSON to stdout
+  --force                  Overwrite existing output file
+
+Example:
+  clipkit compose jump_with_punch.json --output ./composed_jump.json
+`);
+    return;
+  }
+  if (command === "edit") {
+    console.log(`clipkit edit <operation> <clip-file> [options]
+
+Performs deterministic editing operations on animation clips.
+
+Operations:
+  mirror                   Reflect motion across sagittal plane (X to -X, swap L/R)
+  retime                   Scale timing and duration by a factor (--scale <f>)
+  scale-amplitude          Scale channel rotation/displacement amplitudes (--scale <f>)
+  close-loop               Close animation loop by matching end to start
+
+Options:
+  --scale <factor>         Scaling factor for retime or scale-amplitude
+  --channels <list>        Comma-separated channels to scale (for scale-amplitude)
+  --output <file>          Path to write the modified clip JSON
+  --json                   Output modified clip JSON to stdout
+  --force                  Overwrite existing output file
+
+Example:
+  clipkit edit mirror slash.json --output slash_mirrored.json
+  clipkit edit retime jump.json --scale 1.2 --output jump_slow.json
+`);
+    return;
+  }
+  if (command === "compare") {
+    console.log(`clipkit compare <clipA> <clipB> [options]
+
+Reports per-joint metric differences and renders side-by-side comparative contact sheets.
+
+Options:
+  --sheet <dir>            Render side-by-side comparison sheet SVG to directory
+  --style <style>          Validation style: realistic | stylized (default) | exaggerated
+  --json                   Output comparison metrics and diff as JSON
+  --force                  Overwrite existing sheet file
+
+Example:
+  clipkit compare jump jump_floaty.json --sheet ./out --json
+`);
+    return;
+  }
+  if (command === "version") {
+    console.log(`clipkit version <clip-file> [options]
+
+Creates an immutable version in a clip variant folder with manifest.json tracking.
+
+Options:
+  --parent <version>       Parent version number (default: current - 1)
+  --note <note>            Description of changes / intent for this version
+  --dir <dir>              Custom directory for variants (default: ./variants/<clip>)
+  --force                  Force overwrite if version file exists
+  --json                   Output version metadata as JSON
+
+Example:
+  clipkit version jump.json --parent 1 --note "Floatier jump apex"
+`);
+    return;
+  }
   console.log(`ClipKit Web Agent CLI v${CLI_VERSION}
 
 Deterministic, machine-first command line interface for animation validation,
-diagnostics, VRMA export, and contact sheet inspection.
+diagnostics, VRMA export, contact sheets, and modular composition.
 
 Usage:
   clipkit <command> [arguments] [options]
@@ -2834,6 +4487,11 @@ Commands:
   rules                    List validation rules and style threshold limits
   export <clip>            Export clip to binary .vrma (VRMC_vrm_animation-1.0)
   sheet <clip>             Render headless annotated contact sheet (SVG + JSON sidecar)
+  poses <subcommand>       Browse pose library (list | show <name>)
+  compose <clip>           Flatten layer clip into a normal clip
+  edit <op> <clip>         Deterministic edit operations (mirror | retime | scale-amplitude | close-loop)
+  compare <a> <b>          Compare kinematics and render side-by-side contact sheet
+  version <clip>           Create immutable variant version with manifest.json tracking
 
 Global Options:
   -h, --help               Show help for command
@@ -2871,6 +4529,16 @@ async function main(argv = process.argv.slice(2)) {
         return await runExport(commandArgs, options);
       case "sheet":
         return await runSheet(commandArgs, options);
+      case "poses":
+        return await runPoses(commandArgs, options);
+      case "compose":
+        return await runCompose(commandArgs, options);
+      case "edit":
+        return await runEdit(commandArgs, options);
+      case "compare":
+        return await runCompare(commandArgs, options);
+      case "version":
+        return await runVersion(commandArgs, options);
       default:
         console.error(`Error: Unknown command '${command}'. Run 'clipkit --help' for usage.`);
         return 2;

@@ -32,6 +32,15 @@ export function resolveSafeOutputPath(
 }
 
 /**
+ * Safely writes content to an output file adhering to safety policies.
+ */
+export function writeOutputFile(targetPath, content, options = {}) {
+  const safePath = resolveSafeOutputPath(targetPath, options);
+  fs.writeFileSync(safePath, content, typeof content === 'string' ? 'utf8' : undefined);
+  return safePath;
+}
+
+/**
  * Reads clip content from a file path or stdin if path is '-'.
  */
 export function readInput(inputPath) {

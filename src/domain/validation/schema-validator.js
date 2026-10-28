@@ -231,6 +231,47 @@ export function validateSchema(clip, rig = null) {
     }
   }
 
+  if (clip.layers != null) {
+    if (!Array.isArray(clip.layers)) {
+      addError(
+        'layers',
+        'Layers must be an array of layer objects [{ ref, channels, mode, offset }].',
+      );
+    } else {
+      for (let i = 0; i < clip.layers.length; i++) {
+        const l = clip.layers[i];
+        if (!l || typeof l !== 'object' || Array.isArray(l)) {
+          addError(`layers[${i}]`, 'Layer must be an object.');
+          continue;
+        }
+        if (!l.ref && !l.clip) {
+          addError(
+            `layers[${i}]`,
+            'Layer must define a "ref" string or an embedded "clip" object.',
+            'Provide "ref": "pose_name" or "ref": "clip_name"',
+          );
+        }
+        if (l.mode != null && l.mode !== 'override' && l.mode !== 'additive') {
+          addError(
+            `layers[${i}].mode`,
+            `Layer mode must be 'override' or 'additive' (received: '${l.mode}').`,
+            'Use "override" or "additive"',
+          );
+        }
+        if (l.channels != null && !Array.isArray(l.channels)) {
+          addError(
+            `layers[${i}].channels`,
+            'Layer channels must be an array of channel patterns/globs.',
+            'Provide an array like ["armR_*", "elbowR"]',
+          );
+        }
+        if (l.offset != null && typeof l.offset !== 'number') {
+          addError(`layers[${i}].offset`, 'Layer offset must be a number in seconds.');
+        }
+      }
+    }
+  }
+
   return {
     valid: errors.length === 0,
     errors,

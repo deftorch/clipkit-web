@@ -1,0 +1,14 @@
+{
+  "name": "fist_L",
+  "part": "hands",
+  "description": "Clenched left fist",
+  "duration": 0.1,
+  "channels": {
+    "thumbL": [[0, 50]],
+    "indexL": [[0, 90]],
+    "middleL": [[0, 90]],
+    "ringL": [[0, 90]],
+    "littleL": [[0, 90]],
+    "spreadL": [[0, 0]]
+  }
+}

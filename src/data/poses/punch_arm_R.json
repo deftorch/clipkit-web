@@ -1,0 +1,12 @@
+{
+  "name": "punch_arm_R",
+  "part": "arms",
+  "description": "Extended right straight punch pose",
+  "duration": 0.1,
+  "channels": {
+    "armR_elev": [[0, 75]],
+    "armR_azim": [[0, 5]],
+    "armR_roll": [[0, 15]],
+    "elbowR": [[0, 10]]
+  }
+}

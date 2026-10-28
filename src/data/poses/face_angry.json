@@ -1,0 +1,13 @@
+{
+  "name": "face_angry",
+  "part": "face",
+  "description": "Fierce combat facial expression",
+  "duration": 0.1,
+  "channels": {
+    "jaw_open": [[0, 15]]
+  },
+  "expressions": {
+    "angry": [[0, 1.0]],
+    "blink": [[0, 0.0]]
+  }
+}

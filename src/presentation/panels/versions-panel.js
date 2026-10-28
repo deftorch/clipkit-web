@@ -1,7 +1,12 @@
-import { curItem, stable } from '../../application/state/clip-store.js';
+import { curItem, fmtClip, persist, rebuild, stable } from '../../application/state/clip-store.js';
+import { playbackState, setOverlayClip } from '../../application/state/playback-store.js';
 import { rigState } from '../../application/state/rig-store.js';
 import historyData from '../../data/history.json';
 import keysData from '../../data/keys.json';
+import limitsData from '../../data/limits.json';
+import { compareClips } from '../../domain/animation/compare.js';
+import { composeClips } from '../../domain/animation/compose.js';
+import { closeLoop, mirrorClip, retimeClip } from '../../domain/animation/edit-operations.js';
 import ClipKit from '../../domain/clipkit.js';
 import { FPS } from '../../domain/math/vec3.js';
 import { el, fmt2 } from '../dom/h.js';
@@ -30,6 +35,59 @@ export function renderVer(host) {
     ul.append(el('li', {}, el('b', { text: '-' }), el('span', { text: 'Belum ada changelog.' })));
   }
   host.append(ul);
+
+  // Variant & Edit Operations Section
+  host.append(el('h3', { text: 'Operasi Varian & Edit Cepat' }));
+  const applyEdit = (modifiedClip, note) => {
+    it.text = fmtClip(modifiedClip);
+    it.dirty = true;
+    rebuild(it);
+    persist();
+    renderVer(host);
+  };
+
+  const btnMirror = el('button', { class: 'btn', text: 'Mirror Gerakan' });
+  btnMirror.onclick = () => {
+    const mirrored = mirrorClip(c);
+    applyEdit(mirrored, 'Mirrored motion');
+  };
+
+  const btnRetimeFaster = el('button', { class: 'btn', text: 'Retime (x0.8 Cepat)' });
+  btnRetimeFaster.onclick = () => {
+    const retimed = retimeClip(c, 0.8);
+    applyEdit(retimed, 'Sped up 20%');
+  };
+
+  const btnRetimeSlower = el('button', { class: 'btn', text: 'Retime (x1.2 Lambat)' });
+  btnRetimeSlower.onclick = () => {
+    const retimed = retimeClip(c, 1.2);
+    applyEdit(retimed, 'Slowed down 20%');
+  };
+
+  const btnCloseLoop = el('button', { class: 'btn', text: 'Tutup Loop' });
+  btnCloseLoop.onclick = () => {
+    const looped = closeLoop(c);
+    applyEdit(looped, 'Closed animation loop');
+  };
+
+  const editRow = el(
+    'div',
+    { class: 'btnrow' },
+    btnMirror,
+    btnRetimeFaster,
+    btnRetimeSlower,
+    btnCloseLoop,
+  );
+  if (c.layers && c.layers.length > 0) {
+    const btnCompose = el('button', { class: 'btn primary', text: 'Ratakan Layer (Compose)' });
+    btnCompose.onclick = () => {
+      const { clip: composed } = composeClips(c, c.layers);
+      delete composed.layers;
+      applyEdit(composed, 'Flattened layers');
+    };
+    editRow.append(btnCompose);
+  }
+  host.append(editRow);
 
   const hist = historyData[c.name];
   const vs = hist
@@ -61,6 +119,20 @@ export function renderVer(host) {
   }
   sel.onchange = () => {
     diffV = +sel.value;
+    if (playbackState.showOverlay && hist[diffV]) {
+      setOverlayClip(hist[diffV], true);
+    }
+    renderVer(host);
+  };
+
+  const overlayActive = playbackState.showOverlay && playbackState.overlayClip;
+  const overlayBtn = el('button', {
+    class: 'btn' + (overlayActive ? ' primary' : ''),
+    text: overlayActive ? 'A/B Overlay: AKTIF (Oranye)' : 'A/B Overlay: MATI',
+  });
+  overlayBtn.onclick = () => {
+    const nextShow = !playbackState.showOverlay;
+    setOverlayClip(hist[diffV], nextShow);
     renderVer(host);
   };
 
@@ -69,11 +141,41 @@ export function renderVer(host) {
       'div',
       { class: 'btnrow' },
       sel,
+      overlayBtn,
       el('span', { class: 'hint', text: `lawan: klip kerja di editor (v${c.version})` }),
     ),
   );
 
+  // Compute and show kinematic metric differences
   const s = hist[diffV];
+  if (s) {
+    const comp = compareClips(rigState.rig, rigState.ctx, limitsData, s, c);
+    const diffCard = el(
+      'div',
+      { class: 'diffcard' },
+      el(
+        'div',
+        { class: 'diffrow' },
+        `Durasi:       ${comp.metricsA.duration.toFixed(2)}s -> ${comp.metricsB.duration.toFixed(2)}s (${comp.diff.duration >= 0 ? '+' : ''}${comp.diff.duration}s)`,
+      ),
+      el(
+        'div',
+        { class: 'diffrow' },
+        `Root Travel:  ${comp.metricsA.rootTravel.toFixed(2)}m -> ${comp.metricsB.rootTravel.toFixed(2)}m (${comp.diff.rootTravel >= 0 ? '+' : ''}${comp.diff.rootTravel}m)`,
+      ),
+      el(
+        'div',
+        { class: 'diffrow' },
+        `Airtime:      ${comp.metricsA.airtime.toFixed(2)}s -> ${comp.metricsB.airtime.toFixed(2)}s (${comp.diff.airtime >= 0 ? '+' : ''}${comp.diff.airtime}s)`,
+      ),
+      el(
+        'div',
+        { class: 'diffrow' },
+        `Kecepatan Sudut Maks: ${comp.metricsA.peakAngularSpeed.toFixed(0)}°/s -> ${comp.metricsB.peakAngularSpeed.toFixed(0)}°/s`,
+      ),
+    );
+    host.append(diffCard);
+  }
   const dk = keysData.behaviorKeys.filter((k) => stable(c[k]) !== stable(s[k]));
   if (!dk.length) {
     host.append(

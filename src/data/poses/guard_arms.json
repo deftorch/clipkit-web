@@ -1,0 +1,14 @@
+{
+  "name": "guard_arms",
+  "part": "arms",
+  "description": "Defensive combat arm guard position",
+  "duration": 0.1,
+  "channels": {
+    "armL_elev": [[0, 45]],
+    "armL_azim": [[0, 20]],
+    "elbowL": [[0, 95]],
+    "armR_elev": [[0, 40]],
+    "armR_azim": [[0, 25]],
+    "elbowR": [[0, 100]]
+  }
+}

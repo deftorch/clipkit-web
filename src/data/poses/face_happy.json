@@ -1,0 +1,13 @@
+{
+  "name": "face_happy",
+  "part": "face",
+  "description": "Happy smiling facial expression",
+  "duration": 0.1,
+  "channels": {
+    "jaw_open": [[0, 5]]
+  },
+  "expressions": {
+    "happy": [[0, 1.0]],
+    "blink": [[0, 0.0]]
+  }
+}

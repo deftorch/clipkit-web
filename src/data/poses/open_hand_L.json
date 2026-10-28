@@ -1,0 +1,14 @@
+{
+  "name": "open_hand_L",
+  "part": "hands",
+  "description": "Open relaxed left hand",
+  "duration": 0.1,
+  "channels": {
+    "thumbL": [[0, 0]],
+    "indexL": [[0, 10]],
+    "middleL": [[0, 10]],
+    "ringL": [[0, 10]],
+    "littleL": [[0, 10]],
+    "spreadL": [[0, 15]]
+  }
+}

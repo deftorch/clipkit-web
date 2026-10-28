@@ -29,3 +29,5 @@ export const defaultClips = {
   kick_back: kick_back,
   hands_eyes_jaw: hands_eyes_jaw,
 };
+
+export { defaultPoses } from './poses/index.js';

@@ -94,6 +94,20 @@ export function drawScene({
     drawFigure(g, P, rigState.ctx, rigState.rig, 1, false, prjFn, C, KF);
   }
 
+  if (playbackState.showOverlay && playbackState.overlayClip) {
+    const overlayC = {
+      ...C,
+      '--fig': '#ff9e00',
+      '--figL': '#ff7b00',
+      '--figR': '#e85d04',
+      '--joint': '#ffd166',
+    };
+    const durO = playbackState.overlayClip.duration || it.clip.duration;
+    const tO = Math.min(playbackState.t, durO);
+    const PO = evalPose(rigState.rig, rigState.ctx, playbackState.overlayClip, tO);
+    drawFigure(g, PO, rigState.ctx, rigState.rig, 0.45, false, prjFn, overlayC, KF);
+  }
+
   if (glCanvas) {
     glCanvas.hidden = !mo;
   }

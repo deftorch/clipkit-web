@@ -1,0 +1,17 @@
+{
+  "name": "t_pose",
+  "part": "torso",
+  "description": "Standard neutral T-pose",
+  "duration": 0.1,
+  "channels": {
+    "lean": [[0, 0]],
+    "side_lean": [[0, 0]],
+    "twist": [[0, 0]],
+    "armL_elev": [[0, 0]],
+    "armL_azim": [[0, 90]],
+    "armR_elev": [[0, 0]],
+    "armR_azim": [[0, 90]],
+    "elbowL": [[0, 0]],
+    "elbowR": [[0, 0]]
+  }
+}

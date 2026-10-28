@@ -39,4 +39,14 @@ describe('Rule: version', () => {
       ),
     ).toBe(true);
   });
+
+  it('passes when format_version is 2', () => {
+    const clip = {
+      version: 1,
+      changelog: [{ v: 1, catatan: 'layers support' }],
+      format_version: 2,
+    };
+    const res = check({ clip });
+    expect(res.lines.some((l) => l[0] === 'FAIL' && l[1].includes('format_version'))).toBe(false);
+  });
 });

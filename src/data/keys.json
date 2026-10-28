@@ -9,7 +9,8 @@
     "windows",
     "events",
     "claims",
-    "validate"
+    "validate",
+    "layers"
   ],
   "gameplayKeys": ["duration", "loop", "move", "windows", "events"]
 }
