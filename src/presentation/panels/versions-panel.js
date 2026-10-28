@@ -14,7 +14,12 @@ import keysData from '../../data/keys.json';
 import limitsData from '../../data/limits.json';
 import { compareClips } from '../../domain/animation/compare.js';
 import { composeClips } from '../../domain/animation/compose.js';
-import { closeLoop, mirrorClip, retimeClip } from '../../domain/animation/edit-operations.js';
+import {
+  applyOverlap,
+  closeLoop,
+  mirrorClip,
+  retimeClip,
+} from '../../domain/animation/edit-operations.js';
 import ClipKit from '../../domain/clipkit.js';
 import { FPS } from '../../domain/math/vec3.js';
 import { el, fmt2 } from '../dom/h.js';
@@ -79,6 +84,15 @@ export function renderVer(host) {
     applyEdit(looped, 'Closed animation loop');
   };
 
+  const btnOverlap = el('button', {
+    class: 'btn',
+    text: 'Overlap (Rantai Kinetik)',
+  });
+  btnOverlap.onclick = () => {
+    const overlapped = applyOverlap(c);
+    applyEdit(overlapped, 'Applied automated overlap and kinetic chain follow-through');
+  };
+
   const editRow = el(
     'div',
     { class: 'btnrow' },
@@ -86,7 +100,9 @@ export function renderVer(host) {
     btnRetimeFaster,
     btnRetimeSlower,
     btnCloseLoop,
+    btnOverlap,
   );
+
   if (c.layers && c.layers.length > 0) {
     const btnCompose = el('button', { class: 'btn primary', text: 'Ratakan Layer (Compose)' });
     btnCompose.onclick = () => {

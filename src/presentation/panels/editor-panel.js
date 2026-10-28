@@ -8,6 +8,7 @@ import {
   selectClip,
 } from '../../application/state/clip-store.js';
 import { playbackState } from '../../application/state/playback-store.js';
+import { applyOverlap } from '../../domain/animation/overlap-processor.js';
 import { copyText, el } from '../dom/h.js';
 
 let edTimer = null;
@@ -96,8 +97,94 @@ export function renderEditor(host, onRefreshAll, onSelectTab) {
   mk('Muat file .json', () => fi.click());
   row.append(fi);
 
+  // Overlap & Kinetic Chain Controls
+  const overlapRow = el(
+    'div',
+    { class: 'btnrow', style: 'align-items: center; gap: 8px;' },
+    el('span', {
+      class: 'hint',
+      style: 'font-weight: 500;',
+      text: 'Overlap (Rantai Kinetik):',
+    }),
+  );
+
+  const delayInput = el('input', {
+    type: 'range',
+    min: '10',
+    max: '80',
+    value: '30',
+    step: '5',
+    id: 'overlapDelay',
+    style: 'width: 90px; vertical-align: middle;',
+    'aria-label': 'Delay Propagasi',
+  });
+  const delayLabel = el('span', { class: 'hint', text: '30ms' });
+  delayInput.oninput = () => {
+    delayLabel.textContent = `${delayInput.value}ms`;
+  };
+
+  let isPreviewing = false;
+  let preOverlapText = null;
+
+  const btnPreviewOverlap = el('button', {
+    class: 'btn sm',
+    type: 'button',
+    text: 'Pratinjau Overlap',
+  });
+  btnPreviewOverlap.onclick = () => {
+    const it = curItem();
+    if (!it || !it.clip) return;
+    if (!isPreviewing) {
+      preOverlapText = it.text;
+      const delayed = applyOverlap(it.clip, {
+        delayStep: Number(delayInput.value) / 1000,
+      });
+      it.text = fmtClip(delayed);
+      rebuild(it);
+      isPreviewing = true;
+      btnPreviewOverlap.classList.add('primary');
+      btnPreviewOverlap.textContent = 'Kembalikan Asli';
+      syncEditor(true);
+      if (onRefreshAll) onRefreshAll(true);
+    } else {
+      it.text = preOverlapText;
+      rebuild(it);
+      isPreviewing = false;
+      btnPreviewOverlap.classList.remove('primary');
+      btnPreviewOverlap.textContent = 'Pratinjau Overlap';
+      syncEditor(true);
+      if (onRefreshAll) onRefreshAll(true);
+    }
+  };
+
+  const btnBakeOverlap = el('button', {
+    class: 'btn sm',
+    type: 'button',
+    text: 'Bake Overlap',
+  });
+  btnBakeOverlap.onclick = () => {
+    const it = curItem();
+    if (!it || !it.clip) return;
+    const baseToBake = isPreviewing && preOverlapText ? JSON.parse(preOverlapText) : it.clip;
+    const baked = applyOverlap(baseToBake, {
+      delayStep: Number(delayInput.value) / 1000,
+    });
+    it.text = fmtClip(baked);
+    it.dirty = true;
+    isPreviewing = false;
+    btnPreviewOverlap.classList.remove('primary');
+    btnPreviewOverlap.textContent = 'Pratinjau Overlap';
+    rebuild(it);
+    persist();
+    syncEditor(true);
+    if (onRefreshAll) onRefreshAll(true);
+  };
+
+  overlapRow.append(delayInput, delayLabel, btnPreviewOverlap, btnBakeOverlap);
+
   host.append(
     row,
+    overlapRow,
     ta,
     stat,
     el('p', {

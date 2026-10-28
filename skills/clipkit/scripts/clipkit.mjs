@@ -776,6 +776,223 @@ function validateSchema(clip, rig = null) {
     errors
   };
 }
+const HIERARCHY_LEVELS = {
+  PELVIS: "pelvis",
+  SPINE: "spine",
+  SHOULDERS: "shoulders",
+  WRISTS: "wrists",
+  FINGERS: "fingers"
+};
+const DEFAULT_PROPAGATION_DELAYS = {
+  [HIERARCHY_LEVELS.PELVIS]: 0,
+  // t0 + 0ms (Root / Pelvis)
+  [HIERARCHY_LEVELS.SPINE]: 0.03,
+  // t0 + 30ms (Spine / Chest / Thighs)
+  [HIERARCHY_LEVELS.SHOULDERS]: 0.06,
+  // t0 + 60ms (Shoulders / Neck / Knees)
+  [HIERARCHY_LEVELS.WRISTS]: 0.1,
+  // t0 + 100ms (Elbows / Wrists / Feet)
+  [HIERARCHY_LEVELS.FINGERS]: 0.13
+  // t0 + 130ms (Fingers / Face)
+};
+const CHANNEL_HIERARCHY_MAP = {
+  // Level 0: Pelvis & Root motion
+  hip_x: HIERARCHY_LEVELS.PELVIS,
+  hip_y: HIERARCHY_LEVELS.PELVIS,
+  hip_z: HIERARCHY_LEVELS.PELVIS,
+  hip_pitch: HIERARCHY_LEVELS.PELVIS,
+  hip_twist: HIERARCHY_LEVELS.PELVIS,
+  hip_roll: HIERARCHY_LEVELS.PELVIS,
+  // Level 1: Spine, Torso & Thighs
+  lean: HIERARCHY_LEVELS.SPINE,
+  side_lean: HIERARCHY_LEVELS.SPINE,
+  twist: HIERARCHY_LEVELS.SPINE,
+  legL_swing: HIERARCHY_LEVELS.SPINE,
+  legL_abd: HIERARCHY_LEVELS.SPINE,
+  legR_swing: HIERARCHY_LEVELS.SPINE,
+  legR_abd: HIERARCHY_LEVELS.SPINE,
+  // Level 2: Shoulders, Upper Arms, Neck & Knees
+  head_pitch: HIERARCHY_LEVELS.SHOULDERS,
+  head_yaw: HIERARCHY_LEVELS.SHOULDERS,
+  armL_elev: HIERARCHY_LEVELS.SHOULDERS,
+  armL_azim: HIERARCHY_LEVELS.SHOULDERS,
+  armL_roll: HIERARCHY_LEVELS.SHOULDERS,
+  armR_elev: HIERARCHY_LEVELS.SHOULDERS,
+  armR_azim: HIERARCHY_LEVELS.SHOULDERS,
+  armR_roll: HIERARCHY_LEVELS.SHOULDERS,
+  kneeL: HIERARCHY_LEVELS.SHOULDERS,
+  kneeR: HIERARCHY_LEVELS.SHOULDERS,
+  // Level 3: Forearms, Elbows, Wrists, Feet & Face
+  elbowL: HIERARCHY_LEVELS.WRISTS,
+  elbowR: HIERARCHY_LEVELS.WRISTS,
+  footL_pitch: HIERARCHY_LEVELS.WRISTS,
+  footR_pitch: HIERARCHY_LEVELS.WRISTS,
+  jaw_open: HIERARCHY_LEVELS.WRISTS,
+  eye_yaw: HIERARCHY_LEVELS.WRISTS,
+  eye_pitch: HIERARCHY_LEVELS.WRISTS,
+  // Level 4: Digits (Fingers)
+  thumbL: HIERARCHY_LEVELS.FINGERS,
+  indexL: HIERARCHY_LEVELS.FINGERS,
+  middleL: HIERARCHY_LEVELS.FINGERS,
+  ringL: HIERARCHY_LEVELS.FINGERS,
+  littleL: HIERARCHY_LEVELS.FINGERS,
+  spreadL: HIERARCHY_LEVELS.FINGERS,
+  thumbR: HIERARCHY_LEVELS.FINGERS,
+  indexR: HIERARCHY_LEVELS.FINGERS,
+  middleR: HIERARCHY_LEVELS.FINGERS,
+  ringR: HIERARCHY_LEVELS.FINGERS,
+  littleR: HIERARCHY_LEVELS.FINGERS,
+  spreadR: HIERARCHY_LEVELS.FINGERS
+};
+function calculateDampedOvershoot(amplitude, dt, damping = 12, frequency = 4) {
+  if (dt < 0) return 0;
+  return amplitude * Math.exp(-damping * dt) * Math.cos(2 * Math.PI * frequency * dt);
+}
+function applyHierarchicalDelays(clip, options = {}) {
+  const delays = {
+    ...DEFAULT_PROPAGATION_DELAYS,
+    ...options.delays || {}
+  };
+  options.delayStep ?? 0.03;
+  const channelMap = options.channelMap || CHANNEL_HIERARCHY_MAP;
+  const dur = clip.duration || 1;
+  const resultChannels = {};
+  for (const [ch, kfs] of Object.entries(clip.channels || {})) {
+    if (!Array.isArray(kfs) || kfs.length === 0) {
+      resultChannels[ch] = kfs;
+      continue;
+    }
+    const level = channelMap[ch] || HIERARCHY_LEVELS.PELVIS;
+    let offset = delays[level] ?? 0;
+    if (options.delayScale != null) {
+      offset *= options.delayScale;
+    }
+    if (offset <= 1e-4) {
+      resultChannels[ch] = JSON.parse(JSON.stringify(kfs));
+      continue;
+    }
+    const shifted = [];
+    const firstVal = kfs[0][1];
+    shifted.push([0, firstVal, kfs[0][2] || "linear"]);
+    const startIndex = Math.abs(kfs[0][0]) < 1e-4 ? 1 : 0;
+    for (let i = startIndex; i < kfs.length; i++) {
+      const origT = kfs[i][0];
+      const val = kfs[i][1];
+      const easing = kfs[i][2] || "inOutSine";
+      const newT = Number(Math.min(dur, origT + offset).toFixed(4));
+      if (newT > 1e-4) {
+        shifted.push([newT, val, easing]);
+      }
+    }
+    const lastKey = shifted[shifted.length - 1];
+    if (lastKey[0] < dur - 1e-4) {
+      const finalVal = kfs[kfs.length - 1][1];
+      shifted.push([dur, finalVal, "linear"]);
+    }
+    const cleanKeys = [];
+    for (const key of shifted) {
+      if (cleanKeys.length > 0) {
+        const prev = cleanKeys[cleanKeys.length - 1];
+        if (Math.abs(prev[0] - key[0]) < 1e-4) {
+          cleanKeys[cleanKeys.length - 1] = key;
+          continue;
+        }
+      }
+      cleanKeys.push(key);
+    }
+    resultChannels[ch] = cleanKeys;
+  }
+  return {
+    ...clip,
+    channels: resultChannels
+  };
+}
+function applyDampedOvershoot(clip, options = {}) {
+  const damping = options.damping ?? 12;
+  const frequency = options.frequency ?? 4;
+  const overshootScale = options.overshootScale ?? 0.08;
+  const dur = clip.duration || 1;
+  const targetLevels = options.targetLevels || /* @__PURE__ */ new Set([HIERARCHY_LEVELS.SHOULDERS, HIERARCHY_LEVELS.WRISTS, HIERARCHY_LEVELS.FINGERS]);
+  const channelMap = options.channelMap || CHANNEL_HIERARCHY_MAP;
+  const resultChannels = {};
+  for (const [ch, kfs] of Object.entries(clip.channels || {})) {
+    if (!Array.isArray(kfs) || kfs.length < 2) {
+      resultChannels[ch] = kfs;
+      continue;
+    }
+    const level = channelMap[ch] || HIERARCHY_LEVELS.PELVIS;
+    if (!targetLevels.has(level)) {
+      resultChannels[ch] = JSON.parse(JSON.stringify(kfs));
+      continue;
+    }
+    const newKeys = [];
+    for (let i = 0; i < kfs.length; i++) {
+      const curKey = kfs[i];
+      newKeys.push([...curKey]);
+      const nextKey = kfs[i + 1];
+      const prevKey = kfs[i - 1];
+      if (prevKey && (!nextKey || nextKey[0] - curKey[0] >= 0.2)) {
+        const incomingDelta = curKey[1] - prevKey[1];
+        if (Math.abs(incomingDelta) >= 10) {
+          const tStop = curKey[0];
+          const availableSpan = nextKey ? nextKey[0] - tStop : dur - tStop;
+          const settleDuration = Math.min(0.25, availableSpan * 0.8);
+          if (settleDuration >= 0.08) {
+            const peakOvershoot = incomingDelta * overshootScale;
+            const tPeak = Number((tStop + settleDuration * 0.4).toFixed(4));
+            const vPeak = Number((curKey[1] + peakOvershoot).toFixed(4));
+            const tRebound = Number((tStop + settleDuration * 0.75).toFixed(4));
+            const reboundOffset = calculateDampedOvershoot(
+              peakOvershoot,
+              settleDuration * 0.75,
+              damping,
+              frequency
+            );
+            const vRebound = Number((curKey[1] + reboundOffset).toFixed(4));
+            if (tPeak < (nextKey ? nextKey[0] : dur)) {
+              newKeys.push([tPeak, vPeak, "outQuad"]);
+            }
+            if (tRebound < (nextKey ? nextKey[0] : dur) && tRebound > tPeak) {
+              newKeys.push([tRebound, vRebound, "inOutSine"]);
+            }
+          }
+        }
+      }
+    }
+    newKeys.sort((a, b) => a[0] - b[0]);
+    const deduped = [];
+    for (const key of newKeys) {
+      if (deduped.length > 0) {
+        const prev = deduped[deduped.length - 1];
+        if (Math.abs(prev[0] - key[0]) < 1e-4) {
+          continue;
+        }
+      }
+      deduped.push(key);
+    }
+    resultChannels[ch] = deduped;
+  }
+  return {
+    ...clip,
+    channels: resultChannels
+  };
+}
+function applyOverlap(clip, options = {}) {
+  if (!clip || typeof clip !== "object") {
+    throw new Error("Invalid clip supplied to applyOverlap");
+  }
+  let result = JSON.parse(JSON.stringify(clip));
+  if (options.enablePropagation !== false) {
+    result = applyHierarchicalDelays(result, options);
+  }
+  if (options.enableOvershoot !== false) {
+    result = applyDampedOvershoot(result, options);
+  }
+  if (result.name) {
+    result.name = options.name || `${result.name}_overlap`;
+  }
+  return result;
+}
 function matchChannelPattern(channelName, pattern) {
   if (pattern === "*" || pattern === channelName) return true;
   if (pattern.endsWith("*")) {
@@ -835,6 +1052,10 @@ function composeClips(baseClip, layers = [], options = {}) {
         `Layer [${layerIdx}] reference '${layer.ref}' could not be resolved.`
       );
       continue;
+    }
+    if (layer.effect === "overlap" || layer.effect?.kind === "overlap") {
+      const effectOpts = typeof layer.effect === "object" ? layer.effect.options || {} : {};
+      layerClip = applyOverlap(layerClip, effectOpts);
     }
     const layerDur = layerClip.duration || dur;
     const offset = layer.offset || 0;
@@ -3651,11 +3872,13 @@ function closeLoop(clip) {
 async function runEdit(args, options = {}) {
   const operation = args[0];
   const target = args[1];
-  if (!operation || !["mirror", "retime", "scale-amplitude", "close-loop"].includes(operation)) {
+  if (!operation || !["mirror", "retime", "scale-amplitude", "close-loop", "overlap"].includes(operation)) {
     console.error(
-      'Error: "clipkit edit" requires an operation: "mirror", "retime", "scale-amplitude", or "close-loop".'
+      'Error: "clipkit edit" requires an operation: "mirror", "retime", "scale-amplitude", "close-loop", or "overlap".'
     );
-    console.error("Example: clipkit edit mirror slash.json --output slash_mirrored.json");
+    console.error(
+      "Example: clipkit edit overlap slash.json --delay 0.03 --damping 12 --output slash_overlap.json"
+    );
     return 2;
   }
   if (!target) {
@@ -3696,6 +3919,17 @@ async function runEdit(args, options = {}) {
     result = scaleAmplitude(clip, scale2, filter);
   } else if (operation === "close-loop") {
     result = closeLoop(clip);
+  } else if (operation === "overlap") {
+    const delayStep = options.delay != null ? Number(options.delay) : void 0;
+    const damping = options.damping != null ? Number(options.damping) : void 0;
+    const overshootScale = options.overshoot != null ? Number(options.overshoot) : void 0;
+    const frequency = options.freq != null ? Number(options.freq) : void 0;
+    result = applyOverlap(clip, {
+      delayStep,
+      damping,
+      overshootScale,
+      frequency
+    });
   }
   const jsonStr = formatDeterministicJson(result);
   if (options.output) {
@@ -4274,7 +4508,12 @@ function parseArgs(rawArgs) {
         "scale",
         "note",
         "parent",
-        "channels"
+        "channels",
+        "delay",
+        "damping",
+        "overshoot",
+        "freq",
+        "template"
       ].includes(key)) {
         options[camelCase(key)] = rawArgs[++i];
       } else {
@@ -4453,10 +4692,14 @@ Operations:
   retime                   Scale timing and duration by a factor (--scale <f>)
   scale-amplitude          Scale channel rotation/displacement amplitudes (--scale <f>)
   close-loop               Close animation loop by matching end to start
+  overlap                  Apply hierarchical propagation delay and damped overshoot
 
 Options:
   --scale <factor>         Scaling factor for retime or scale-amplitude
   --channels <list>        Comma-separated channels to scale (for scale-amplitude)
+  --delay <seconds>        Base propagation delay step per hierarchy level (default: 0.03)
+  --damping <factor>       Damping decay coefficient for overshoot (default: 12)
+  --overshoot <factor>     Overshoot amplitude factor (default: 0.08)
   --output <file>          Path to write the modified clip JSON
   --json                   Output modified clip JSON to stdout
   --force                  Overwrite existing output file
@@ -4464,6 +4707,8 @@ Options:
 Example:
   clipkit edit mirror slash.json --output slash_mirrored.json
   clipkit edit retime jump.json --scale 1.2 --output jump_slow.json
+  clipkit edit overlap slash.json --delay 0.03 --damping 12 --output slash_overlap.json
+
 `);
     return;
   }

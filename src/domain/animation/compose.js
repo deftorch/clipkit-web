@@ -1,4 +1,5 @@
 import { sampleKeys } from './keyframes.js';
+import { applyOverlap } from './overlap-processor.js';
 
 /**
  * Matches a channel name against a pattern (supports exact name, '*' wildcard, or prefix 'armR_*').
@@ -80,6 +81,11 @@ export function composeClips(baseClip, layers = [], options = {}) {
         `Layer [${layerIdx}] reference '${layer.ref}' could not be resolved.`,
       );
       continue;
+    }
+
+    if (layer.effect === 'overlap' || layer.effect?.kind === 'overlap') {
+      const effectOpts = typeof layer.effect === 'object' ? layer.effect.options || {} : {};
+      layerClip = applyOverlap(layerClip, effectOpts);
     }
 
     const layerDur = layerClip.duration || dur;

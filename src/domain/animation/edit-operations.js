@@ -199,3 +199,10 @@ export function closeLoop(clip) {
 
   return looped;
 }
+
+export {
+  applyDampedOvershoot,
+  applyHierarchicalDelays,
+  applyOverlap,
+  generateRhythmKeyframes,
+} from './overlap-processor.js';

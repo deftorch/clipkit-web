@@ -1,5 +1,6 @@
 import { defaultClips } from '../../data/index.js';
 import {
+  applyOverlap,
   closeLoop,
   mirrorClip,
   retimeClip,
@@ -11,11 +12,16 @@ export async function runEdit(args, options = {}) {
   const operation = args[0];
   const target = args[1];
 
-  if (!operation || !['mirror', 'retime', 'scale-amplitude', 'close-loop'].includes(operation)) {
+  if (
+    !operation ||
+    !['mirror', 'retime', 'scale-amplitude', 'close-loop', 'overlap'].includes(operation)
+  ) {
     console.error(
-      'Error: "clipkit edit" requires an operation: "mirror", "retime", "scale-amplitude", or "close-loop".',
+      'Error: "clipkit edit" requires an operation: "mirror", "retime", "scale-amplitude", "close-loop", or "overlap".',
     );
-    console.error('Example: clipkit edit mirror slash.json --output slash_mirrored.json');
+    console.error(
+      'Example: clipkit edit overlap slash.json --delay 0.03 --damping 12 --output slash_overlap.json',
+    );
     return 2;
   }
 
@@ -59,6 +65,17 @@ export async function runEdit(args, options = {}) {
     result = scaleAmplitude(clip, scale, filter);
   } else if (operation === 'close-loop') {
     result = closeLoop(clip);
+  } else if (operation === 'overlap') {
+    const delayStep = options.delay != null ? Number(options.delay) : undefined;
+    const damping = options.damping != null ? Number(options.damping) : undefined;
+    const overshootScale = options.overshoot != null ? Number(options.overshoot) : undefined;
+    const frequency = options.freq != null ? Number(options.freq) : undefined;
+    result = applyOverlap(clip, {
+      delayStep,
+      damping,
+      overshootScale,
+      frequency,
+    });
   }
 
   const jsonStr = formatDeterministicJson(result);

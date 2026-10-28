@@ -164,14 +164,13 @@ The former Milestone 1 (AI Vision & Contact Sheet) is merged into Milestone 2, b
 
 ## Milestone 5: Automated Overlap & Kinetic Chain Engine (ROADMAP Phase 2)
 
-- [ ] Create domain module `src/domain/animation/overlap-processor.js`.
-- [ ] Implement hierarchical propagation delays:
+- [x] Create domain module `src/domain/animation/overlap-processor.js`.
+- [x] Implement hierarchical propagation delays:
   - Pelvis ($t_0$) $\rightarrow$ Spine ($t_0 + 30\text{ms}$) $\rightarrow$ Shoulders ($t_0 + 60\text{ms}$) $\rightarrow$ Wrists ($t_0 + 100\text{ms}$).
-- [ ] Implement decaying sinusoidal overshoot calculator for settling phases (`outElastic` / damped oscillation).
-- [ ] Add motion rhythm templates (`Anticipation -> Acceleration -> Overshoot -> Settle`).
-- [ ] Add UI controls in Editor JSON panel to preview and bake procedural overlap non-destructively.
-
-- [ ] Expose overlap as a deterministic CLI operation and as a layer effect (see Milestone 3).
+- [x] Implement decaying sinusoidal overshoot calculator for settling phases (`outElastic` / damped oscillation).
+- [x] Add motion rhythm templates (`Anticipation -> Acceleration -> Overshoot -> Settle`).
+- [x] Add UI controls in Editor JSON panel to preview and bake procedural overlap non-destructively.
+- [x] Expose overlap as a deterministic CLI operation and as a layer effect (see Milestone 3).
 
 ---
 
