@@ -12,7 +12,7 @@ import { runSheet } from './commands/sheet.js';
 import { runValidate } from './commands/validate.js';
 import { runVersion } from './commands/version.js';
 
-export const CLI_VERSION = '1.0.0';
+export const CLI_VERSION = '1.5.0';
 
 export function parseArgs(rawArgs) {
   const args = [];

@@ -5380,7 +5380,7 @@ Created immutable version v${versionNum} for '${clipName}':`);
   }
   return 0;
 }
-const CLI_VERSION = "1.0.0";
+const CLI_VERSION = "1.5.0";
 function parseArgs(rawArgs) {
   const args = [];
   const options = {};

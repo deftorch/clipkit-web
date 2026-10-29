@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { main } from '../src/cli/cli.js';
+import { CLI_VERSION, main } from '../src/cli/cli.js';
 
 describe('ClipKit Agent CLI (cli.js)', () => {
   const testDir = path.resolve(__dirname, 'scratch_cli_test');
@@ -27,7 +27,7 @@ describe('ClipKit Agent CLI (cli.js)', () => {
     console.log = origLog;
 
     expect(code).toBe(0);
-    expect(logs.some((l) => l.includes('clipkit v1.0.0'))).toBe(true);
+    expect(logs.some((l) => l.includes(`clipkit v${CLI_VERSION}`))).toBe(true);
   });
 
   it('validates a reference clip with --json and deterministic output', async () => {
