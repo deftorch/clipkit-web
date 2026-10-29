@@ -1,3 +1,4 @@
+import { isFootPlanted } from '../../rig/foot-ik-solver.js';
 import { createIssue, RULE_CODES } from './rule-codes.js';
 
 export function check({ ctx, limits, clip, poses, floorY, tAt, FPS = 30 }) {
@@ -26,16 +27,18 @@ export function check({ ctx, limits, clip, poses, floorY, tAt, FPS = 30 }) {
         minToeSide = s === 'Left' ? 'kiri' : 'kanan';
         minToeT = t;
       }
-      const plantedWin = s === 'Left' ? clip.windows?.planted_L : clip.windows?.planted_R;
-      const inC = plantedWin
-        ? t >= plantedWin[0] && t <= plantedWin[1]
-        : tp[1] - floorY < fl.contact_height_m;
+      const inC = isFootPlanted(clip, t, s, tp[1], floorY, fl.contact_height_m);
       if (inC) contact++;
       if (f + 1 < poses.length && inC) {
         const nextT = tAt(f + 1);
-        const nextInC = plantedWin
-          ? nextT >= plantedWin[0] && nextT <= plantedWin[1]
-          : poses[f + 1].pos[ti][1] - floorY < fl.contact_height_m;
+        const nextInC = isFootPlanted(
+          clip,
+          nextT,
+          s,
+          poses[f + 1].pos[ti][1],
+          floorY,
+          fl.contact_height_m,
+        );
         if (nextInC) {
           const tn = poses[f + 1].pos[ti];
           const spd = Math.hypot(tn[0] - tp[0], tn[2] - tp[2]) * FPS;

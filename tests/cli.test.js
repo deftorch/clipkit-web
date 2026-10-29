@@ -233,6 +233,26 @@ describe('ClipKit Agent CLI (cli.js)', () => {
     expect(retimed.duration).toBeCloseTo(1.35, 2);
   });
 
+  it('runs edit foot-ik and micro-dynamics commands', async () => {
+    const logs = [];
+    const origLog = console.log;
+    console.log = (msg) => logs.push(msg);
+
+    const codeIK = await main(['edit', 'foot-ik', 'walk', '--json']);
+    const codeMicro = await main(['edit', 'micro-dynamics', 'idle', '--seed', '99', '--json']);
+    console.log = origLog;
+
+    expect(codeIK).toBe(0);
+    expect(codeMicro).toBe(0);
+
+    const ikClip = JSON.parse(logs[0]);
+    expect(ikClip.channels.kneeL).toBeDefined();
+
+    const microClip = JSON.parse(logs[1]);
+    expect(microClip.channels.lean).toBeDefined();
+    expect(microClip.expressions.lookLeft).toBeDefined();
+  });
+
   it('runs compare command reporting kinematic diffs and side-by-side sheet', async () => {
     const sheetDir = path.join(testDir, 'compare_sheet_out');
     const logs = [];

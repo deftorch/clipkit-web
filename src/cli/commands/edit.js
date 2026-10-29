@@ -1,27 +1,36 @@
 import { defaultClips } from '../../data/index.js';
+import { loadRigs } from '../../data/load-rigs.js';
 import {
+  applyFootIK,
+  applyMicroDynamics,
   applyOverlap,
   closeLoop,
   mirrorClip,
   retimeClip,
   scaleAmplitude,
 } from '../../domain/animation/edit-operations.js';
+import { makeCtx } from '../../domain/rig/rig-context.js';
 import { formatDeterministicJson, readInput, writeOutputFile } from '../io.js';
 
 export async function runEdit(args, options = {}) {
   const operation = args[0];
   const target = args[1];
 
-  if (
-    !operation ||
-    !['mirror', 'retime', 'scale-amplitude', 'close-loop', 'overlap'].includes(operation)
-  ) {
+  const validOps = [
+    'mirror',
+    'retime',
+    'scale-amplitude',
+    'close-loop',
+    'overlap',
+    'foot-ik',
+    'micro-dynamics',
+  ];
+
+  if (!operation || !validOps.includes(operation)) {
     console.error(
-      'Error: "clipkit edit" requires an operation: "mirror", "retime", "scale-amplitude", "close-loop", or "overlap".',
+      'Error: "clipkit edit" requires an operation: "mirror", "retime", "scale-amplitude", "close-loop", "overlap", "foot-ik", or "micro-dynamics".',
     );
-    console.error(
-      'Example: clipkit edit overlap slash.json --delay 0.03 --damping 12 --output slash_overlap.json',
-    );
+    console.error('Example: clipkit edit foot-ik walk.json --output walk_ik.json');
     return 2;
   }
 
@@ -76,6 +85,18 @@ export async function runEdit(args, options = {}) {
       overshootScale,
       frequency,
     });
+  } else if (operation === 'foot-ik') {
+    const { motus } = loadRigs();
+    const ctx = makeCtx(motus);
+    const blendWindow =
+      options['blend-window'] != null ? Number(options['blend-window']) : undefined;
+    result = applyFootIK(motus, ctx, clip, { blendWindow });
+  } else if (operation === 'micro-dynamics') {
+    const breathing = options.breathing !== 'false' && options['no-breathing'] !== true;
+    const weightShift = options.sway !== 'false' && options['no-sway'] !== true;
+    const eyeSaccades = options.saccades !== 'false' && options['no-saccades'] !== true;
+    const seed = options.seed != null ? Number(options.seed) : undefined;
+    result = applyMicroDynamics(clip, { breathing, weightShift, eyeSaccades, seed });
   }
 
   const jsonStr = formatDeterministicJson(result);

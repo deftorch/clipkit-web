@@ -12,7 +12,7 @@ import { runSheet } from './commands/sheet.js';
 import { runValidate } from './commands/validate.js';
 import { runVersion } from './commands/version.js';
 
-export const CLI_VERSION = '1.5.0';
+export const CLI_VERSION = '1.6.0';
 
 export function parseArgs(rawArgs) {
   const args = [];
@@ -245,6 +245,8 @@ Operations:
   scale-amplitude          Scale channel rotation/displacement amplitudes (--scale <f>)
   close-loop               Close animation loop by matching end to start
   overlap                  Apply hierarchical propagation delay and damped overshoot
+  foot-ik                  Apply two-bone analytic IK to eliminate foot sliding
+  micro-dynamics           Apply procedural idle micro-motion (breathing, sway, saccades)
 
 Options:
   --scale <factor>         Scaling factor for retime or scale-amplitude
@@ -252,13 +254,19 @@ Options:
   --delay <seconds>        Base propagation delay step per hierarchy level (default: 0.03)
   --damping <factor>       Damping decay coefficient for overshoot (default: 12)
   --overshoot <factor>     Overshoot amplitude factor (default: 0.08)
+  --blend-window <seconds> Transition blending window duration for Foot IK (default: 0.04)
+  --seed <number>          PRNG seed for procedural micro-dynamics (default: 42)
+  --no-breathing           Disable breathing oscillation in micro-dynamics
+  --no-sway                Disable postural weight shifting in micro-dynamics
+  --no-saccades            Disable anticipatory eye saccades in micro-dynamics
   --output <file>          Path to write the modified clip JSON
   --json                   Output modified clip JSON to stdout
   --force                  Overwrite existing output file
 
 Example:
   clipkit edit mirror slash.json --output slash_mirrored.json
-  clipkit edit retime jump.json --scale 1.2 --output jump_slow.json
+  clipkit edit foot-ik walk.json --output walk_ik.json
+  clipkit edit micro-dynamics idle.json --output idle_alive.json
   clipkit edit overlap slash.json --delay 0.03 --damping 12 --output slash_overlap.json
 
 `);

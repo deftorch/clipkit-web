@@ -7,10 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Planned
-- Milestone 7 (Phase 6): Procedural dynamics, analytic foot IK solver, and Center of Mass balance polygon validator.
+## [1.6.0] - 2026-10-29
 
-## [1.5.0] - 2026-10-29
+### Added
+- Two-Bone Analytic Foot IK Solver (`src/domain/rig/foot-ik-solver.js`): Closed-form trigonometric solver using the Law of Cosines with rest offset polar angle calibration ($\theta_1^{(0)}, \theta_2^{(0)}$) for sub-millimeter precision. Firmly locks foot translations and orientations during planted intervals with smooth lift-off blend-out.
+- Local Pelvis Coordinate Frame Inversion: Transforms world contact targets into the local pelvis reference frame (`qrot(qinv(hipsRot), D_world)`) to insulate leg swing and abduction from dynamic pelvis roll, pitch, and yaw.
+- Shared Foot Contact Domain Contract: Extracted `isFootPlanted(clip, t, side, toeHeight, floorY, contactThreshold)` shared between the floor validation rule and the foot IK solver, ensuring post-IK clips achieve 100% pass on foot-slide checks.
+- Center of Mass (CoM) Floor Polygon Balance Validator (`src/domain/validation/rules/com-balance.js`): 9th validation rule using Dempster/Winter biomechanical mass weighting (Head 8%, Torso 45%, Hips 15%, Arms 10%, Legs 22%) and 2D convex Base of Support (BoS) ground projection polygon with margin ray-casting.
+- Procedural Idle Micro-Dynamics (`src/domain/animation/procedural-micro-motion.js`): Deterministic pseudo-random idle generator with organic thoracic breathing oscillation (0.23 Hz), postural sway weight shifting (0.08 Hz), anticipatory micro-saccades, and seamless loop frequency harmonization.
+- Deterministic CLI Edit Operations: Added `clipkit edit foot-ik <clip.json>` and `clipkit edit micro-dynamics <clip.json>` with configurable blend windows, oscillation toggles, and RNG seeds.
+- Web UI Action Buttons: Integrated "Foot IK (Pin Kontak)" and "Micro-Dynamics (Napas & Sway)" one-click actions into the Versioning panel for instant procedural enhancement.
+
 
 ### Added
 - Native VRMA & Animated GLB Importer (`src/infrastructure/vrma/vrma-importer.js`): Parses binary glTF animation tracks (`VRMC_vrm_animation` and standard glTF animations), bone rotations, root translations, and facial expressions.

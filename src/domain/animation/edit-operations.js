@@ -200,9 +200,11 @@ export function closeLoop(clip) {
   return looped;
 }
 
+export { applyFootIK } from '../rig/foot-ik-solver.js';
 export {
   applyDampedOvershoot,
   applyHierarchicalDelays,
   applyOverlap,
   generateRhythmKeyframes,
 } from './overlap-processor.js';
+export { applyMicroDynamics } from './procedural-micro-motion.js';

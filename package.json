@@ -1,6 +1,6 @@
 {
   "name": "clipkit-web",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "AI-First 3D Animation Sandbox, Linter, and Compiler for VRM 1.0 & Godot",
   "license": "MIT",
   "author": "ClipKit Contributors",

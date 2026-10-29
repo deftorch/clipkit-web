@@ -1,6 +1,7 @@
 import { anatomyRule } from './rules/anatomy.js';
 import { angularSpeedRule } from './rules/angular-speed.js';
 import { channelRangesRule } from './rules/channel-ranges.js';
+import { comBalanceRule } from './rules/com-balance.js';
 import { floorRule } from './rules/floor.js';
 import { loopRule } from './rules/loop.js';
 import { rootMotionRule } from './rules/root-motion.js';
@@ -53,6 +54,8 @@ export function createDefaultRuleRegistry() {
   registry.register(versionRule);
   // 8. Channel ranges
   registry.register(channelRangesRule);
+  // 9. Center of Mass balance projection
+  registry.register(comBalanceRule);
   return registry;
 }
 

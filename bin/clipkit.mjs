@@ -362,7 +362,8 @@ const RULE_CODES = {
   CHANNEL_COLLISION: "CHANNEL_COLLISION",
   TORSO_OVERRIDE_CONFLICT: "TORSO_OVERRIDE_CONFLICT",
   WINDOW_COLLISION: "WINDOW_COLLISION",
-  MOVE_COLLISION: "MOVE_COLLISION"
+  MOVE_COLLISION: "MOVE_COLLISION",
+  COM_BALANCE_UNSTABLE: "COM_BALANCE_UNSTABLE"
 };
 function createIssue({
   level = "FAIL",
@@ -1284,7 +1285,7 @@ function evalPose(rig, ctx, clip, t) {
   }
   return { pos, delta: G, local, root: root2, hips, cv, expr: evalExpressions(clip, t) };
 }
-function check$7({ ctx, limits, poses, tAt }) {
+function check$8({ ctx, limits, poses, tAt }) {
   const an = limits.anatomy;
   const I = ctx.idx;
   const lines = [];
@@ -1402,9 +1403,9 @@ function check$7({ ctx, limits, poses, tAt }) {
 }
 const anatomyRule = {
   name: "anatomy",
-  check: check$7
+  check: check$8
 };
-function check$6({ ctx, limits, style = "stylized", poses, frames, FPS: FPS2 = 30 }) {
+function check$7({ ctx, limits, style = "stylized", poses, frames, FPS: FPS2 = 30 }) {
   const lim = limits.styles[style];
   const lines = [];
   const issues = [];
@@ -1488,7 +1489,7 @@ function check$6({ ctx, limits, style = "stylized", poses, frames, FPS: FPS2 = 3
 }
 const angularSpeedRule = {
   name: "angular-speed",
-  check: check$6
+  check: check$7
 };
 function checkChannelRanges(rig, clip) {
   const w = [];
@@ -1545,13 +1546,386 @@ function checkChannelRanges(rig, clip) {
   }
   return { lines: w, issues };
 }
-function check$5({ rig, clip }) {
+function check$6({ rig, clip }) {
   const result = checkChannelRanges(rig, clip);
   const lines = result.lines.map((item) => Array.isArray(item) ? item : ["WARN", item]);
   return { lines, issues: result.issues };
 }
 const channelRangesRule = {
   name: "channel-ranges",
+  check: check$6
+};
+function isFootPlanted(clip, t, side, toeHeight = null, floorY2 = 0, contactThreshold = 0.03) {
+  const isLeft = side === "Left" || side === "kiri" || side === "L";
+  const win = isLeft ? clip?.windows?.planted_L : clip?.windows?.planted_R;
+  if (win && Array.isArray(win) && win.length >= 2) {
+    return t >= win[0] && t <= win[1];
+  }
+  if (toeHeight != null) {
+    return toeHeight - floorY2 < contactThreshold;
+  }
+  return false;
+}
+function solveTwoBoneLegIK({
+  hipPos,
+  targetFootPos,
+  l1,
+  l2,
+  offset1 = null,
+  offset2 = null,
+  isLeft = true
+}) {
+  const actualL1 = offset1 ? vlen(offset1) : l1;
+  const actualL2 = offset2 ? vlen(offset2) : l2;
+  const th1_0 = offset1 ? Math.atan2(offset1[2], -offset1[1]) : 0;
+  const th2_0 = offset2 ? Math.atan2(offset2[2], -offset2[1]) : 0;
+  const D = vsub(targetFootPos, hipPos);
+  const dist = vlen(D);
+  if (dist >= actualL1 + actualL2) {
+    const targetPitch2 = Math.atan2(D[2], -D[1]);
+    const thighPitch2 = (targetPitch2 - th1_0) * R2D;
+    const targetRoll2 = Math.atan2(D[0], -D[1]) * R2D;
+    const abdAngle2 = isLeft ? targetRoll2 : -targetRoll2;
+    return {
+      kneeAngle: 0,
+      swingAngle: Number(thighPitch2.toFixed(2)),
+      abdAngle: Number(abdAngle2.toFixed(2)),
+      footPitch: Number(thighPitch2.toFixed(2))
+    };
+  }
+  const minReach = Math.abs(actualL1 - actualL2) + 1e-4;
+  const d = Math.max(minReach, dist);
+  const cosBeta = (actualL1 * actualL1 + actualL2 * actualL2 - d * d) / (2 * actualL1 * actualL2);
+  const beta = Math.acos(Math.max(-1, Math.min(1, cosBeta)));
+  const geomKnee = Math.PI - beta;
+  const calibratedKnee = geomKnee + (th2_0 - th1_0);
+  const kneeAngle = Math.max(0, calibratedKnee * R2D);
+  const cosAlpha = (actualL1 * actualL1 + d * d - actualL2 * actualL2) / (2 * actualL1 * d);
+  const alpha = Math.acos(Math.max(-1, Math.min(1, cosAlpha)));
+  const targetPitch = Math.atan2(D[2], -D[1]);
+  const thighPitch = (targetPitch + alpha - th1_0) * R2D;
+  const swingAngle = thighPitch;
+  const targetRoll = Math.atan2(D[0], -D[1]) * R2D;
+  const abdAngle = isLeft ? targetRoll : -targetRoll;
+  const footPitch = swingAngle - kneeAngle;
+  return {
+    kneeAngle: Number(kneeAngle.toFixed(2)),
+    swingAngle: Number(swingAngle.toFixed(2)),
+    abdAngle: Number(abdAngle.toFixed(2)),
+    footPitch: Number(footPitch.toFixed(2))
+  };
+}
+function findPlantedWindows(clip, poses, ctx, floorY2, contactThreshold = 0.03) {
+  const FPS2 = 30;
+  const dur = clip.duration;
+  const I = ctx.idx;
+  const res = { left: null, right: null };
+  for (const [side, key] of [
+    ["Left", "left"],
+    ["Right", "right"]
+  ]) {
+    const ti = I[side + "ToeBase"];
+    let inContact = false;
+    let startT = 0;
+    const wins = [];
+    for (let f = 0; f < poses.length; f++) {
+      const t = Math.min(f / FPS2, dur);
+      const y = poses[f].pos[ti][1];
+      const isPlanted = y - floorY2 < contactThreshold;
+      if (isPlanted && !inContact) {
+        inContact = true;
+        startT = t;
+      } else if (!isPlanted && inContact) {
+        inContact = false;
+        if (t - startT >= 0.08) {
+          wins.push([Number(startT.toFixed(2)), Number(t.toFixed(2))]);
+        }
+      }
+    }
+    if (inContact && dur - startT >= 0.08) {
+      wins.push([Number(startT.toFixed(2)), Number(dur.toFixed(2))]);
+    }
+    if (wins.length > 0) res[key] = wins[0];
+  }
+  return res;
+}
+function applyFootIK(rig, ctx, clip, options = {}) {
+  const FPS2 = 30;
+  const dur = clip.duration;
+  const frames = Math.ceil(dur * FPS2 - 1e-9);
+  const blendWindow = options.blendWindow != null ? options.blendWindow : 0.04;
+  const I = ctx.idx;
+  const restPos = restPositions(ctx);
+  const floorY2 = Math.min(restPos[I.LeftToeBase][1], restPos[I.RightToeBase][1]);
+  const poses = [];
+  for (let f = 0; f <= frames; f++) {
+    const t = Math.min(f / FPS2, dur);
+    poses.push(evalPose(rig, ctx, clip, t));
+  }
+  const detected = findPlantedWindows(clip, poses, ctx, floorY2);
+  const plantedL = clip.windows?.planted_L || (options.autoPlanted ? detected.left : null);
+  const plantedR = clip.windows?.planted_R || (options.autoPlanted ? detected.right : null);
+  if (!plantedL && !plantedR) {
+    return JSON.parse(JSON.stringify(clip));
+  }
+  const leftHipIdx = I.LeftUpLeg;
+  const leftKneeIdx = I.LeftLeg;
+  const leftFootIdx = I.LeftFoot;
+  vlen(ctx.offsets[leftKneeIdx]);
+  vlen(ctx.offsets[leftFootIdx]);
+  const rightHipIdx = I.RightUpLeg;
+  const rightKneeIdx = I.RightLeg;
+  const rightFootIdx = I.RightFoot;
+  vlen(ctx.offsets[rightKneeIdx]);
+  vlen(ctx.offsets[rightFootIdx]);
+  const channels2 = JSON.parse(JSON.stringify(clip.channels || {}));
+  const processLeg = (side, plantedWin, hipIdx, kneeIdx, footIdx) => {
+    if (!plantedWin) return;
+    const isLeft = side === "Left";
+    const prefix = isLeft ? "legL" : "legR";
+    const kneeKey = isLeft ? "kneeL" : "kneeR";
+    const footKey = isLeft ? "footL_pitch" : "footR_pitch";
+    const swingKey = `${prefix}_swing`;
+    const offset1 = ctx.offsets[kneeIdx];
+    const offset2 = ctx.offsets[footIdx];
+    const l1 = vlen(offset1);
+    const l2 = vlen(offset2);
+    const [t0, t1] = plantedWin;
+    const startFrame = Math.max(0, Math.floor(t0 * FPS2));
+    const plantAnklePos = poses[startFrame].pos[footIdx].slice();
+    const toeIdx = I[side + "ToeBase"];
+    const currentToeY = poses[startFrame].pos[toeIdx][1];
+    if (currentToeY < floorY2) {
+      plantAnklePos[1] += floorY2 - currentToeY;
+    }
+    const abdKey = `${prefix}_abd`;
+    const swingKeys = channels2[swingKey] ? [...channels2[swingKey]] : [[0, 0]];
+    const abdKeys = channels2[abdKey] ? [...channels2[abdKey]] : [[0, 0]];
+    const kneeKeys = channels2[kneeKey] ? [...channels2[kneeKey]] : [[0, 0]];
+    const footKeys = channels2[footKey] ? [...channels2[footKey]] : [[0, 0]];
+    const newSwingKeys = [];
+    const newAbdKeys = [];
+    const newKneeKeys = [];
+    const newFootKeys = [];
+    for (let f = 0; f <= frames; f++) {
+      const t = Math.min(f / FPS2, dur);
+      const inContact = t >= t0 && t <= t1;
+      const inBlendOut = t > t1 && t <= t1 + blendWindow && blendWindow > 0;
+      if (inContact || inBlendOut) {
+        const currentHipPos = poses[f].pos[hipIdx];
+        const hipsRot = poses[f].delta[0];
+        const D_world = vsub(plantAnklePos, currentHipPos);
+        const D_local = qrot(qinv(hipsRot), D_world);
+        const ik = solveTwoBoneLegIK({
+          hipPos: [0, 0, 0],
+          targetFootPos: D_local,
+          l1,
+          l2,
+          offset1,
+          offset2,
+          isLeft
+        });
+        const fwd = qrot(hipsRot, [0, 0, 1]);
+        const hipsPitch = Math.atan2(fwd[1], fwd[2]) * R2D;
+        const flatFootPitch = Number((ik.footPitch + hipsPitch).toFixed(2));
+        let w = 1;
+        if (inBlendOut) {
+          w = (t1 + blendWindow - t) / blendWindow;
+        }
+        const origSwing = sampleKeys(swingKeys, t);
+        const origAbd = sampleKeys(abdKeys, t);
+        const origKnee = sampleKeys(kneeKeys, t);
+        const origFoot = sampleKeys(footKeys, t);
+        const blendedSwing = Number((origSwing * (1 - w) + ik.swingAngle * w).toFixed(2));
+        const blendedAbd = Number((origAbd * (1 - w) + ik.abdAngle * w).toFixed(2));
+        const blendedKnee = Number((origKnee * (1 - w) + ik.kneeAngle * w).toFixed(2));
+        const blendedFoot = Number((origFoot * (1 - w) + flatFootPitch * w).toFixed(2));
+        newSwingKeys.push([Number(t.toFixed(4)), blendedSwing, "linear"]);
+        newAbdKeys.push([Number(t.toFixed(4)), blendedAbd, "linear"]);
+        newKneeKeys.push([Number(t.toFixed(4)), blendedKnee, "linear"]);
+        newFootKeys.push([Number(t.toFixed(4)), blendedFoot, "linear"]);
+      } else {
+        newSwingKeys.push([Number(t.toFixed(4)), sampleKeys(swingKeys, t), "linear"]);
+        newAbdKeys.push([Number(t.toFixed(4)), sampleKeys(abdKeys, t), "linear"]);
+        newKneeKeys.push([Number(t.toFixed(4)), sampleKeys(kneeKeys, t), "linear"]);
+        newFootKeys.push([Number(t.toFixed(4)), sampleKeys(footKeys, t), "linear"]);
+      }
+    }
+    channels2[swingKey] = newSwingKeys;
+    channels2[abdKey] = newAbdKeys;
+    channels2[kneeKey] = newKneeKeys;
+    channels2[footKey] = newFootKeys;
+  };
+  processLeg("Left", plantedL, leftHipIdx, leftKneeIdx, leftFootIdx);
+  processLeg("Right", plantedR, rightHipIdx, rightKneeIdx, rightFootIdx);
+  const outClip = {
+    ...JSON.parse(JSON.stringify(clip)),
+    channels: channels2
+  };
+  outClip.windows = outClip.windows || {};
+  if (plantedL && !outClip.windows.planted_L) outClip.windows.planted_L = plantedL;
+  if (plantedR && !outClip.windows.planted_R) outClip.windows.planted_R = plantedR;
+  return outClip;
+}
+const SEGMENT_WEIGHTS = {
+  Head: 0.08,
+  Spine: 0.15,
+  Spine1: 0.15,
+  Spine2: 0.15,
+  Hips: 0.15,
+  LeftArm: 0.025,
+  LeftForeArm: 0.025,
+  RightArm: 0.025,
+  RightForeArm: 0.025,
+  LeftUpLeg: 0.055,
+  LeftLeg: 0.055,
+  RightUpLeg: 0.055,
+  RightLeg: 0.055
+};
+function computeCenterOfMass(pose, ctx) {
+  const I = ctx.idx;
+  let totalWeight = 0;
+  let cx = 0, cy = 0, cz = 0;
+  for (const [bone, weight] of Object.entries(SEGMENT_WEIGHTS)) {
+    const idx = I[bone];
+    if (idx != null && pose.pos[idx]) {
+      const p = pose.pos[idx];
+      cx += p[0] * weight;
+      cy += p[1] * weight;
+      cz += p[2] * weight;
+      totalWeight += weight;
+    }
+  }
+  if (totalWeight < 1e-4) {
+    const hips = pose.pos[I.Hips] || [0, 0.9, 0];
+    return hips.slice();
+  }
+  return [cx / totalWeight, cy / totalWeight, cz / totalWeight];
+}
+function isPointInPolygon2D(pt, poly, margin = 0.03) {
+  if (!poly || poly.length < 2) {
+    if (poly && poly.length === 1) {
+      const d = Math.hypot(pt[0] - poly[0][0], pt[1] - poly[0][1]);
+      return { inside: d <= margin, distance: Math.max(0, d - margin) };
+    }
+    return { inside: false, distance: 0 };
+  }
+  const x = pt[0];
+  const z = pt[1];
+  let inside = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const xi = poly[i][0], zi = poly[i][1];
+    const xj = poly[j][0], zj = poly[j][1];
+    const intersect = zi > z !== zj > z && x < (xj - xi) * (z - zi) / (zj - zi + 1e-9) + xi;
+    if (intersect) inside = !inside;
+  }
+  let minDist = Infinity;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const x1 = poly[i][0], z1 = poly[i][1];
+    const x2 = poly[j][0], z2 = poly[j][1];
+    const dx = x2 - x1;
+    const dz = z2 - z1;
+    const lenSq = dx * dx + dz * dz;
+    let dist = 0;
+    if (lenSq < 1e-8) {
+      dist = Math.hypot(x - x1, z - z1);
+    } else {
+      const t = Math.max(0, Math.min(1, ((x - x1) * dx + (z - z1) * dz) / lenSq));
+      dist = Math.hypot(x - (x1 + t * dx), z - (z1 + t * dz));
+    }
+    if (dist < minDist) minDist = dist;
+  }
+  if (inside) {
+    return { inside: true, distance: 0 };
+  }
+  const effectiveDist = Math.max(0, minDist - margin);
+  return { inside: effectiveDist <= 1e-5, distance: effectiveDist };
+}
+function check$5({ ctx, limits, clip, poses, floorY: floorY2, tAt, FPS: FPS2 = 30 }) {
+  const vm = clip.validate || {};
+  const isExplicit = vm.com_balance === true || vm.balance === true;
+  if (!isExplicit) {
+    return { lines: [], issues: [] };
+  }
+  const I = ctx.idx;
+  const lines = [];
+  const issues = [];
+  const contactThresh = limits.floor?.contact_height_m || 0.03;
+  const maxInstabilityLimit = 0.08;
+  let maxInstability = 0;
+  let maxInstabilityT = 0;
+  let totalFramesChecked = 0;
+  for (let f = 0; f < poses.length; f++) {
+    const t = tAt(f);
+    const pose = poses[f];
+    const leftToeY = pose.pos[I.LeftToeBase] ? pose.pos[I.LeftToeBase][1] : floorY2;
+    const rightToeY = pose.pos[I.RightToeBase] ? pose.pos[I.RightToeBase][1] : floorY2;
+    const plantedL = isFootPlanted(clip, t, "Left", leftToeY, floorY2, contactThresh);
+    const plantedR = isFootPlanted(clip, t, "Right", rightToeY, floorY2, contactThresh);
+    if (!plantedL && !plantedR) continue;
+    const rootPos = pose.root || [0, 0, 0];
+    const prevPose = f > 0 ? poses[f - 1] : pose;
+    const prevRoot = prevPose.root || [0, 0, 0];
+    const horizSpeed = Math.hypot(rootPos[0] - prevRoot[0], rootPos[2] - prevRoot[2]) * FPS2;
+    if (horizSpeed > 0.8) continue;
+    const poly = [];
+    if (plantedL) {
+      const ank = pose.pos[I.LeftFoot];
+      const toe = pose.pos[I.LeftToeBase];
+      if (ank) poly.push([ank[0], ank[2]]);
+      if (toe) poly.push([toe[0], toe[2]]);
+    }
+    if (plantedR) {
+      const toe = pose.pos[I.RightToeBase];
+      const ank = pose.pos[I.RightFoot];
+      if (toe) poly.push([toe[0], toe[2]]);
+      if (ank) poly.push([ank[0], ank[2]]);
+    }
+    if (poly.length < 2) continue;
+    totalFramesChecked++;
+    const com = computeCenterOfMass(pose, ctx);
+    const com2D = [com[0], com[2]];
+    const evalPoly = isPointInPolygon2D(com2D, poly, 0.04);
+    if (!evalPoly.inside && evalPoly.distance > maxInstability) {
+      maxInstability = evalPoly.distance;
+      maxInstabilityT = t;
+    }
+  }
+  const isStable = maxInstability <= maxInstabilityLimit;
+  if (totalFramesChecked === 0) {
+    lines.push([
+      "PASS",
+      "keseimbangan CoM: tidak ada frame tumpuan statis (fase melayang/dinamis)"
+    ]);
+  } else if (isStable) {
+    lines.push([
+      "PASS",
+      `keseimbangan CoM: proyeksi pusat massa stabil di dalam batas tumpuan (${(maxInstability * 100).toFixed(1)} cm deviasi maks, batas ${(maxInstabilityLimit * 100).toFixed(0)} cm)`
+    ]);
+  } else {
+    lines.push([
+      "WARN",
+      `keseimbangan CoM: proyeksi pusat massa di luar batas tumpuan ${(maxInstability * 100).toFixed(
+        1
+      )} cm @t=${maxInstabilityT.toFixed(2)}s (batas ${(maxInstabilityLimit * 100).toFixed(0)} cm)`
+    ]);
+    issues.push(
+      createIssue({
+        level: "WARN",
+        rule: RULE_CODES.COM_BALANCE_UNSTABLE,
+        joint: "Hips",
+        t: maxInstabilityT,
+        value: Number(maxInstability.toFixed(3)),
+        limit: maxInstabilityLimit,
+        unit: "m",
+        hint: "Adjust lean, hip_roll, or foot placement to bring Center of Mass over the Base of Support polygon."
+      })
+    );
+  }
+  return { lines, issues };
+}
+const comBalanceRule = {
+  name: "com-balance",
   check: check$5
 };
 function check$4({ ctx, limits, clip, poses, floorY: floorY2, tAt, FPS: FPS2 = 30 }) {
@@ -1573,12 +1947,18 @@ function check$4({ ctx, limits, clip, poses, floorY: floorY2, tAt, FPS: FPS2 = 3
         minToeSide = s === "Left" ? "kiri" : "kanan";
         minToeT = t;
       }
-      const plantedWin = s === "Left" ? clip.windows?.planted_L : clip.windows?.planted_R;
-      const inC = plantedWin ? t >= plantedWin[0] && t <= plantedWin[1] : tp[1] - floorY2 < fl.contact_height_m;
+      const inC = isFootPlanted(clip, t, s, tp[1], floorY2, fl.contact_height_m);
       if (inC) contact++;
       if (f + 1 < poses.length && inC) {
         const nextT = tAt(f + 1);
-        const nextInC = plantedWin ? nextT >= plantedWin[0] && nextT <= plantedWin[1] : poses[f + 1].pos[ti][1] - floorY2 < fl.contact_height_m;
+        const nextInC = isFootPlanted(
+          clip,
+          nextT,
+          s,
+          poses[f + 1].pos[ti][1],
+          floorY2,
+          fl.contact_height_m
+        );
         if (nextInC) {
           const tn = poses[f + 1].pos[ti];
           const spd = Math.hypot(tn[0] - tp[0], tn[2] - tp[2]) * FPS2;
@@ -1952,6 +2332,7 @@ function createDefaultRuleRegistry() {
   registry.register(windowsRule);
   registry.register(versionRule);
   registry.register(channelRangesRule);
+  registry.register(comBalanceRule);
   return registry;
 }
 const defaultRuleRegistry = createDefaultRuleRegistry();
@@ -3717,6 +4098,103 @@ async function runCompose(args, options = {}) {
   }
   return 0;
 }
+function createRng(seed = 42) {
+  let s = Math.abs(seed | 0) || 42;
+  return () => {
+    s = (s * 1664525 + 1013904223) % 4294967296;
+    return s / 4294967296;
+  };
+}
+function applyMicroDynamics(clip, options = {}) {
+  const dur = clip.duration || 1;
+  const isLoop = !!clip.loop;
+  const FPS2 = options.fps || 30;
+  const frames = Math.ceil(dur * FPS2 - 1e-9);
+  const rng = createRng(options.seed ?? 42);
+  const enableBreathing = options.breathing !== false;
+  const enableWeightShift = options.weightShift !== false;
+  const enableSaccades = options.eyeSaccades !== false;
+  const rawBreathFreq = options.breathFreq ?? 0.23;
+  const breathFreq = isLoop ? Math.max(1, Math.round(rawBreathFreq * dur)) / dur : rawBreathFreq;
+  const breathAmp = options.breathAmp ?? 0.75;
+  const armBreathAmp = options.armBreathAmp ?? 0.4;
+  const rawSwayFreq = options.swayFreq ?? 0.08;
+  const swayFreq = isLoop ? Math.max(1, Math.round(rawSwayFreq * dur)) / dur : rawSwayFreq;
+  const swayAmp = options.swayAmp ?? 0.6;
+  const channels2 = JSON.parse(JSON.stringify(clip.channels || {}));
+  const expressions2 = JSON.parse(JSON.stringify(clip.expressions || {}));
+  const modulateChannel = (chName, computeDelta) => {
+    const existing = channels2[chName] ? [...channels2[chName]] : [[0, 0]];
+    const newKeys = [];
+    for (let f = 0; f <= frames; f++) {
+      const t = Math.min(f / FPS2, dur);
+      const baseVal = sampleKeys(existing, t);
+      const delta = computeDelta(t);
+      newKeys.push([Number(t.toFixed(4)), Number((baseVal + delta).toFixed(3)), "linear"]);
+    }
+    channels2[chName] = newKeys;
+  };
+  if (enableBreathing) {
+    modulateChannel("lean", (t) => {
+      return -breathAmp * Math.sin(2 * Math.PI * breathFreq * t);
+    });
+    modulateChannel("armL_elev", (t) => {
+      return armBreathAmp * Math.sin(2 * Math.PI * breathFreq * t);
+    });
+    modulateChannel("armR_elev", (t) => {
+      return armBreathAmp * Math.sin(2 * Math.PI * breathFreq * t);
+    });
+  }
+  if (enableWeightShift) {
+    modulateChannel("hip_roll", (t) => {
+      return swayAmp * Math.sin(2 * Math.PI * swayFreq * t);
+    });
+    modulateChannel("side_lean", (t) => {
+      return -swayAmp * 0.75 * Math.sin(2 * Math.PI * swayFreq * t);
+    });
+  }
+  if (enableSaccades) {
+    const saccadeInterval = 1.8;
+    const saccadeCount = Math.floor(dur / saccadeInterval);
+    if (saccadeCount > 0 || dur >= 1) {
+      const lookLeftKeys = expressions2.lookLeft ? [...expressions2.lookLeft] : [[0, 0]];
+      const lookRightKeys = expressions2.lookRight ? [...expressions2.lookRight] : [[0, 0]];
+      const newLookLeft = [];
+      const newLookRight = [];
+      let curT = 0.5 + rng() * 0.5;
+      const saccades = [];
+      while (curT < dur - 0.3) {
+        const dir = rng() > 0.5 ? "left" : "right";
+        const intensity = 0.2 + rng() * 0.35;
+        const sDur = 0.12 + rng() * 0.08;
+        saccades.push({ t0: curT, t1: curT + sDur, dir, intensity });
+        curT += 1.4 + rng() * 1.2;
+      }
+      for (let f = 0; f <= frames; f++) {
+        const t = Math.min(f / FPS2, dur);
+        let leftVal = sampleKeys(lookLeftKeys, t);
+        let rightVal = sampleKeys(lookRightKeys, t);
+        for (const s of saccades) {
+          if (t >= s.t0 && t <= s.t1) {
+            const u = (t - s.t0) / (s.t1 - s.t0);
+            const w = Math.sin(Math.PI * u) * s.intensity;
+            if (s.dir === "left") leftVal = Math.min(1, leftVal + w);
+            else rightVal = Math.min(1, rightVal + w);
+          }
+        }
+        newLookLeft.push([Number(t.toFixed(4)), Number(leftVal.toFixed(3)), "linear"]);
+        newLookRight.push([Number(t.toFixed(4)), Number(rightVal.toFixed(3)), "linear"]);
+      }
+      expressions2.lookLeft = newLookLeft;
+      expressions2.lookRight = newLookRight;
+    }
+  }
+  return {
+    ...JSON.parse(JSON.stringify(clip)),
+    channels: channels2,
+    expressions: expressions2
+  };
+}
 const SWAP_LR_CHANNELS = [
   ["legL_swing", "legR_swing"],
   ["legL_abd", "legR_abd"],
@@ -3872,13 +4350,20 @@ function closeLoop(clip) {
 async function runEdit(args, options = {}) {
   const operation = args[0];
   const target = args[1];
-  if (!operation || !["mirror", "retime", "scale-amplitude", "close-loop", "overlap"].includes(operation)) {
+  const validOps = [
+    "mirror",
+    "retime",
+    "scale-amplitude",
+    "close-loop",
+    "overlap",
+    "foot-ik",
+    "micro-dynamics"
+  ];
+  if (!operation || !validOps.includes(operation)) {
     console.error(
-      'Error: "clipkit edit" requires an operation: "mirror", "retime", "scale-amplitude", "close-loop", or "overlap".'
+      'Error: "clipkit edit" requires an operation: "mirror", "retime", "scale-amplitude", "close-loop", "overlap", "foot-ik", or "micro-dynamics".'
     );
-    console.error(
-      "Example: clipkit edit overlap slash.json --delay 0.03 --damping 12 --output slash_overlap.json"
-    );
+    console.error("Example: clipkit edit foot-ik walk.json --output walk_ik.json");
     return 2;
   }
   if (!target) {
@@ -3930,6 +4415,17 @@ async function runEdit(args, options = {}) {
       overshootScale,
       frequency
     });
+  } else if (operation === "foot-ik") {
+    const { motus: motus2 } = loadRigs();
+    const ctx = makeCtx(motus2);
+    const blendWindow = options["blend-window"] != null ? Number(options["blend-window"]) : void 0;
+    result = applyFootIK(motus2, ctx, clip, { blendWindow });
+  } else if (operation === "micro-dynamics") {
+    const breathing = options.breathing !== "false" && options["no-breathing"] !== true;
+    const weightShift = options.sway !== "false" && options["no-sway"] !== true;
+    const eyeSaccades = options.saccades !== "false" && options["no-saccades"] !== true;
+    const seed = options.seed != null ? Number(options.seed) : void 0;
+    result = applyMicroDynamics(clip, { breathing, weightShift, eyeSaccades, seed });
   }
   const jsonStr = formatDeterministicJson(result);
   if (options.output) {
@@ -5380,7 +5876,7 @@ Created immutable version v${versionNum} for '${clipName}':`);
   }
   return 0;
 }
-const CLI_VERSION = "1.5.0";
+const CLI_VERSION = "1.6.0";
 function parseArgs(rawArgs) {
   const args = [];
   const options = {};
@@ -5595,6 +6091,8 @@ Operations:
   scale-amplitude          Scale channel rotation/displacement amplitudes (--scale <f>)
   close-loop               Close animation loop by matching end to start
   overlap                  Apply hierarchical propagation delay and damped overshoot
+  foot-ik                  Apply two-bone analytic IK to eliminate foot sliding
+  micro-dynamics           Apply procedural idle micro-motion (breathing, sway, saccades)
 
 Options:
   --scale <factor>         Scaling factor for retime or scale-amplitude
@@ -5602,13 +6100,19 @@ Options:
   --delay <seconds>        Base propagation delay step per hierarchy level (default: 0.03)
   --damping <factor>       Damping decay coefficient for overshoot (default: 12)
   --overshoot <factor>     Overshoot amplitude factor (default: 0.08)
+  --blend-window <seconds> Transition blending window duration for Foot IK (default: 0.04)
+  --seed <number>          PRNG seed for procedural micro-dynamics (default: 42)
+  --no-breathing           Disable breathing oscillation in micro-dynamics
+  --no-sway                Disable postural weight shifting in micro-dynamics
+  --no-saccades            Disable anticipatory eye saccades in micro-dynamics
   --output <file>          Path to write the modified clip JSON
   --json                   Output modified clip JSON to stdout
   --force                  Overwrite existing output file
 
 Example:
   clipkit edit mirror slash.json --output slash_mirrored.json
-  clipkit edit retime jump.json --scale 1.2 --output jump_slow.json
+  clipkit edit foot-ik walk.json --output walk_ik.json
+  clipkit edit micro-dynamics idle.json --output idle_alive.json
   clipkit edit overlap slash.json --delay 0.03 --damping 12 --output slash_overlap.json
 
 `);

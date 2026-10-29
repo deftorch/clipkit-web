@@ -196,7 +196,8 @@ The former Milestone 1 (AI Vision & Contact Sheet) is merged into Milestone 2, b
 
 ## Milestone 7: Procedural Dynamics & Analytic Foot IK (ROADMAP Phase 6)
 
-- [ ] Implement two-bone analytic foot IK solver in `src/domain/rig/foot-ik-solver.js` to firmly plant foot transforms during contact intervals.
-- [ ] Share one definition of "planted" between the foot-slide rule and the IK solver (a domain helper reading `windows.planted_L`/`planted_R`); the foot-slide check must pass on clips with planted windows after IK.
-- [ ] Add procedural idle micro-dynamics (thoracic breathing oscillation, weight shift, anticipatory eye saccades).
-- [ ] Implement Center of Mass (CoM) floor polygon balance projection validator as a new rule module in the validation rule registry (Milestone 1).
+- [x] Implement two-bone analytic foot IK solver in `src/domain/rig/foot-ik-solver.js` to firmly plant foot transforms during contact intervals.
+- [x] Share one definition of "planted" between the foot-slide rule and the IK solver (a domain helper reading `windows.planted_L`/`planted_R`); the foot-slide check must pass on clips with planted windows after IK.
+- [x] Add procedural idle micro-dynamics (thoracic breathing oscillation, weight shift, anticipatory eye saccades).
+- [x] Implement Center of Mass (CoM) floor polygon balance projection validator as a new rule module in the validation rule registry (Milestone 1).
+

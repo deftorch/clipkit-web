@@ -15,6 +15,8 @@ import limitsData from '../../data/limits.json';
 import { compareClips } from '../../domain/animation/compare.js';
 import { composeClips } from '../../domain/animation/compose.js';
 import {
+  applyFootIK,
+  applyMicroDynamics,
   applyOverlap,
   closeLoop,
   mirrorClip,
@@ -93,6 +95,24 @@ export function renderVer(host) {
     applyEdit(overlapped, 'Applied automated overlap and kinetic chain follow-through');
   };
 
+  const btnFootIK = el('button', {
+    class: 'btn',
+    text: 'Foot IK (Pin Kontak)',
+  });
+  btnFootIK.onclick = () => {
+    const ikClip = applyFootIK(rigState.cur, rigState.ctx, c, { autoPlanted: true });
+    applyEdit(ikClip, 'Applied analytic two-bone Foot IK pinning');
+  };
+
+  const btnMicroDynamics = el('button', {
+    class: 'btn',
+    text: 'Micro-Dynamics (Napas & Sway)',
+  });
+  btnMicroDynamics.onclick = () => {
+    const aliveClip = applyMicroDynamics(c);
+    applyEdit(aliveClip, 'Applied procedural micro-dynamics');
+  };
+
   const editRow = el(
     'div',
     { class: 'btnrow' },
@@ -101,6 +121,8 @@ export function renderVer(host) {
     btnRetimeSlower,
     btnCloseLoop,
     btnOverlap,
+    btnFootIK,
+    btnMicroDynamics,
   );
 
   if (c.layers && c.layers.length > 0) {
