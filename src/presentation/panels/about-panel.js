@@ -46,10 +46,10 @@ export function renderAbout(host) {
   host.append(el('h3', { text: 'Batasan' }));
   const ul = el('ul', { class: 'note', style: 'padding-left:18px;margin:0' });
   for (const s of [
-    'Karakternya boneka garis dari 22 sendi, bukan mesh MotusMan. Cukup untuk menilai timing, tumpuan, kekakuan, dan lonjakan kecepatan; bobot dan gaya tetap perlu dilihat di Godot.',
+    'Karakternya boneka garis dari 55 tulang (22 badan + 30 jari + 2 mata + 1 rahang), bukan mesh MotusMan. Cukup untuk menilai timing, tumpuan, kekakuan, dan lonjakan kecepatan; bobot dan gaya tetap perlu dilihat di Godot.',
     'Posisi rest tiap sendi diturunkan dari data pose yang diekspor Godot, karena file FBX tidak ada di arsip. Hasilnya diverifikasi pada 3 klip contoh.',
     'Hasil build .res untuk gameplay tetap dibuat oleh Godot (clip_build.gd). Web dipakai untuk menulis, mengukur, dan menilai cepat.',
-    'Belum ada: IK, layer aditif, mirror, rig karakter kedua.',
+    'IK kaki, layer (override/aditif), dan mirror kini tersedia lewat CLI (clipkit edit, clipkit compose). Rig karakter yang didukung: Motus dan VRM 1.0.',
   ]) {
     ul.append(el('li', { text: s }));
   }

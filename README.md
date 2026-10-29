@@ -33,7 +33,7 @@ Large Language Models (LLMs) excel at generating structured text and code, but c
 
 1. **Token-Friendly Intermediate DSL**: A concise, JSON-based declarative format abstracting complex skeletal transforms into human-readable rotational channels, keyframe arrays, and gameplay windows.
 2. **Automated Linter with Structured Feedback**: A rules engine providing exact, actionable errors (`FAIL` and `WARN` with millisecond timestamps and joint names) so an AI can self-heal hallucinations (such as joint hyperextensions, angular snapping, and foot sliding).
-3. **Deterministic Forward Kinematics Sandbox**: Evaluates 22-joint skeletal poses at 30 FPS in milliseconds without needing GPU rendering, Blender, or external game engine runtimes.
+3. **Deterministic Forward Kinematics Sandbox**: Evaluates 55-bone skeletal poses (22 body joints, 30 finger bones, 2 eyes, 1 jaw) at 30 FPS in milliseconds without needing GPU rendering, Blender, or external game engine runtimes.
 4. **Binary Compiler to `.vrma`**: Compiles verified JSON clips into industry-standard binary glTF (`.vrma` / VRM Animation) containers ready for direct import into Godot, Unity, Blender, or Web avatars.
 5. **Inbound Ingestion & Inverse Solver**: Ingests raw `.vrma`, `.glb`, or `.bvh` motion capture, decompiles 3D quaternions back into high-level ClipKit channels, and applies easing-aware curve compression ($> 60\%$ keyframe reduction).
 
@@ -84,7 +84,7 @@ Comprehensive documentation guides are organized in the [`docs/`](docs/) directo
 - [Web UI & Walkthrough Guide](docs/web-ui.md): Interactive 3D viewport, real-time validation, editor with procedural overlap controls, and curve visualizer with UI screenshots.
 - [Validation Rules & Limits Matrix](docs/validation-rules.md): Detailed 8-rule registry, mathematical thresholds, style limits (`realistic`, `stylized`, `exaggerated`), and structured issue hints.
 - [Clean Architecture Guide](docs/architecture.md): Layer dependency rules, Port & Adapter interfaces, forward kinematics and inverse solver pipelines.
-- [Channels & Humanoid Rig Reference](docs/channels-and-rig.md): 55-bone humanoid catalog, 22 canonical joints, aim spherical coordinates, and axial sign conventions.
+- [Channels & Humanoid Rig Reference](docs/channels-and-rig.md): 55-bone humanoid catalog (22 canonical body joints plus fingers, eyes and jaw), aim spherical coordinates, and axial sign conventions.
 - [Programmatic Agent API Reference](docs/agent-api.md): Integration guide for `window.clipkit` and headless browser automation frameworks (Playwright, Puppeteer).
 - [Changelog](CHANGELOG.md): Complete release history from v1.0.0 to v1.5.0 following Keep a Changelog.
 - [Contributing Guidelines](CONTRIBUTING.md): Architectural rules, code organization, and pull request workflows.

@@ -13,7 +13,7 @@ export function buildVrmaGlb(rig, ctx, clip) {
     poses.push(evalPose(rig, ctx, clip, t));
   }
 
-  // 22 node humanoid + node ekspresi opsional
+  // Satu node per tulang animasi rig (Motus: 55 = 22 badan + 30 jari + 2 mata + 1 rahang) + node ekspresi opsional
   const exNames = Object.keys(clip.expressions || {}).filter((n) => VRM10_EXPRESSIONS.includes(n));
   const nodes = [];
   const humanBones = {};
@@ -84,7 +84,7 @@ export function buildVrmaGlb(rig, ctx, clip) {
     target: { node: 0, path: 'translation' },
   });
 
-  // 22 Humanoid rotations
+  // Rotasi tiap tulang humanoid pada rig
   for (let i = 0; i < ctx.n; i++) {
     const rot = new Float32Array(count * 4);
     for (let f = 0; f < count; f++) {

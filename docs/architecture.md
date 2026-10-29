@@ -96,7 +96,7 @@ JSON DSL Keyframes
   └─> Keyframe Sampler (evalKeyframe with Easing)
         └─> Semantic Channel Values (degrees, meters)
               └─> Rig Context & Forward Kinematics (FK pose evaluator)
-                    └─> 22-Joint Skeletal Transforms (World Matrices)
+                    └─> 55-Bone Skeletal Transforms (World Matrices)
                           ├─> Validation Rule Registry (Diagnostics)
                           ├─> 2D/3D Viewport Renderer (Display)
                           └─> VRMA Exporter (glTF Compilation)

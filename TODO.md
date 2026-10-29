@@ -25,7 +25,7 @@ This document tracks all immediate fixes, quality hardening tasks, and roadmap m
   - Reading a binary VRM 1.0 file.
   - Parsing GLB chunks with `parseGlb`.
   - Building rig with `buildRig` without exceptions.
-  - Generating valid rig metadata (22/22 bones present).
+  - Generating valid rig metadata (55/55 bones present).
 
 ### 0.4 Lock Numerical Precision (True Golden Pose Assertions)
 - [x] In `tests/golden-pose.test.js`, replace shallow length checks (`expect(p0.pos.length).toBe(...)`) with exact coordinate assertions against Godot reference values (`[x, y, z]` joint positions within $0.09\text{ mm}$ tolerance).

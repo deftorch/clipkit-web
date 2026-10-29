@@ -6,7 +6,7 @@ The **ClipKit Web Interface** is a browser-based 3D animation sandbox, linter, a
 
 ## 1. 3D Viewport & Clipbar
 
-The main 3D viewport renders 22-joint skeletal forward kinematics and high-polygon VRM meshes simultaneously using WebGL:
+The main 3D viewport renders 55-bone skeletal forward kinematics and high-polygon VRM meshes simultaneously using WebGL:
 
 ![ClipKit 3D Viewport](images/01_viewport_initial.png)
 

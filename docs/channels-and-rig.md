@@ -4,9 +4,9 @@ ClipKit maps human-interpretable rotational and translational degrees of freedom
 
 ---
 
-## 22 Canonical Joints Hierarchy
+## Body Joint Hierarchy (22 of 55 Bones)
 
-The core Forward Kinematics engine evaluates 22 key joints in a hierarchical kinematic chain:
+The Forward Kinematics engine evaluates all 55 animated bones. The 22 body joints below form the main kinematic chain; the remaining 33 bones (30 finger bones, 2 eyes, 1 jaw) hang off these joints and are driven by their own channels (see the finger, eye and jaw sections of the catalog):
 
 ```
 Hips (Root)
