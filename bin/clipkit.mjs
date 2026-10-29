@@ -2606,6 +2606,16 @@ const sideColor = (n, C2) => n.startsWith("Left") ? C2["--figL"] : n.startsWith(
 function floorY(it) {
   return it && it.res ? it.res.floorY : 0.03;
 }
+function hexToRgba(hex, alpha) {
+  if (!hex || !hex.startsWith("#")) return `rgba(200, 215, 225, ${alpha})`;
+  let c = hex.slice(1);
+  if (c.length === 3) c = c[0] + c[0] + c[1] + c[1] + c[2] + c[2];
+  const num = parseInt(c, 16);
+  const r = num >> 16 & 255;
+  const g = num >> 8 & 255;
+  const b = num & 255;
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
 function drawFigure(g, P, ctx, rig, alpha, thin, prjFn, C2, KF) {
   const pos = P.pos;
   const segs = [];
@@ -2619,13 +2629,68 @@ function drawFigure(g, P, ctx, rig, alpha, thin, prjFn, C2, KF) {
   segs.sort((s, t) => t.z - s.z);
   g.globalAlpha = alpha;
   g.lineCap = "round";
+  g.lineJoin = "round";
   for (const s of segs) {
     const n = ctx.names[s.i];
-    g.strokeStyle = sideColor(n, C2);
-    g.lineWidth = Math.max(2, (WIDTH[n] || 0.012) * rs * KF / s.z);
+    const baseCol = sideColor(n, C2);
+    const ax = s.a[0];
+    const ay = s.a[1];
+    const bx = s.b[0];
+    const by = s.b[1];
+    const dx = bx - ax;
+    const dy = by - ay;
+    const len = Math.hypot(dx, dy);
+    if (len < 5) {
+      g.strokeStyle = baseCol;
+      g.lineWidth = Math.max(2, (WIDTH[n] || 0.012) * rs * KF / s.z);
+      g.beginPath();
+      g.moveTo(ax, ay);
+      g.lineTo(bx, by);
+      g.stroke();
+      continue;
+    }
+    const ux = dx / len;
+    const uy = dy / len;
+    const nx = -uy;
+    const ny = ux;
+    const shoulderT = 0.18;
+    const mx = ax + dx * shoulderT;
+    const my = ay + dy * shoulderT;
+    const baseW = WIDTH[n] || 0.04;
+    const maxPixelW = Math.max(3, baseW * rs * KF * 0.45 / s.z);
+    const boneW = Math.min(len * 0.28, maxPixelW);
+    const q1x = mx + nx * boneW;
+    const q1y = my + ny * boneW;
+    const q2x = mx - nx * boneW;
+    const q2y = my - ny * boneW;
+    g.fillStyle = hexToRgba(baseCol, 0.42);
     g.beginPath();
-    g.moveTo(s.a[0], s.a[1]);
-    g.lineTo(s.b[0], s.b[1]);
+    g.moveTo(ax, ay);
+    g.lineTo(q1x, q1y);
+    g.lineTo(bx, by);
+    if (g.closePath) g.closePath();
+    g.fill();
+    g.fillStyle = hexToRgba(baseCol, 0.22);
+    g.beginPath();
+    g.moveTo(ax, ay);
+    g.lineTo(bx, by);
+    g.lineTo(q2x, q2y);
+    if (g.closePath) g.closePath();
+    g.fill();
+    g.strokeStyle = baseCol;
+    g.lineWidth = 1.4;
+    g.beginPath();
+    g.moveTo(ax, ay);
+    g.lineTo(q1x, q1y);
+    g.lineTo(bx, by);
+    g.lineTo(q2x, q2y);
+    if (g.closePath) g.closePath();
+    g.stroke();
+    g.strokeStyle = hexToRgba(baseCol, 0.65);
+    g.lineWidth = 1;
+    g.beginPath();
+    g.moveTo(ax, ay);
+    g.lineTo(bx, by);
     g.stroke();
   }
   const hd = P.delta[I.Head];
@@ -2636,16 +2701,16 @@ function drawFigure(g, P, ctx, rig, alpha, thin, prjFn, C2, KF) {
   if (pc) {
     const rr = Math.max(3, 0.1 * rs * KF / pc[2]);
     g.strokeStyle = C2["--fig"];
-    g.fillStyle = C2["--view"];
-    g.lineWidth = 2.2;
+    g.fillStyle = hexToRgba(C2["--fig"], 0.25);
+    g.lineWidth = 2;
     g.beginPath();
-    g.arc(pc[0], pc[1], rr, 0, 7);
+    g.arc(pc[0], pc[1], rr, 0, Math.PI * 2);
     g.fill();
     g.stroke();
     if (pn && true) {
       g.fillStyle = C2["--fig"];
       g.beginPath();
-      g.arc(pn[0], pn[1], Math.max(2, 0.014 * rs * KF / pn[2]), 0, 7);
+      g.arc(pn[0], pn[1], Math.max(2, 0.014 * rs * KF / pn[2]), 0, Math.PI * 2);
       g.fill();
     }
   }
@@ -2653,11 +2718,13 @@ function drawFigure(g, P, ctx, rig, alpha, thin, prjFn, C2, KF) {
     for (let i = 0; i < ctx.n; i++) {
       const p = prjFn(pos[i]);
       if (!p) continue;
-      g.fillStyle = C2["--view"];
-      g.strokeStyle = sideColor(ctx.names[i], C2);
-      g.lineWidth = 1.5;
+      const jCol = sideColor(ctx.names[i], C2);
+      const rad = Math.max(2.2, 0.018 * rs * KF / p[2]);
+      g.fillStyle = hexToRgba(jCol, 0.9);
+      g.strokeStyle = C2["--view"];
+      g.lineWidth = 1.2;
       g.beginPath();
-      g.arc(p[0], p[1], Math.max(1.8, 0.016 * rs * KF / p[2]), 0, 7);
+      g.arc(p[0], p[1], rad, 0, Math.PI * 2);
       g.fill();
       g.stroke();
     }
@@ -2718,6 +2785,9 @@ class SvgContext2D {
   }
   lineTo(x, y) {
     this.currentPath += `L ${Number(x.toFixed(2))} ${Number(y.toFixed(2))} `;
+  }
+  closePath() {
+    this.currentPath += "Z ";
   }
   arc(x, y, r, startAngle, endAngle) {
     const sweep = Math.abs(endAngle - startAngle);

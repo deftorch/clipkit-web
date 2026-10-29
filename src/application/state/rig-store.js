@@ -69,7 +69,31 @@ function notify() {
 }
 
 export function rigLabel(k) {
-  return k === 'motus' ? 'MotusMan (rig repo)' : 'VRM 1.0 · ' + (RIGS[k]?.name || k);
+  if (k === 'motus') return 'MotusMan (Tampilan Bone Saja)';
+  if (k === 'deft') return 'VRM 1.0 · Deft (deft.vrm)';
+  return 'VRM 1.0 · ' + (RIGS[k]?.name || k);
+}
+
+export async function loadDefaultModel(glCanvas, onLoaded) {
+  if (typeof window === 'undefined' || typeof fetch !== 'function') return null;
+  try {
+    const res = await fetch('/models/deft.vrm');
+    if (!res.ok) return null;
+    const buffer = await res.arrayBuffer();
+    if (!rigLoader) return null;
+    const { rig: nr, info } = rigLoader.parseRigFile(buffer, 'deft.vrm', baseMotusRig);
+    info.fileName = 'deft.vrm';
+    info.size = buffer.byteLength;
+    const key = 'deft';
+    RIGS[key] = nr;
+    RIGINFO[key] = info;
+    setMeshBuf(key, buffer);
+    setRig(key, onLoaded, glCanvas, onLoaded);
+    return { rig: nr, info };
+  } catch (err) {
+    console.warn('Preload /models/deft.vrm:', err);
+    return null;
+  }
 }
 
 export function setRig(k, onAfterSet, glCanvas, onMeshLoaded) {

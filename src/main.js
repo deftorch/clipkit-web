@@ -10,6 +10,7 @@ import {
 } from './application/state/clip-store.js';
 import { playbackState } from './application/state/playback-store.js';
 import {
+  loadDefaultModel,
   loadVrmFile,
   rigState,
   setMeshRenderer,
@@ -402,6 +403,12 @@ resize();
 syncPlayBtn($('#bPlay'));
 playbackController.start();
 requestAnimationFrame(renderFrame);
+
+// Load default 3D VRM model (deft.vrm) asynchronously on startup
+loadDefaultModel(glCanvas, (inf) => {
+  handleMeshLoaded(inf);
+  handleAfterRigChange();
+});
 
 // 8. Canonical Single Agent API & Backward-compatibility Globals
 const agentApi = createAgentApi({

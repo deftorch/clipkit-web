@@ -73,6 +73,10 @@ export class SvgContext2D {
     this.currentPath += `L ${Number(x.toFixed(2))} ${Number(y.toFixed(2))} `;
   }
 
+  closePath() {
+    this.currentPath += 'Z ';
+  }
+
   arc(x, y, r, startAngle, endAngle) {
     const sweep = Math.abs(endAngle - startAngle);
     if (sweep >= 2 * Math.PI - 0.05) {

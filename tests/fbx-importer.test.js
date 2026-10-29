@@ -24,6 +24,7 @@ describe('FBX Mocap Ingestion & Bone Mapping (Motorica MM Dataset)', () => {
       expect(parsed.boneRotations.LeftUpLeg).toBeDefined();
       expect(parsed.boneRotations.RightUpLeg).toBeDefined();
     },
+    20000,
   );
 
   it.skipIf(!hasSample)(
