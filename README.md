@@ -1,32 +1,54 @@
 # ClipKit Web
 
 > **AI-First 3D Animation Sandbox, Linter, & Compiler.**  
-> A declarative authoring and validation runtime designed to bridge **Large Language Models (LLMs)** with **3D character animation (VRM 1.0 & Godot)**.
+> A declarative authoring, validation, and ingestion runtime bridging **Large Language Models (LLMs)** with **3D character animation (VRM 1.0 & Godot)**.
+
+[![Version](https://img.shields.io/badge/version-1.5.0-blue.svg)](CHANGELOG.md)
+[![Tests](https://img.shields.io/badge/tests-150%20passing-brightgreen.svg)](tests/)
+[![Architecture](https://img.shields.io/badge/architecture-Clean%20Architecture-informational.svg)](CONTRIBUTING.md)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 ---
 
+![ClipKit 3D Viewport](docs/images/01_viewport_initial.png)
+
 ## Table of Contents
 - [Vision & Purpose](#vision--purpose)
+- [Key Features (v1.5.0)](#key-features-v150)
 - [The Agentic Generation Loop](#the-agentic-generation-loop)
-- [Why This Architecture Fits AI](#why-this-architecture-fits-ai)
-- [Animation DSL Specification](#animation-dsl-specification)
-- [Automated Validation Rules Matrix](#automated-validation-rules-matrix)
-- [System Requirements & Usage](#system-requirements--usage)
-- [Programmatic & Agent Integration](#programmatic--agent-integration)
+- [Documentation Index](#documentation-index)
+- [Quick Start](#quick-start)
+- [ClipKit Agent CLI](#clipkit-agent-cli)
+- [Programmatic Agent API](#programmatic-agent-api)
 - [Project Directory Structure](#project-directory-structure)
+- [Contributing & License](#contributing--license)
 
 ---
 
 ## Vision & Purpose
 
-Large Language Models (LLMs) excel at generating structured text and code, but **cannot directly output proprietary or binary 3D animation formats** (such as `.fbx`, `.blend`, or binary engine formats). Binary 3D assets are opaque to tokenization, heavyweight, and lack clear mathematical feedback loops necessary for autonomous self-correction.
+Large Language Models (LLMs) excel at generating structured text and code, but cannot directly output proprietary or opaque binary 3D animation formats (`.fbx`, `.blend`). Binary 3D assets are opaque to tokenization, heavyweight, and lack clear mathematical feedback loops necessary for autonomous self-correction.
 
 **ClipKit Web was built as an execution runtime, linter, and compiler specifically designed for AI agents:**
 
-1. **Token-Friendly Intermediate DSL**: A concise, JSON-based declarative format that abstracts complex skeletal transforms into human-readable rotational channels, keyframe arrays, and gameplay windows.
-2. **Automated Linter with Structured Feedback**: A rules engine that provides exact, actionable errors (`FAIL` and `WARN` with millisecond timestamps and joint names) so an AI can self-heal hallucinations (such as joint hyperextensions, angular snapping, and foot sliding).
-3. **Deterministic Forward Kinematics Sandbox**: Evaluates 22-joint skeletal poses at 30 FPS in milliseconds without needing GPU rendering, Blender, or game engine runtimes.
-4. **Binary Compiler to `.vrma`**: Compiles verified JSON clips into industry-standard binary glTF (`.vrma` / VRM Animation) files ready for direct import into Godot, Unity, Blender, or Web avatars.
+1. **Token-Friendly Intermediate DSL**: A concise, JSON-based declarative format abstracting complex skeletal transforms into human-readable rotational channels, keyframe arrays, and gameplay windows.
+2. **Automated Linter with Structured Feedback**: A rules engine providing exact, actionable errors (`FAIL` and `WARN` with millisecond timestamps and joint names) so an AI can self-heal hallucinations (such as joint hyperextensions, angular snapping, and foot sliding).
+3. **Deterministic Forward Kinematics Sandbox**: Evaluates 22-joint skeletal poses at 30 FPS in milliseconds without needing GPU rendering, Blender, or external game engine runtimes.
+4. **Binary Compiler to `.vrma`**: Compiles verified JSON clips into industry-standard binary glTF (`.vrma` / VRM Animation) containers ready for direct import into Godot, Unity, Blender, or Web avatars.
+5. **Inbound Ingestion & Inverse Solver**: Ingests raw `.vrma`, `.glb`, or `.bvh` motion capture, decompiles 3D quaternions back into high-level ClipKit channels, and applies easing-aware curve compression ($> 60\%$ keyframe reduction).
+
+---
+
+## Key Features (v1.5.0)
+
+- **Clean Architecture Core**: Strictly enforced layer separation (Domain, Application, Infrastructure, Presentation, Composition Roots) verified by automated architectural boundary tests.
+- **Rule Registry Linter**: Modular rule evaluators for angular speed, anatomical limits, floor penetration, foot sliding, root motion continuity, cyclic loops, and VRM 1.0 humanoid bone constraints.
+- **Agent CLI (`clipkit`)**: 12 headless commands for validation, check, schema diagnostics, export, import, layer composition, variant comparison, and deterministic editing.
+- **Automated Overlap Engine**: Hierarchical kinetic chain delay propagation (pelvis -> spine -> shoulders -> wrists) and decaying sinusoidal overshoot (`outElastic`).
+- **Mocap Ingestion & Inverse Solver**: Parse hierarchical ASCII BVH or binary VRMA/GLB files, filter sensor jitter with zero phase shift, and compress keyframes via easing Ramer-Douglas-Peucker (RDP).
+- **Headless Contact Sheet Renderer**: Generate annotated SVG contact sheets with COM balance projection, foot contact indicators, and JSON telemetry sidecars.
+- **Modular Layer Composition**: Combine partial animations with `override` and `additive` modes using channel glob patterns and time offsets.
+- **Variant Branching**: Track immutable versions with `manifest.json` and compare kinematics across variants.
 
 ---
 
@@ -53,141 +75,104 @@ sequenceDiagram
 
 ---
 
-## Why This Architecture Fits AI
+## Documentation Index
 
-### 1. Motion Representations that LLMs Can Reason About
-Instead of forcing an AI to calculate thousands of raw transform matrices, ClipKit exposes semantic, high-level channels:
-- **Anatomical Rotation Channels**: `lean`, `twist`, `head_pitch`, `armR_elev`, `armR_azim`, `legL_swing`, `kneeL`, etc.
-- **Eased Keyframes**: `[time_seconds, value_degrees_or_meters, "inOutSine" | "outQuad" | "linear"]`.
-- **Directional Root Motion**: Explicit movement vectors `[x, y, z]`, distances, and translation intervals.
-- **Combat Mechanics Windows**: `hitbox`, `cancel`, `parry`, and `inv`.
+Detailed documentation guides are available in the [`docs/`](docs/) directory:
 
-### 2. Structured Error Messages as Self-Correction Prompts
-When an LLM produces unnatural or physically impossible movements, the validator returns precise compiler errors:
-```text
-[FAIL] angular velocity RightForeArm max 1420.5°/s at t=0.33s exceeds limit 1200.0°/s
-[WARN] foot sliding LeftToeBase detected 0.18 m while planted at t=0.40s..0.60s
-[FAIL] knee LeftLeg bent backwards (angle -12.4° at t=0.20s), anatomy forbids hyperextension
-```
-These messages serve as deterministic feedback prompts for the next agent iteration, directing the AI to the exact channel, parameter, and timestamp to fix.
-
-### 3. Direct Compilation to Industry Standards
-Once the AI resolves all `FAIL` issues, ClipKit serializes the channel data into a compliant binary glTF container with the `VRMC_vrm_animation` extension. The result is a production-ready game asset, not an abstract mockup.
+- [CLI Reference Guide](docs/cli.md): Complete command-line manual (`validate`, `check`, `export`, `import`, `compose`, `compare`, `edit`, `poses`).
+- [Animation DSL Specification](docs/dsl-specification.md): Schema reference, channels, easing curves, gameplay windows, and layer composition.
+- [Web UI & Features Guide](docs/web-ui.md): Interactive 3D viewport, real-time validation, editor with procedural overlap controls, and curve visualizer.
+- [Changelog](CHANGELOG.md): Complete release history from v1.0.0 to v1.5.0 following Keep a Changelog.
+- [Contributing Guidelines](CONTRIBUTING.md): Architectural rules, code organization, and pull request workflows.
+- [Agent Skill Guide](skills/clipkit/SKILL.md): Agent prompt guide, workflow principles, and reference sheets.
 
 ---
 
-## Animation DSL Specification
-
-The AI produces a JSON object following this schema:
-
-```json
-{
-  "name": "slash_horizontal",
-  "format_version": 1,
-  "version": 1,
-  "changelog": [
-    { "v": 1, "catatan": "Initial fast sword slash draft." }
-  ],
-  "duration": 0.8,
-  "loop": false,
-  "channels": {
-    "lean": [[0, 0], [0.3, 15, "inOutSine"], [0.8, 0, "outQuad"]],
-    "twist": [[0, -20], [0.35, 30, "outQuad"], [0.8, 0, "inOutSine"]],
-    "armR_elev": [[0, -70], [0.35, 45, "outQuad"], [0.8, -70, "inOutSine"]],
-    "armR_azim": [[0, -20], [0.35, 80, "outQuad"], [0.8, -20, "inOutSine"]]
-  },
-  "windows": {
-    "hitbox": [0.3, 0.45],
-    "cancel": [0.55, 0.8]
-  },
-  "events": [
-    { "t": 0.3, "type": "sfx", "id": "slash_heavy" }
-  ],
-  "claims": {
-    "duration": 0.8,
-    "tolerance": 0.05
-  },
-  "validate": {
-    "foot_slide": true
-  }
-}
-```
-
-### Parameter Reference
-- `duration`: Total duration in seconds (0 to 30s).
-- `channels`: Dictionary of named channels mapped to sorted keyframes: `[t, value, easing?]`.
-- `windows`: Active time intervals `[start_t, end_t]` for gameplay states.
-- `events`: Discrete trigger markers at specific times `t` (e.g. audio triggers, VFX spawns).
-- `move`: Directional root motion segments (`dir: [x,y,z]`, `distance`, `t0`, `t1`, `ease`).
-
----
-
-## Automated Validation Rules Matrix
-
-ClipKit automatically tests AI-generated clips against quality and physics heuristics:
-
-| Category | Metric Tested | FAIL / WARN Condition |
-|---|---|---|
-| **Angular Velocity** | Inter-frame rotation rate (°/s) | Exceeds stylistic threshold (*stylized* vs *realistic*) |
-| **Angular Acceleration** | Rotation acceleration spikes | Indicates unnatural snapping or popping |
-| **Floor & Foot Contact** | Planted foot and toe joint heights | Joints penetration into floor or sliding while planted |
-| **Anatomical Limits** | Natural human range of motion | Hyperextension of knees/elbows or extreme neck twisting |
-| **Loop Continuity** | Start vs end frame pose difference | Cyclic animations (*walk*, *run*, *idle*) not blending seamlessly |
-| **Root Motion** | Translational velocity vectors | Discontinuous displacement jumping across frames |
-| **Gameplay Windows** | Action interval ordering | Overlapping or out-of-bounds combat windows |
-| **VRM 1.0 Compliance** | Standard T-Pose & Humanoid bones | Missing bones, reversed forward vectors, or invalid hierarchy |
-
----
-
-## System Requirements & Usage
+## Quick Start
 
 ### Prerequisites
-- **Node.js**: Version `>= 18` or **Bun** runtime (`>= 1.0`).
-- **Modern Browser**: Google Chrome, Edge, Firefox, or Safari (with WebGL support).
+- **Node.js**: Version `>= 18.0.0` (or **Bun** `>= 1.0`).
+- **Modern Browser**: Chrome, Edge, Firefox, or Safari with WebGL.
 
-### Commands
+### Installation & Scripts
 ```bash
-# 1. Install dependencies
+# 1. Clone the repository and install dependencies
+git clone https://github.com/deftorch/clipkit-web.git
+cd clipkit-web
 npm install
 
 # 2. Run local development sandbox
 npm run dev
 # Open http://localhost:5173
 
-# 3. Run unit tests (for CI/CD or automated AI integration)
+# 3. Run automated test suite (24 suites, 150 tests)
 npm test
 
-# 4. Build standalone single-file distribution
+# 4. Check code quality & formatting with Biome
+npm run check
+
+# 5. Build standalone single-file distribution and CLI
 npm run build
-# Produces dist/index.html (runs offline without any external assets)
+# Produces dist/index.html (zero external dependencies) and bin/clipkit.mjs
+
+# 6. Build agent skill package
+npm run build:skill
+# Produces skills/clipkit.skill
 ```
 
 ---
 
-## Programmatic & Agent Integration
+## ClipKit Agent CLI
 
-> **Note**: the `window` globals below are the current integration point. They are planned to be replaced by one documented agent API and a headless, non-interactive CLI (`clipkit check`, `sheet`, `export`; see `ROADMAP.md`, Track C, Phases C0.9 and C1). The CLI does not exist yet.
+The bundled CLI is located at `bin/clipkit.mjs`:
 
-ClipKit exposes its core engine to the browser global scope (`window.ClipKit` and `window.__clipkit`), enabling headless automated browser agents (such as Playwright, Puppeteer, or IDE subagents) to run validation and export programmatically:
+```bash
+# Validate clip against kinematics and anatomical limits
+node bin/clipkit.mjs validate src/data/clips/slash.json --json
+
+# Run diagnostics and render annotated SVG contact sheet
+node bin/clipkit.mjs check src/data/clips/walk.json --sheet ./out --json
+
+# Export to binary VRM 1.0 Animation (.vrma)
+node bin/clipkit.mjs export src/data/clips/dodge.json --out dodge.vrma
+
+# Ingest and decompile external BVH or VRMA mocap
+node bin/clipkit.mjs import mocap.bvh --output walk.json --filter-jitter --report
+
+# Flatten multi-layer composition
+node bin/clipkit.mjs compose layered_clip.json --output flat_clip.json
+
+# Compare variants side-by-side
+node bin/clipkit.mjs compare clipA.json clipB.json --sheet ./diff --json
+
+# Perform deterministic edits (mirror, retime, scale-amplitude, close-loop)
+node bin/clipkit.mjs edit mirror attack_r.json --output attack_l.json
+```
+
+See [docs/cli.md](docs/cli.md) for complete options and output examples.
+
+---
+
+## Programmatic Agent API
+
+In browser and headless testing environments (Playwright, Puppeteer), ClipKit exposes a unified Agent API at `window.clipkit`:
 
 ```javascript
-// Programmatic validation and export workflow:
-import ClipKit from './src/domain/clipkit.js';
+// Example programmatic usage via window.clipkit:
+const clip = window.clipkit.curItem().clip;
 
-const clipJson = { /* ... AI-generated JSON clip ... */ };
+// 1. Validate clip against limits
+const res = window.clipkit.validate(clip, 'stylized');
+if (res.failCount === 0) {
+  // 2. Export to binary VRMA Blob
+  const vrmaBlob = window.clipkit.exportVrma(clip);
 
-// 1. Evaluate & validate clip
-const res = ClipKit.validate(rig, ctx, limits, clipJson, 'stylized');
-
-if (res.lines.some(line => line[0] === 'FAIL')) {
-  // Feed errors back to AI prompt for self-correction:
-  const failures = res.lines.filter(line => line[0] === 'FAIL');
-  console.error("AI must correct:", failures);
-} else {
-  // 2. Once valid, compile directly to binary .vrma
-  const vrmaBlob = ClipKit.buildVrmaGlb(rig, ctx, clipJson);
-  // Send blob to game engine or save to disk
+  // 3. Render headless contact sheet
+  const sheet = window.clipkit.renderContactSheet(clip, { frameCount: 8 });
 }
+
+// 4. Ingest external mocap programmatically
+const imported = window.clipkit.importBvh(bvhText, { epsilon: 0.8 });
 ```
 
 ---
@@ -196,21 +181,31 @@ if (res.lines.some(line => line[0] === 'FAIL')) {
 
 ```
 clipkit-web/
-├── index.html                   # Clean HTML entry shell
-├── package.json                 # Project dependencies (three, @pixiv/three-vrm, vite, vitest)
-├── vite.config.js               # Vite configuration with single-file bundling
+├── bin/
+│   └── clipkit.mjs              # Standalone bundled CLI executable
+├── docs/                        # Comprehensive documentation
+│   ├── cli.md                   # CLI command reference
+│   ├── dsl-specification.md     # Animation DSL schema specification
+│   ├── web-ui.md                # Interactive UI and feature guide
+│   └── images/                  # UI walkthrough screenshots
+├── skills/
+│   └── clipkit/                 # Autonomous agent skill package & evals
 ├── src/
-│   ├── domain/                  # Pure math, animation & validation engine (AI target API)
-│   │   ├── math/                # 3D vectors & Quaternions
-│   │   ├── animation/           # Easing curves, keyframes, & root motion evaluators
-│   │   ├── rig/                 # Rig context & Forward Kinematics pose evaluator
-│   │   ├── validation/          # Automated linter & rule evaluation engine
-│   │   └── clipkit.js           # Unified facade export
-│   ├── infrastructure/          # I/O adapters (Three.js 3D mesh renderer & GLB parser)
-│   ├── application/             # Application stores (playback, clip, camera, rig, theme)
-│   ├── presentation/            # Canvas viewports, timeline renderer, & UI panel components
-│   └── data/                    # Default MotusMan/VRM rigs & 14 reference JSON clips
-└── tests/                       # Unit tests (golden pose evaluator & VRM parser)
+│   ├── domain/                  # Pure math, kinematics, solver & validation rules
+│   │   ├── animation/           # Easing, inverse-solver, overlap, compose, compare
+│   │   ├── math/                # Vec3 & Quat mathematics
+│   │   ├── rig/                 # Forward Kinematics pose evaluation
+│   │   └── validation/          # Modular rule registry (8 rules)
+│   ├── application/             # Application stores, state, and ports
+│   ├── infrastructure/          # Adapters (Three.js renderer, VRMA/BVH I/O, storage)
+│   ├── presentation/            # 3D viewport, 2D canvas renderers, UI panels
+│   └── data/                    # Canonical rigs (MotusMan, VRM) & 14 reference clips
+└── tests/                       # 24 automated test suites (150 tests)
 ```
 
-Planned additions (not present yet; see `ROADMAP.md` Track C): `src/application/ports/`, `src/cli/`, `skills/clipkit/`, and `src/infrastructure/vrma/` (the `.vrma` exporter moves there from `src/domain/validation/vrm10/`).
+---
+
+## Contributing & License
+
+- Issues and Pull Requests are welcome. Review [CONTRIBUTING.md](CONTRIBUTING.md) for architectural guidelines and testing requirements.
+- Licensed under the [MIT License](LICENSE).
