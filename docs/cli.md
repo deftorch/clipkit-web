@@ -40,7 +40,7 @@ clipkit <command> [options]
 | `sheet <clip>` | Render headless SVG contact sheet with annotated kinematics | `--out <dir>`, `--frames <n>`, `--view <cam>` |
 | `compose <clip>` | Flatten multi-layer animation into a single standalone clip | `--output <file>` |
 | `compare <a> <b>` | Compare kinematics metrics and generate visual diff sheet | `--sheet <dir>`, `--json` |
-| `edit <op> <clip>` | Perform deterministic edits (`mirror`, `retime`, `scale-amplitude`, `close-loop`) | `--output <file>`, `--scale <n>` |
+| `edit <op> <clip>` | Perform deterministic edits (`mirror`, `retime`, `scale-amplitude`, `close-loop`, `foot-ik`, `micro-dynamics`) | `--output <file>`, `--scale <n>` |
 | `version <clip>` | Create an immutable version snapshot with `manifest.json` | `--parent <v>`, `--note <text>`, `--force` |
 | `poses <subcmd>` | Browse single-keyframe pose library (`list`, `show <name>`) | `--part <part>`, `--json` |
 | `channels` | List available rig channels, ranges, and assigned body parts | `--part <part>`, `--json` |
@@ -128,6 +128,12 @@ clipkit edit scale-amplitude jump.json --scale 0.75 --output jump_soft.json
 
 # Smooth start and end keyframes for seamless looping
 clipkit edit close-loop idle.json --output idle_loop.json
+
+# Analytic two-bone foot IK pinning to eliminate foot sliding
+clipkit edit foot-ik walk.json --output walk_pinned.json
+
+# Procedural idle micro-dynamics (breathing, subtle sway, eye saccades)
+clipkit edit micro-dynamics idle.json --output idle_alive.json
 ```
 
 ### 8. `version`

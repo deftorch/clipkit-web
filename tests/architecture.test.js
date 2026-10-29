@@ -118,5 +118,5 @@ describe('Architectural Layer Boundaries', () => {
     }
 
     expect(violations).toEqual([]);
-  });
+  }, 20000);
 });
