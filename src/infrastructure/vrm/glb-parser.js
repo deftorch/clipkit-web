@@ -1,7 +1,11 @@
 const CHUNK_JSON = 0x4e4f534a;
 const CHUNK_BIN = 0x004e4942;
 
-export function parseGlbChunks(buf) {
+export function parseGlbChunks(input) {
+  // Terima ArrayBuffer maupun typed array/Buffer Node (mis. hasil fs.readFileSync).
+  const buf = ArrayBuffer.isView(input)
+    ? input.buffer.slice(input.byteOffset, input.byteOffset + input.byteLength)
+    : input;
   const dv = new DataView(buf);
   if (buf.byteLength < 20 || dv.getUint32(0, true) !== 0x46546c67) {
     throw new Error('Bukan file GLB/VRM (header glTF tidak ditemukan).');

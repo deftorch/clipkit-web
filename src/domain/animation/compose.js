@@ -21,6 +21,9 @@ export function matchesAnyPattern(channelName, patterns) {
   return patterns.some((pat) => matchChannelPattern(channelName, pat));
 }
 
+/** `move` boleh berupa array segmen atau satu objek segmen (seperti pada dodge.json). */
+const asMoveList = (m) => (Array.isArray(m) ? [...m] : [m]);
+
 /**
  * Pure domain composition function: merges multiple layer clips onto a base clip.
  * Implements ROADMAP Phase C2.2 merge semantics.
@@ -47,7 +50,7 @@ export function composeClips(baseClip, layers = [], options = {}) {
     events: JSON.parse(JSON.stringify(baseClip.events || [])),
     claims: baseClip.claims ? JSON.parse(JSON.stringify(baseClip.claims)) : undefined,
     validate: baseClip.validate ? JSON.parse(JSON.stringify(baseClip.validate)) : undefined,
-    move: baseClip.move ? [...baseClip.move] : undefined,
+    move: baseClip.move ? asMoveList(baseClip.move) : undefined,
   };
 
   const channelOwners = new Map();
@@ -233,7 +236,7 @@ export function composeClips(baseClip, layers = [], options = {}) {
           `Multiple sources define root motion 'move'. Base motion retained; layer [${layerIdx}] move ignored.`,
         );
       } else {
-        composite.move = [...layerClip.move];
+        composite.move = asMoveList(layerClip.move);
       }
     }
   }
