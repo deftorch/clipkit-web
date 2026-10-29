@@ -18,11 +18,13 @@ import {
 } from './application/state/rig-store.js';
 import { C, onThemeChange, winColor } from './application/theme.js';
 import ClipKit from './domain/clipkit.js';
+import { importBvhToClip } from './infrastructure/mocap/bvh-parser.js';
 import { LocalStorageClipRepository } from './infrastructure/storage/local-storage-clip-repo.js';
 import VrmView from './infrastructure/three/three-mesh-renderer.js';
 import { parseGlb } from './infrastructure/vrm/glb-parser.js';
 import VrmRig, { buildRig } from './infrastructure/vrm/vrm-rig-builder.js';
 import { buildVrmaGlb } from './infrastructure/vrma/vrma-exporter.js';
+import { importVrmaToClip } from './infrastructure/vrma/vrma-importer.js';
 import { renderClipbar } from './presentation/components/clipbar.js';
 import { renderPipe } from './presentation/components/pipeline-status.js';
 import { initTransport, syncPlayBtn } from './presentation/components/transport.js';
@@ -192,6 +194,64 @@ function handleMeshLoaded(_inf) {
   dirtyAll();
 }
 
+export async function handleImportAnimationFile(file, options = {}) {
+  const name = file.name || 'imported';
+  const ext = name.split('.').pop().toLowerCase();
+  let clip;
+  let report;
+
+  try {
+    if (ext === 'vrma' || ext === 'glb') {
+      const buffer = await file.arrayBuffer();
+      const res = importVrmaToClip(buffer, {
+        name: name.replace(/\.(vrma|glb)$/i, ''),
+        ...options,
+      });
+      clip = res.clip;
+      report = res.telemetry;
+    } else if (ext === 'bvh') {
+      const text = await file.text();
+      const res = importBvhToClip(text, {
+        name: name.replace(/\.bvh$/i, ''),
+        ...options,
+      });
+      clip = res.clip;
+      report = res.telemetry;
+    } else if (ext === 'json') {
+      const text = await file.text();
+      clip = JSON.parse(text);
+    } else {
+      throw new Error(`Format file tidak didukung: .${ext}`);
+    }
+
+    let clipName = (clip.name || name.replace(/\.[^.]+$/, '')).replace(/[^\w-]/g, '_') || 'impor';
+    while (clipState.items[clipName]) {
+      clipName += '_2';
+    }
+    clip.name = clipName;
+
+    const it = addItem(clipName, null, fmtClip(clip), true);
+    it.orig = null;
+    it.importTelemetry = report;
+    rebuild(it, rigState.rig, rigState.ctx, clipState.style);
+    persist();
+    selectClip(clipName);
+    setTab('edit');
+    refreshAll();
+
+    return { clip, report, item: it };
+  } catch (err) {
+    console.error('Import error:', err);
+    const edstat = $('#edstat');
+    if (edstat) {
+      edstat.textContent = `Gagal mengimpor: ${err.message}`;
+      edstat.className = 'edstat bad';
+    }
+    setTab('edit');
+    throw err;
+  }
+}
+
 // 6. Viewport and Scrubber Controllers
 const viewportCtrl = initViewportController({
   vpEl: vp,
@@ -202,6 +262,7 @@ const viewportCtrl = initViewportController({
   onSetTab: setTab,
   onRefreshAll: refreshAll,
   onMeshLoaded: handleMeshLoaded,
+  onImportAnimation: handleImportAnimationFile,
 });
 
 initTimelineScrubber({
@@ -332,7 +393,7 @@ function renderFrame() {
 
 // Initial Presentation setup
 renderAbout($('#p-about'));
-renderEditor($('#p-edit'), refreshAll, setTab);
+renderEditor($('#p-edit'), refreshAll, setTab, handleImportAnimationFile);
 setTab('rig');
 viewportCtrl.syncToggles();
 fitCamera(curItem());
@@ -345,6 +406,8 @@ requestAnimationFrame(renderFrame);
 // 8. Canonical Single Agent API & Backward-compatibility Globals
 const agentApi = createAgentApi({
   onExportVrma: (it, rig, ctx) => buildVrmaGlb(rig, ctx, it.clip),
+  onImportVrma: (buffer, opts) => importVrmaToClip(buffer, opts),
+  onImportBvh: (text, opts) => importBvhToClip(text, opts),
   onRefreshAll: refreshAll,
   onRenderContactSheet: (rig, ctx, clip, opts) => renderContactSheet(rig, ctx, clip, opts),
 });

@@ -4,6 +4,7 @@ import { runCompare } from './commands/compare.js';
 import { runCompose } from './commands/compose.js';
 import { runEdit } from './commands/edit.js';
 import { runExport } from './commands/export.js';
+import { runImport } from './commands/import.js';
 import { runPoses } from './commands/poses.js';
 import { runRules } from './commands/rules.js';
 import { runSchema } from './commands/schema.js';
@@ -51,6 +52,7 @@ export function parseArgs(rawArgs) {
           'overshoot',
           'freq',
           'template',
+          'epsilon',
         ].includes(key)
       ) {
         options[camelCase(key)] = rawArgs[++i];
@@ -280,6 +282,25 @@ Example:
     return;
   }
 
+  if (command === 'import') {
+    console.log(`clipkit import <file> [options]
+
+Ingests and decompiles external .vrma, .glb, or .bvh animation into a sparse ClipKit JSON clip.
+
+Options:
+  --output <file>          Path to save decompiled ClipKit clip JSON
+  --epsilon <tolerance>    RDP curve simplification tolerance (default: 0.8)
+  --filter-jitter          Apply zero-phase smoothing filter to remove sensor noise
+  --report                 Print compression reduction and fidelity telemetry
+  --json                   Emit byte-identical JSON
+
+Example:
+  clipkit import mocap.bvh --output walk.json --report
+  clipkit import dance.vrma --output dance.json --epsilon 0.5
+`);
+    return;
+  }
+
   if (command === 'version') {
     console.log(`clipkit version <clip-file> [options]
 
@@ -313,6 +334,7 @@ Commands:
   channels                 List available channels, ranges, and body parts
   rules                    List validation rules and style threshold limits
   export <clip>            Export clip to binary .vrma (VRMC_vrm_animation-1.0)
+  import <file>            Ingest and decompile .vrma, .glb, or .bvh into ClipKit JSON
   sheet <clip>             Render headless annotated contact sheet (SVG + JSON sidecar)
   poses <subcommand>       Browse pose library (list | show <name>)
   compose <clip>           Flatten layer clip into a normal clip
@@ -359,6 +381,8 @@ export async function main(argv = process.argv.slice(2)) {
         return await runRules(commandArgs, options);
       case 'export':
         return await runExport(commandArgs, options);
+      case 'import':
+        return await runImport(commandArgs, options);
       case 'sheet':
         return await runSheet(commandArgs, options);
       case 'poses':

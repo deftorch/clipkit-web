@@ -11,6 +11,7 @@ export function initViewportController({
   onSetTab,
   onRefreshAll,
   onMeshLoaded,
+  onImportAnimation,
 }) {
   const ptrs = new Map();
   let pinch = 0;
@@ -114,7 +115,14 @@ export function initViewportController({
   vpEl.addEventListener('drop', (e) => {
     e.preventDefault();
     const f = e.dataTransfer.files[0];
-    if (f && /\.(vrm|glb)$/i.test(f.name)) {
+    if (!f) return;
+
+    if (/\.(vrma|bvh|json)$/i.test(f.name)) {
+      if (onImportAnimation) onImportAnimation(f);
+      return;
+    }
+
+    if (/\.vrm$/i.test(f.name)) {
       loadVrmFile(
         f,
         glCanvas,
@@ -125,6 +133,27 @@ export function initViewportController({
         () => {
           onSetTab('rig');
           onRefreshAll();
+        },
+        onMeshLoaded,
+      );
+      return;
+    }
+
+    if (/\.glb$/i.test(f.name)) {
+      loadVrmFile(
+        f,
+        glCanvas,
+        () => {
+          onSetTab('rig');
+          onRefreshAll();
+        },
+        () => {
+          if (onImportAnimation) {
+            onImportAnimation(f);
+          } else {
+            onSetTab('rig');
+            onRefreshAll();
+          }
         },
         onMeshLoaded,
       );

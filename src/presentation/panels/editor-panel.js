@@ -13,7 +13,7 @@ import { copyText, el } from '../dom/h.js';
 
 let edTimer = null;
 
-export function renderEditor(host, onRefreshAll, onSelectTab) {
+export function renderEditor(host, onRefreshAll, onSelectTab, onImportFile) {
   if (!host) return;
   host.textContent = '';
 
@@ -73,28 +73,32 @@ export function renderEditor(host, onRefreshAll, onSelectTab) {
 
   const fi = el('input', {
     type: 'file',
-    accept: '.json,application/json',
+    accept: '.json,application/json,.vrma,.glb,.bvh',
     id: 'fileIn',
     hidden: '',
   });
   fi.onchange = () => {
     const f = fi.files[0];
     if (!f) return;
-    const r = new FileReader();
-    r.onload = () => {
-      let n = f.name.replace(/\.json$/i, '').replace(/[^\w-]/g, '_') || 'impor';
-      while (clipState.items[n]) n += '_2';
-      const it = addItem(n, null, String(r.result), true);
-      it.orig = null;
-      persist();
-      selectClip(n);
-      if (onSelectTab) onSelectTab('edit');
-      if (onRefreshAll) onRefreshAll();
-    };
-    r.readAsText(f);
+    if (onImportFile) {
+      onImportFile(f);
+    } else {
+      const r = new FileReader();
+      r.onload = () => {
+        let n = f.name.replace(/\.json$/i, '').replace(/[^\w-]/g, '_') || 'impor';
+        while (clipState.items[n]) n += '_2';
+        const it = addItem(n, null, String(r.result), true);
+        it.orig = null;
+        persist();
+        selectClip(n);
+        if (onSelectTab) onSelectTab('edit');
+        if (onRefreshAll) onRefreshAll();
+      };
+      r.readAsText(f);
+    }
     fi.value = '';
   };
-  mk('Muat file .json', () => fi.click());
+  mk('Impor file (.json, .vrma, .bvh)', () => fi.click());
   row.append(fi);
 
   // Overlap & Kinetic Chain Controls
@@ -194,6 +198,14 @@ export function renderEditor(host, onRefreshAll, onSelectTab) {
   );
 
   ta.addEventListener('input', onInput);
+  ta.addEventListener('dragover', (e) => e.preventDefault());
+  ta.addEventListener('drop', (e) => {
+    e.preventDefault();
+    const f = e.dataTransfer.files[0];
+    if (f && onImportFile) {
+      onImportFile(f);
+    }
+  });
 
   function onInput() {
     const it = curItem();
@@ -228,9 +240,14 @@ export function syncEditor(force) {
 
   const st = document.getElementById('edstat');
   if (st) {
+    let teleStr = '';
+    if (it.importTelemetry) {
+      const { reductionRatio, avgAngularError } = it.importTelemetry;
+      teleStr = ` · Kompresi ${reductionRatio}% (error ${avgAngularError}°)`;
+    }
     st.className = 'edstat ' + (it.err ? 'bad' : 'ok');
     st.textContent = it.err
       ? it.err
-      : `OK · ${it.res ? it.res.frames + 1 : 0} frame · ${it.lines.filter((l) => l[0] === 'FAIL').length} FAIL · ${it.lines.filter((l) => l[0] === 'WARN').length} WARN`;
+      : `OK · ${it.res ? it.res.frames + 1 : 0} frame · ${it.lines.filter((l) => l[0] === 'FAIL').length} FAIL · ${it.lines.filter((l) => l[0] === 'WARN').length} WARN${teleStr}`;
   }
 }

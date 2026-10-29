@@ -177,20 +177,20 @@ The former Milestone 1 (AI Vision & Contact Sheet) is merged into Milestone 2, b
 ## Milestone 6: Inbound Ingestion & Inverse Solver (ROADMAP Phases 3, 4, 5)
 
 ### Phase 3: VRMA & Animated GLB Importer
-- [ ] Implement `src/infrastructure/vrma/vrma-importer.js` (beside the exporter moved in Milestone 1) to parse glTF animation tracks (`VRMC_vrm_animation`).
-- [ ] Convert source rest orientations (A-pose to T-pose) and scale root displacements to model leg length.
-- [ ] Implement drag-and-drop ingestion handler in UI for `.vrma` and `.glb` files.
+- [x] Implement `src/infrastructure/vrma/vrma-importer.js` (beside the exporter moved in Milestone 1) to parse glTF animation tracks (`VRMC_vrm_animation`).
+- [x] Convert source rest orientations (A-pose to T-pose) and scale root displacements to model leg length.
+- [x] Implement drag-and-drop ingestion handler in UI for `.vrma` and `.glb` files.
 
 ### Phase 4: Inverse Semantic Solver & Keyframe Compressor
-- [ ] Implement `src/domain/animation/inverse-solver.js` to derive semantic rotation channels (`lean`, `twist`, `armR_elev`, `armR_azim`, `kneeL`) from raw 3D bone orientation vectors.
-- [ ] Implement a zero-phase jitter filter on the semantic channels before reduction (per-part cutoff; do not smooth across `hold` easings or window boundaries) and report residual noise per channel.
-- [ ] Implement Ramer-Douglas-Peucker (RDP) curve simplification with easing curve fitting (`linear`, `inOutSine`, `outQuad`).
-- [ ] Output compression report displaying raw sample reduction count and angular loss metrics per joint.
+- [x] Implement `src/domain/animation/inverse-solver.js` to derive semantic rotation channels (`lean`, `twist`, `armR_elev`, `armR_azim`, `kneeL`) from raw 3D bone orientation vectors.
+- [x] Implement a zero-phase jitter filter on the semantic channels before reduction (per-part cutoff; do not smooth across `hold` easings or window boundaries) and report residual noise per channel.
+- [x] Implement Ramer-Douglas-Peucker (RDP) curve simplification with easing curve fitting (`linear`, `inOutSine`, `outQuad`).
+- [x] Output compression report displaying raw sample reduction count and angular loss metrics per joint.
 
 ### Phase 5: BVH Mocap Ingestion
-- [ ] Implement `src/infrastructure/mocap/bvh-parser.js` for hierarchical ASCII BVH files.
-- [ ] Add customizable bone alias dictionary (resolving Mixamo, Biped, and standard humanoid conventions).
-- [ ] Implement automated root motion extraction and cyclic loop boundary detection.
+- [x] Implement `src/infrastructure/mocap/bvh-parser.js` for hierarchical ASCII BVH files.
+- [x] Add customizable bone alias dictionary (resolving Mixamo, Biped, and standard humanoid conventions).
+- [x] Implement automated root motion extraction and cyclic loop boundary detection.
 
 ---
 

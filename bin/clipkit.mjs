@@ -4121,6 +4121,907 @@ async function runExport(args, options = {}) {
     return 2;
   }
 }
+const EASING_CANDIDATES = [
+  "linear",
+  "inOutSine",
+  "outQuad",
+  "inQuad",
+  "outSine",
+  "inSine",
+  "inOutQuad",
+  "outCubic",
+  "inCubic"
+];
+function solveAimAngles(dir, lateral = 1) {
+  const normDir = vnorm(dir);
+  const dx = normDir[0];
+  const dy = normDir[1];
+  const dz = normDir[2];
+  const elRad = Math.asin(Math.min(1, Math.max(-1, dy)));
+  const cosEl = Math.cos(elRad);
+  let azRad = 0;
+  if (Math.abs(cosEl) > 1e-5) {
+    azRad = Math.atan2(dz, dx * lateral);
+  } else {
+    azRad = 0;
+  }
+  return {
+    elev: Number((elRad * R2D).toFixed(2)),
+    azim: Number((azRad * R2D).toFixed(2))
+  };
+}
+function solveAimRoll(targetQuat, restDir, elevDeg, azimDeg, lateral = 1) {
+  const el = elevDeg * D2R;
+  const az = azimDeg * D2R;
+  const d = [lateral * Math.cos(el) * Math.cos(az), Math.sin(el), Math.cos(el) * Math.sin(az)];
+  const dc = vnorm(d);
+  const rc = vnorm(restDir);
+  const qSwing = qarc(rc, dc);
+  const qTwist = qmul(targetQuat, qinv(qSwing));
+  const dot = vdot([qTwist[0], qTwist[1], qTwist[2]], dc);
+  const rollRad = 2 * Math.atan2(dot, qTwist[3]);
+  let rollDeg = rollRad * R2D;
+  while (rollDeg > 180) rollDeg -= 360;
+  while (rollDeg < -180) rollDeg += 360;
+  return Number(rollDeg.toFixed(2));
+}
+function decomposeEulerXYZ(q) {
+  const [x, y, z, w] = qnorm(q);
+  const sinPitch = 2 * (w * x - y * z);
+  let pitchRad;
+  if (Math.abs(sinPitch) >= 1) {
+    pitchRad = Math.sign(sinPitch) * (Math.PI / 2);
+  } else {
+    pitchRad = Math.asin(sinPitch);
+  }
+  const sinYawCosPitch = 2 * (w * y + z * x);
+  const cosYawCosPitch = 1 - 2 * (x * x + y * y);
+  const yawRad = Math.atan2(sinYawCosPitch, cosYawCosPitch);
+  const sinRollCosPitch = 2 * (w * z + x * y);
+  const cosRollCosPitch = 1 - 2 * (x * x + z * z);
+  const rollRad = Math.atan2(sinRollCosPitch, cosRollCosPitch);
+  return {
+    pitch: Number((pitchRad * R2D).toFixed(2)),
+    yaw: Number((yawRad * R2D).toFixed(2)),
+    roll: Number((rollRad * R2D).toFixed(2))
+  };
+}
+function filterJitter(samples, options = {}) {
+  if (!samples || samples.length <= 3) return [...samples || []];
+  const windowSize = Math.max(3, (options.windowSize || 5) | 1);
+  const half = Math.floor(windowSize / 2);
+  const n = samples.length;
+  const kernel = [];
+  let weightSum = 0;
+  for (let i = -half; i <= half; i++) {
+    const w = Math.exp(-(i * i) / (2 * 1.5 * 1.5));
+    kernel.push(w);
+    weightSum += w;
+  }
+  for (let i = 0; i < kernel.length; i++) kernel[i] /= weightSum;
+  const fwd = new Array(n);
+  for (let i = 0; i < n; i++) {
+    let acc = 0;
+    for (let k = -half; k <= half; k++) {
+      const idx = Math.min(n - 1, Math.max(0, i + k));
+      acc += samples[idx] * kernel[k + half];
+    }
+    fwd[i] = acc;
+  }
+  const out = new Array(n);
+  for (let i = n - 1; i >= 0; i--) {
+    let acc = 0;
+    for (let k = -half; k <= half; k++) {
+      const idx = Math.min(n - 1, Math.max(0, i + k));
+      acc += fwd[idx] * kernel[k + half];
+    }
+    out[i] = Number(acc.toFixed(4));
+  }
+  if (options.preserveEndpoints !== false) {
+    out[0] = samples[0];
+    out[n - 1] = samples[n - 1];
+  }
+  return out;
+}
+function evaluateEasingSegment(points, i0, i1) {
+  const p0 = points[i0];
+  const p1 = points[i1];
+  const span = Math.max(1e-6, p1[0] - p0[0]);
+  const delta = p1[1] - p0[1];
+  let bestEasing = "linear";
+  let minMaxError = Infinity;
+  let bestMaxIndex = i0;
+  for (const easing of EASING_CANDIDATES) {
+    let maxErr = 0;
+    let maxIdx = i0;
+    for (let i = i0 + 1; i < i1; i++) {
+      const t = points[i][0];
+      const actualVal = points[i][1];
+      const u = (t - p0[0]) / span;
+      const interpVal = p0[1] + delta * ease(easing, u);
+      const err = Math.abs(actualVal - interpVal);
+      if (err > maxErr) {
+        maxErr = err;
+        maxIdx = i;
+      }
+    }
+    if (maxErr < minMaxError) {
+      minMaxError = maxErr;
+      bestEasing = easing;
+      bestMaxIndex = maxIdx;
+    }
+  }
+  return { bestEasing, maxError: minMaxError, maxIndex: bestMaxIndex };
+}
+function simplifyEasingCurve(points, epsilon = 0.8, i0 = 0, i1 = points.length - 1) {
+  if (i1 - i0 < 1) return [];
+  if (i1 - i0 === 1) {
+    return [
+      [points[i0][0], points[i0][1], "linear"],
+      [points[i1][0], points[i1][1], "linear"]
+    ];
+  }
+  const { bestEasing, maxError, maxIndex } = evaluateEasingSegment(points, i0, i1);
+  if (maxError <= epsilon) {
+    return [
+      [points[i0][0], points[i0][1], "linear"],
+      [points[i1][0], points[i1][1], bestEasing]
+    ];
+  }
+  const left = simplifyEasingCurve(points, epsilon, i0, maxIndex);
+  const right = simplifyEasingCurve(points, epsilon, maxIndex, i1);
+  return left.concat(right.slice(1));
+}
+function refineExtremum(points, i) {
+  if (i <= 0 || i >= points.length - 1) return [...points[i]];
+  const p1 = points[i - 1];
+  const p2 = points[i];
+  const p3 = points[i + 1];
+  const dt = p2[0] - p1[0];
+  const v1 = p1[1];
+  const v2 = p2[1];
+  const v3 = p3[1];
+  const denom = v1 - 2 * v2 + v3;
+  if (Math.abs(denom) < 1e-5) return [...p2];
+  const delta = 0.5 * (v1 - v3) / denom;
+  if (Math.abs(delta) > 1) return [...p2];
+  const tPeak = Number((p2[0] + delta * dt).toFixed(4));
+  const vPeak = Number((v2 - (v1 - v3) ** 2 / (8 * denom)).toFixed(3));
+  return [tPeak, vPeak];
+}
+function compressChannel(times, values, options = {}) {
+  if (!times || !values || times.length === 0) return [];
+  if (times.length === 1) return [[times[0], values[0], "linear"]];
+  const epsilon = options.epsilon ?? 0.8;
+  const doFilter = options.filterJitter === true;
+  const processedValues = doFilter ? filterJitter(values, {
+    windowSize: options.windowSize || 5,
+    preserveEndpoints: true
+  }) : values;
+  const points = times.map((t, i) => [Number(t.toFixed(4)), Number(processedValues[i].toFixed(3))]);
+  const keyIndices = [0];
+  for (let i = 1; i < points.length - 1; i++) {
+    const d1 = points[i][1] - points[i - 1][1];
+    const d2 = points[i + 1][1] - points[i][1];
+    if (d1 * d2 < 0 && (Math.abs(d1) >= 0.8 || Math.abs(d2) >= 0.8)) {
+      points[i] = refineExtremum(points, i);
+      keyIndices.push(i);
+    }
+  }
+  if (keyIndices[keyIndices.length - 1] !== points.length - 1) {
+    keyIndices.push(points.length - 1);
+  }
+  const finalKeys = [];
+  for (let s = 0; s < keyIndices.length - 1; s++) {
+    const i0 = keyIndices[s];
+    const i1 = keyIndices[s + 1];
+    const segKeys = simplifyEasingCurve(points, epsilon, i0, i1);
+    if (finalKeys.length === 0) {
+      finalKeys.push(...segKeys);
+    } else {
+      finalKeys.push(...segKeys.slice(1));
+    }
+  }
+  return finalKeys;
+}
+function decompileAnimation(sampleData, options = {}) {
+  const {
+    duration: duration2 = 1,
+    times = [],
+    boneRotations = {},
+    hipsTranslation = [],
+    expressions: expressions2 = {},
+    name: name2 = "imported_clip"
+  } = sampleData;
+  const count = times.length;
+  const rawChannels = {};
+  if (hipsTranslation && hipsTranslation.length >= count) {
+    const hipX = [];
+    const hipY = [];
+    const hipZ = [];
+    for (let f = 0; f < count; f++) {
+      const tr = hipsTranslation[f];
+      hipX.push(tr[0]);
+      hipY.push(tr[1]);
+      hipZ.push(tr[2]);
+    }
+    rawChannels.hip_x = hipX;
+    rawChannels.hip_y = hipY;
+    rawChannels.hip_z = hipZ;
+  }
+  if (boneRotations.Spine) {
+    const lean = [];
+    const sideLean = [];
+    const twist = [];
+    const hasSpineMulti = !!(boneRotations.Spine1 && boneRotations.Spine2);
+    for (let f = 0; f < count; f++) {
+      const euler0 = decomposeEulerXYZ(boneRotations.Spine[f]);
+      const euler1 = boneRotations.Spine1 ? decomposeEulerXYZ(boneRotations.Spine1[f]) : null;
+      const euler2 = boneRotations.Spine2 ? decomposeEulerXYZ(boneRotations.Spine2[f]) : null;
+      if (hasSpineMulti) {
+        lean.push(euler0.pitch + euler1.pitch + euler2.pitch);
+        sideLean.push(euler0.roll + euler1.roll + euler2.roll);
+        twist.push(euler0.yaw + euler1.yaw + euler2.yaw);
+      } else {
+        lean.push(euler0.pitch);
+        sideLean.push(euler0.roll);
+        twist.push(euler0.yaw);
+      }
+    }
+    rawChannels.lean = lean;
+    rawChannels.side_lean = sideLean;
+    rawChannels.twist = twist;
+  }
+  if (boneRotations.Hips) {
+    const hipPitch = [];
+    const hipTwist = [];
+    const hipRoll = [];
+    for (let f = 0; f < count; f++) {
+      const euler = decomposeEulerXYZ(boneRotations.Hips[f]);
+      hipPitch.push(euler.pitch);
+      hipTwist.push(euler.yaw);
+      hipRoll.push(euler.roll);
+    }
+    rawChannels.hip_pitch = hipPitch;
+    rawChannels.hip_twist = hipTwist;
+    rawChannels.hip_roll = hipRoll;
+  }
+  if (boneRotations.Head || boneRotations.Neck) {
+    const headPitch = [];
+    const headYaw = [];
+    for (let f = 0; f < count; f++) {
+      const eNeck = boneRotations.Neck ? decomposeEulerXYZ(boneRotations.Neck[f]) : null;
+      const eHead = boneRotations.Head ? decomposeEulerXYZ(boneRotations.Head[f]) : null;
+      const p = (eNeck ? eNeck.pitch : 0) + (eHead ? eHead.pitch : 0);
+      const y = (eNeck ? eNeck.yaw : 0) + (eHead ? eHead.yaw : 0);
+      headPitch.push(p);
+      headYaw.push(y);
+    }
+    rawChannels.head_pitch = headPitch;
+    rawChannels.head_yaw = headYaw;
+  }
+  if (boneRotations.LeftArm) {
+    const elev = [];
+    const azim = [];
+    const roll = [];
+    for (let f = 0; f < count; f++) {
+      const q = boneRotations.LeftArm[f];
+      const dir = qrot(q, [1, 0, 0]);
+      const angles = solveAimAngles(dir, 1);
+      elev.push(angles.elev);
+      azim.push(angles.azim);
+      roll.push(solveAimRoll(q, [1, 0, 0], angles.elev, angles.azim, 1));
+    }
+    rawChannels.armL_elev = elev;
+    rawChannels.armL_azim = azim;
+    rawChannels.armL_roll = roll;
+  }
+  if (boneRotations.RightArm) {
+    const elev = [];
+    const azim = [];
+    const roll = [];
+    for (let f = 0; f < count; f++) {
+      const q = boneRotations.RightArm[f];
+      const dir = qrot(q, [-1, 0, 0]);
+      const angles = solveAimAngles(dir, -1);
+      elev.push(angles.elev);
+      azim.push(angles.azim);
+      roll.push(solveAimRoll(q, [-1, 0, 0], angles.elev, angles.azim, -1));
+    }
+    rawChannels.armR_elev = elev;
+    rawChannels.armR_azim = azim;
+    rawChannels.armR_roll = roll;
+  }
+  if (boneRotations.LeftForeArm) {
+    const elbowL = [];
+    for (let f = 0; f < count; f++) {
+      const euler = decomposeEulerXYZ(boneRotations.LeftForeArm[f]);
+      elbowL.push(-euler.yaw);
+    }
+    rawChannels.elbowL = elbowL;
+  }
+  if (boneRotations.RightForeArm) {
+    const elbowR = [];
+    for (let f = 0; f < count; f++) {
+      const euler = decomposeEulerXYZ(boneRotations.RightForeArm[f]);
+      elbowR.push(euler.yaw);
+    }
+    rawChannels.elbowR = elbowR;
+  }
+  if (boneRotations.LeftUpLeg) {
+    const swing = [];
+    const abd = [];
+    for (let f = 0; f < count; f++) {
+      const euler = decomposeEulerXYZ(boneRotations.LeftUpLeg[f]);
+      swing.push(-euler.pitch);
+      abd.push(euler.roll);
+    }
+    rawChannels.legL_swing = swing;
+    rawChannels.legL_abd = abd;
+  }
+  if (boneRotations.RightUpLeg) {
+    const swing = [];
+    const abd = [];
+    for (let f = 0; f < count; f++) {
+      const euler = decomposeEulerXYZ(boneRotations.RightUpLeg[f]);
+      swing.push(-euler.pitch);
+      abd.push(-euler.roll);
+    }
+    rawChannels.legR_swing = swing;
+    rawChannels.legR_abd = abd;
+  }
+  if (boneRotations.LeftLeg) {
+    const kneeL = [];
+    for (let f = 0; f < count; f++) {
+      const euler = decomposeEulerXYZ(boneRotations.LeftLeg[f]);
+      kneeL.push(euler.pitch);
+    }
+    rawChannels.kneeL = kneeL;
+  }
+  if (boneRotations.RightLeg) {
+    const kneeR = [];
+    for (let f = 0; f < count; f++) {
+      const euler = decomposeEulerXYZ(boneRotations.RightLeg[f]);
+      kneeR.push(euler.pitch);
+    }
+    rawChannels.kneeR = kneeR;
+  }
+  if (boneRotations.LeftFoot) {
+    const footL = [];
+    for (let f = 0; f < count; f++) {
+      const euler = decomposeEulerXYZ(boneRotations.LeftFoot[f]);
+      footL.push(euler.pitch);
+    }
+    rawChannels.footL_pitch = footL;
+  }
+  if (boneRotations.RightFoot) {
+    const footR = [];
+    for (let f = 0; f < count; f++) {
+      const euler = decomposeEulerXYZ(boneRotations.RightFoot[f]);
+      footR.push(euler.pitch);
+    }
+    rawChannels.footR_pitch = footR;
+  }
+  const compressedChannels = {};
+  let totalRawKeys = 0;
+  let totalCompressedKeys = 0;
+  let maxChannelError = 0;
+  let sumChannelError = 0;
+  let channelCount = 0;
+  for (const [ch, vals] of Object.entries(rawChannels)) {
+    totalRawKeys += vals.length;
+    const kfs = compressChannel(times, vals, options);
+    compressedChannels[ch] = kfs;
+    totalCompressedKeys += kfs.length;
+    let chErr = 0;
+    for (let i = 0; i < vals.length; i++) {
+      const approx = sampleKeys(kfs, times[i]);
+      chErr += Math.abs(approx - vals[i]);
+    }
+    const meanErr = chErr / Math.max(1, vals.length);
+    if (meanErr > maxChannelError) maxChannelError = meanErr;
+    sumChannelError += meanErr;
+    channelCount++;
+  }
+  const compressedExpressions = {};
+  for (const [exprName, vals] of Object.entries(expressions2)) {
+    if (Array.isArray(vals) && vals.length === count) {
+      compressedExpressions[exprName] = compressChannel(times, vals, {
+        ...options,
+        epsilon: 0.05
+      });
+    }
+  }
+  const reductionRatio = totalRawKeys > 0 ? Number(((1 - totalCompressedKeys / totalRawKeys) * 100).toFixed(1)) : 0;
+  const avgAngularError = channelCount > 0 ? Number((sumChannelError / channelCount).toFixed(2)) : 0;
+  const clip = {
+    name: name2,
+    duration: Number(duration2.toFixed(3)),
+    channels: compressedChannels
+  };
+  if (Object.keys(compressedExpressions).length > 0) {
+    clip.expressions = compressedExpressions;
+  }
+  const telemetry = {
+    totalRawKeys,
+    totalCompressedKeys,
+    reductionRatio,
+    avgAngularError,
+    maxChannelError: Number(maxChannelError.toFixed(2))
+  };
+  return { clip, telemetry };
+}
+const BONE_ALIAS_MAP = {
+  Hips: ["hips", "pelvis", "root", "mixamorig:hips", "bip01_pelvis", "bip01_hips"],
+  Spine: ["spine", "lowerback", "mixamorig:spine", "bip01_spine"],
+  Spine1: ["spine1", "chest", "torso", "mixamorig:spine1", "bip01_spine1"],
+  Spine2: ["spine2", "upperchest", "mixamorig:spine2", "bip01_spine2"],
+  Neck: ["neck", "mixamorig:neck", "bip01_neck"],
+  Head: ["head", "mixamorig:head", "bip01_head"],
+  LeftShoulder: ["leftshoulder", "l_clavicle", "mixamorig:leftshoulder", "bip01_l_clavicle"],
+  LeftArm: ["leftarm", "leftupperarm", "l_upperarm", "mixamorig:leftarm", "bip01_l_upperarm"],
+  LeftForeArm: [
+    "leftforearm",
+    "leftlowerarm",
+    "l_forearm",
+    "mixamorig:leftforearm",
+    "bip01_l_forearm"
+  ],
+  LeftHand: ["lefthand", "l_hand", "l_wrist", "mixamorig:lefthand", "bip01_l_hand"],
+  RightShoulder: ["rightshoulder", "r_clavicle", "mixamorig:rightshoulder", "bip01_r_clavicle"],
+  RightArm: ["rightarm", "rightupperarm", "r_upperarm", "mixamorig:rightarm", "bip01_r_upperarm"],
+  RightForeArm: [
+    "rightforearm",
+    "rightlowerarm",
+    "r_forearm",
+    "mixamorig:rightforearm",
+    "bip01_r_forearm"
+  ],
+  RightHand: ["righthand", "r_hand", "r_wrist", "mixamorig:righthand", "bip01_r_hand"],
+  LeftUpLeg: ["leftupleg", "leftthigh", "l_thigh", "mixamorig:leftupleg", "bip01_l_thigh"],
+  LeftLeg: ["leftleg", "leftshin", "leftcalf", "l_calf", "mixamorig:leftleg", "bip01_l_calf"],
+  LeftFoot: ["leftfoot", "leftankle", "l_foot", "mixamorig:leftfoot", "bip01_l_foot"],
+  LeftToeBase: ["lefttoebase", "lefttoe", "l_toe", "mixamorig:lefttoebase", "bip01_l_toe0"],
+  RightUpLeg: ["rightupleg", "rightthigh", "r_thigh", "mixamorig:rightupleg", "bip01_r_thigh"],
+  RightLeg: ["rightleg", "rightshin", "rightcalf", "r_calf", "mixamorig:rightleg", "bip01_r_calf"],
+  RightFoot: ["rightfoot", "rightankle", "r_foot", "mixamorig:rightfoot", "bip01_r_foot"],
+  RightToeBase: ["righttoebase", "righttoe", "r_toe", "mixamorig:righttoebase", "bip01_r_toe0"]
+};
+function resolveBoneAlias(rawName) {
+  if (!rawName) return null;
+  const clean = rawName.toLowerCase().replace(/[\s_-]+/g, "_");
+  for (const [canonical, aliases] of Object.entries(BONE_ALIAS_MAP)) {
+    if (canonical.toLowerCase() === clean) return canonical;
+    for (const alias of aliases) {
+      const cleanAlias = alias.toLowerCase().replace(/[\s_-]+/g, "_");
+      if (clean === cleanAlias || clean.endsWith(cleanAlias)) {
+        return canonical;
+      }
+    }
+  }
+  return rawName;
+}
+function parseBvhRaw(bvhText) {
+  const lines = bvhText.split(/\r?\n/).map((l) => l.trim()).filter((l) => l.length > 0);
+  let lineIdx = 0;
+  if (!lines[lineIdx] || !lines[lineIdx].startsWith("HIERARCHY")) {
+    throw new Error("Format BVH tidak valid (header HIERARCHY tidak ditemukan).");
+  }
+  lineIdx++;
+  const bones = [];
+  const boneStack = [];
+  while (lineIdx < lines.length && !lines[lineIdx].startsWith("MOTION")) {
+    const line = lines[lineIdx];
+    if (line.startsWith("ROOT") || line.startsWith("JOINT")) {
+      const parts = line.split(/\s+/);
+      const name2 = parts[1];
+      const parent = boneStack.length > 0 ? boneStack[boneStack.length - 1] : -1;
+      const bone = {
+        id: bones.length,
+        name: name2,
+        canonicalName: resolveBoneAlias(name2),
+        parent,
+        offset: [0, 0, 0],
+        channels: [],
+        channelIndex: 0
+      };
+      bones.push(bone);
+      boneStack.push(bone.id);
+    } else if (line.startsWith("End Site")) {
+      boneStack.push(-2);
+    } else if (line === "{") ;
+    else if (line === "}") {
+      boneStack.pop();
+    } else if (line.startsWith("OFFSET")) {
+      const curId = boneStack[boneStack.length - 1];
+      if (curId >= 0) {
+        const parts = line.split(/\s+/);
+        bones[curId].offset = [Number(parts[1]), Number(parts[2]), Number(parts[3])];
+      }
+    } else if (line.startsWith("CHANNELS")) {
+      const curId = boneStack[boneStack.length - 1];
+      if (curId >= 0) {
+        const parts = line.split(/\s+/);
+        const count = Number(parts[1]);
+        bones[curId].channels = parts.slice(2, 2 + count);
+      }
+    }
+    lineIdx++;
+  }
+  if (lineIdx >= lines.length || !lines[lineIdx].startsWith("MOTION")) {
+    throw new Error("Bagian MOTION tidak ditemukan di file BVH.");
+  }
+  lineIdx++;
+  let frameTime = 1 / 30;
+  while (lineIdx < lines.length) {
+    const line = lines[lineIdx];
+    if (line.startsWith("Frames:")) {
+      Number(line.split(/\s+/)[1]);
+      lineIdx++;
+    } else if (line.startsWith("Frame Time:")) {
+      frameTime = Number(line.split(/\s+/)[2]);
+      lineIdx++;
+      break;
+    } else {
+      lineIdx++;
+    }
+  }
+  let globalChIdx = 0;
+  for (const b of bones) {
+    b.channelIndex = globalChIdx;
+    globalChIdx += b.channels.length;
+  }
+  const motionData = [];
+  while (lineIdx < lines.length) {
+    const line = lines[lineIdx];
+    const vals = line.split(/\s+/).map(Number);
+    if (vals.length >= globalChIdx) {
+      motionData.push(vals);
+    }
+    lineIdx++;
+  }
+  return {
+    bones,
+    frameCount: motionData.length,
+    frameTime,
+    motionData,
+    totalChannels: globalChIdx
+  };
+}
+function eulerChannelsToQuat(channels2, vals) {
+  let q = [0, 0, 0, 1];
+  for (let i = 0; i < channels2.length; i++) {
+    const ch = channels2[i];
+    const ang = vals[i] * D2R;
+    let qAxis;
+    if (ch === "Xrotation") {
+      qAxis = qaxis([1, 0, 0], ang);
+    } else if (ch === "Yrotation") {
+      qAxis = qaxis([0, 1, 0], ang);
+    } else if (ch === "Zrotation") {
+      qAxis = qaxis([0, 0, 1], ang);
+    }
+    if (qAxis) {
+      q = qmul(q, qAxis);
+    }
+  }
+  return qnorm(q);
+}
+function extractBvhSamples(parsedBvh) {
+  const { bones, frameCount, frameTime, motionData } = parsedBvh;
+  const times = [];
+  for (let f = 0; f < frameCount; f++) {
+    times.push(Number((f * frameTime).toFixed(4)));
+  }
+  const boneRotations = {};
+  const hipsTranslation = [];
+  const hipsBone = bones.find((b) => b.canonicalName === "Hips") || bones[0];
+  for (let f = 0; f < frameCount; f++) {
+    const frame2 = motionData[f];
+    if (hipsBone) {
+      let x = 0;
+      let y = 0;
+      let z = 0;
+      const baseIdx = hipsBone.channelIndex;
+      hipsBone.channels.forEach((ch, idx) => {
+        if (ch === "Xposition") x = frame2[baseIdx + idx] * 0.01;
+        if (ch === "Yposition") y = frame2[baseIdx + idx] * 0.01;
+        if (ch === "Zposition") z = frame2[baseIdx + idx] * 0.01;
+      });
+      hipsTranslation.push([x, y, z]);
+    }
+    for (const b of bones) {
+      if (!b.canonicalName) continue;
+      const rotChannels = [];
+      const rotVals = [];
+      b.channels.forEach((ch, idx) => {
+        if (ch.endsWith("rotation")) {
+          rotChannels.push(ch);
+          rotVals.push(frame2[b.channelIndex + idx]);
+        }
+      });
+      if (rotChannels.length > 0) {
+        if (!boneRotations[b.canonicalName]) {
+          boneRotations[b.canonicalName] = [];
+        }
+        const q = eulerChannelsToQuat(rotChannels, rotVals);
+        boneRotations[b.canonicalName].push(q);
+      }
+    }
+  }
+  return {
+    duration: times.length > 0 ? times[times.length - 1] : 1,
+    times,
+    boneRotations,
+    hipsTranslation
+  };
+}
+function detectFootPlantedWindows(times, footHeights, threshold = 0.05) {
+  const windows2 = [];
+  let inPlant = false;
+  let startT = 0;
+  for (let i = 0; i < times.length; i++) {
+    const h = footHeights[i] ?? 0;
+    const isPlanted = h <= threshold;
+    if (isPlanted && !inPlant) {
+      inPlant = true;
+      startT = times[i];
+    } else if (!isPlanted && inPlant) {
+      inPlant = false;
+      const endT = times[i - 1];
+      if (endT - startT >= 0.08) {
+        windows2.push([Number(startT.toFixed(3)), Number(endT.toFixed(3))]);
+      }
+    }
+  }
+  if (inPlant) {
+    const endT = times[times.length - 1];
+    if (endT - startT >= 0.08) {
+      windows2.push([Number(startT.toFixed(3)), Number(endT.toFixed(3))]);
+    }
+  }
+  return windows2.length > 0 ? windows2[0] : null;
+}
+function importBvhToClip(bvhText, options = {}) {
+  const parsed = parseBvhRaw(bvhText);
+  const sampleData = extractBvhSamples(parsed);
+  const decompiled = decompileAnimation(sampleData, options);
+  const clip = decompiled.clip;
+  if (clip.channels.footL_pitch || clip.channels.footR_pitch) {
+    clip.windows = clip.windows || {};
+    if (clip.channels.footL_pitch) {
+      const times = sampleData.times;
+      const vals = sampleData.times.map(
+        (t) => Math.abs(sampleData.boneRotations.LeftFoot?.[sampleData.times.indexOf(t)]?.[0] || 0)
+      );
+      const plantedL = detectFootPlantedWindows(times, vals, 0.1);
+      if (plantedL) clip.windows.planted_L = plantedL;
+    }
+    if (clip.channels.footR_pitch) {
+      const times = sampleData.times;
+      const vals = sampleData.times.map(
+        (t) => Math.abs(sampleData.boneRotations.RightFoot?.[sampleData.times.indexOf(t)]?.[0] || 0)
+      );
+      const plantedR = detectFootPlantedWindows(times, vals, 0.1);
+      if (plantedR) clip.windows.planted_R = plantedR;
+    }
+  }
+  return decompiled;
+}
+const CHUNK_JSON = 1313821514;
+const CHUNK_BIN = 5130562;
+function parseGlbChunks(buf) {
+  const dv = new DataView(buf);
+  if (buf.byteLength < 20 || dv.getUint32(0, true) !== 1179937895) {
+    throw new Error("Bukan file GLB/VRM (header glTF tidak ditemukan).");
+  }
+  let off = 12;
+  let json = null;
+  let binary = null;
+  while (off + 8 <= buf.byteLength) {
+    const l = dv.getUint32(off, true);
+    const t = dv.getUint32(off + 4, true);
+    if (t === CHUNK_JSON) {
+      json = JSON.parse(new TextDecoder().decode(new Uint8Array(buf, off + 8, l)));
+    } else if (t === CHUNK_BIN) {
+      binary = new Uint8Array(buf, off + 8, l);
+    }
+    off += 8 + l;
+  }
+  if (!json) {
+    throw new Error("Chunk JSON tidak ditemukan di file.");
+  }
+  return { json, binary };
+}
+const VRM_TO_MOTUS_BONES = {
+  hips: "Hips",
+  spine: "Spine",
+  chest: "Spine1",
+  upperChest: "Spine2",
+  neck: "Neck",
+  head: "Head",
+  leftUpperArm: "LeftArm",
+  leftLowerArm: "LeftForeArm",
+  leftHand: "LeftHand",
+  rightUpperArm: "RightArm",
+  rightLowerArm: "RightForeArm",
+  rightHand: "RightHand",
+  leftUpperLeg: "LeftUpLeg",
+  leftLowerLeg: "LeftLeg",
+  leftFoot: "LeftFoot",
+  leftToes: "LeftToeBase",
+  rightUpperLeg: "RightUpLeg",
+  rightLowerLeg: "RightLeg",
+  rightFoot: "RightFoot",
+  rightToes: "RightToeBase",
+  leftEye: "LeftEye",
+  rightEye: "RightEye",
+  jaw: "Jaw"
+};
+function readAccessorData(gltf, binary, accessorIndex) {
+  const acc = gltf.accessors[accessorIndex];
+  if (!acc) throw new Error(`Accessor ${accessorIndex} not found in glTF.`);
+  const bv = gltf.bufferViews[acc.bufferView];
+  const byteOffset = (bv.byteOffset || 0) + (acc.byteOffset || 0);
+  const numComponents = acc.type === "SCALAR" ? 1 : acc.type === "VEC2" ? 2 : acc.type === "VEC3" ? 3 : acc.type === "VEC4" ? 4 : 1;
+  const totalFloats = acc.count * numComponents;
+  const u8 = new Uint8Array(binary.buffer, binary.byteOffset + byteOffset, totalFloats * 4);
+  const copy = new ArrayBuffer(u8.byteLength);
+  new Uint8Array(copy).set(u8);
+  return new Float32Array(copy);
+}
+function parseVrmaTracks(buffer) {
+  const { json: gltf, binary } = parseGlbChunks(buffer);
+  if (!gltf.animations || !gltf.animations.length) {
+    throw new Error("Tidak ditemukan track animasi di file glTF/VRMA.");
+  }
+  const anim = gltf.animations[0];
+  const vrmaExt = gltf.extensions?.VRMC_vrm_animation;
+  const nodeToBone = /* @__PURE__ */ new Map();
+  if (vrmaExt?.humanoid?.humanBones) {
+    for (const [vrmBone, def] of Object.entries(vrmaExt.humanoid.humanBones)) {
+      const motusBone = VRM_TO_MOTUS_BONES[vrmBone] || vrmBone;
+      nodeToBone.set(def.node, motusBone);
+    }
+  } else {
+    (gltf.nodes || []).forEach((nd, idx) => {
+      if (!nd.name) return;
+      const lower = nd.name.toLowerCase();
+      for (const [vrmBone, motusBone] of Object.entries(VRM_TO_MOTUS_BONES)) {
+        if (lower === vrmBone.toLowerCase() || lower.includes(vrmBone.toLowerCase())) {
+          nodeToBone.set(idx, motusBone);
+          break;
+        }
+      }
+    });
+  }
+  const nodeToExpr = /* @__PURE__ */ new Map();
+  if (vrmaExt?.expressions?.preset) {
+    for (const [exprName, def] of Object.entries(vrmaExt.expressions.preset)) {
+      nodeToExpr.set(def.node, exprName);
+    }
+  }
+  let primaryTimes = null;
+  const boneRotations = {};
+  let hipsTranslation = null;
+  const expressions2 = {};
+  for (const channel of anim.channels) {
+    const targetNode = channel.target.node;
+    const targetPath = channel.target.path;
+    const sampler = anim.samplers[channel.sampler];
+    const times = readAccessorData(gltf, binary, sampler.input);
+    if (!primaryTimes || times.length > primaryTimes.length) {
+      primaryTimes = times;
+    }
+    const outputData = readAccessorData(gltf, binary, sampler.output);
+    if (nodeToExpr.has(targetNode) && targetPath === "translation") {
+      const exprName = nodeToExpr.get(targetNode);
+      const vals = [];
+      for (let i = 0; i < times.length; i++) {
+        vals.push(outputData[i * 3]);
+      }
+      expressions2[exprName] = vals;
+      continue;
+    }
+    const boneName = nodeToBone.get(targetNode);
+    if (!boneName) continue;
+    if (boneName === "Hips" && targetPath === "translation") {
+      const trs = [];
+      for (let i = 0; i < times.length; i++) {
+        trs.push([outputData[i * 3], outputData[i * 3 + 1], outputData[i * 3 + 2]]);
+      }
+      hipsTranslation = trs;
+    } else if (targetPath === "rotation") {
+      const rots = [];
+      for (let i = 0; i < times.length; i++) {
+        rots.push([
+          outputData[i * 4],
+          outputData[i * 4 + 1],
+          outputData[i * 4 + 2],
+          outputData[i * 4 + 3]
+        ]);
+      }
+      boneRotations[boneName] = rots;
+    }
+  }
+  const timesArr = Array.from(primaryTimes || []);
+  const duration2 = timesArr.length > 0 ? timesArr[timesArr.length - 1] : 1;
+  return {
+    name: anim.name || "imported_vrma",
+    duration: duration2,
+    times: timesArr,
+    boneRotations,
+    hipsTranslation: hipsTranslation || [],
+    expressions: expressions2
+  };
+}
+function importVrmaToClip(buffer, options = {}) {
+  const sampleData = parseVrmaTracks(buffer);
+  return decompileAnimation(sampleData, options);
+}
+async function runImport(args, options = {}) {
+  const filePath = args[0];
+  if (!filePath) {
+    console.error('Error: "clipkit import" requires an input file (.vrma, .glb, or .bvh).');
+    console.error("Example: clipkit import motion.vrma --output imported_clip.json");
+    return 2;
+  }
+  const resolved = path.resolve(process.cwd(), filePath);
+  if (!fs.existsSync(resolved)) {
+    console.error(`Error: File "${filePath}" does not exist.`);
+    return 2;
+  }
+  const ext = path.extname(resolved).toLowerCase();
+  let resultClip = null;
+  let telemetry = null;
+  try {
+    const epsilon = options.epsilon != null ? Number(options.epsilon) : 0.8;
+    const filterJitter2 = options.filterJitter === true;
+    if (ext === ".vrma" || ext === ".glb") {
+      const buffer = fs.readFileSync(resolved);
+      const res = importVrmaToClip(buffer, {
+        epsilon,
+        filterJitter: filterJitter2
+      });
+      resultClip = res.clip;
+      telemetry = res.telemetry;
+    } else if (ext === ".bvh") {
+      const text = fs.readFileSync(resolved, "utf8");
+      const res = importBvhToClip(text, {
+        epsilon,
+        filterJitter: filterJitter2
+      });
+      resultClip = res.clip;
+      telemetry = res.telemetry;
+    } else {
+      console.error(`Error: Unsupported file format "${ext}". Supported: .vrma, .glb, .bvh`);
+      return 2;
+    }
+  } catch (err) {
+    console.error(`Error importing file "${filePath}": ${err.message}`);
+    return 3;
+  }
+  if (options.report || options.verbose) {
+    console.error("--- Import & Keyframe Compression Telemetry ---");
+    console.error(`Raw Samples: ${telemetry.totalRawKeys}`);
+    console.error(`Compressed Keys: ${telemetry.totalCompressedKeys}`);
+    console.error(`Sample Reduction: ${telemetry.reductionRatio}%`);
+    console.error(`Avg Angular Error: ${telemetry.avgAngularError}°`);
+    console.error(`Max Channel Error: ${telemetry.maxChannelError}°`);
+    console.error("------------------------------------------------");
+  }
+  const outJson = formatDeterministicJson(resultClip);
+  if (options.output || options.out) {
+    const outPath = path.resolve(process.cwd(), options.output || options.out);
+    fs.writeFileSync(outPath, outJson + "\n", "utf8");
+    if (!options.json) {
+      console.log(`Saved imported clip to ${outPath} (${telemetry.reductionRatio}% reduction)`);
+    }
+  } else {
+    process.stdout.write(outJson + "\n");
+  }
+  return 0;
+}
 function runPoses(args, options = {}) {
   const sub = args[0];
   if (!sub || sub === "list") {
@@ -4513,7 +5414,8 @@ function parseArgs(rawArgs) {
         "damping",
         "overshoot",
         "freq",
-        "template"
+        "template",
+        "epsilon"
       ].includes(key)) {
         options[camelCase(key)] = rawArgs[++i];
       } else {
@@ -4728,6 +5630,24 @@ Example:
 `);
     return;
   }
+  if (command === "import") {
+    console.log(`clipkit import <file> [options]
+
+Ingests and decompiles external .vrma, .glb, or .bvh animation into a sparse ClipKit JSON clip.
+
+Options:
+  --output <file>          Path to save decompiled ClipKit clip JSON
+  --epsilon <tolerance>    RDP curve simplification tolerance (default: 0.8)
+  --filter-jitter          Apply zero-phase smoothing filter to remove sensor noise
+  --report                 Print compression reduction and fidelity telemetry
+  --json                   Emit byte-identical JSON
+
+Example:
+  clipkit import mocap.bvh --output walk.json --report
+  clipkit import dance.vrma --output dance.json --epsilon 0.5
+`);
+    return;
+  }
   if (command === "version") {
     console.log(`clipkit version <clip-file> [options]
 
@@ -4760,6 +5680,7 @@ Commands:
   channels                 List available channels, ranges, and body parts
   rules                    List validation rules and style threshold limits
   export <clip>            Export clip to binary .vrma (VRMC_vrm_animation-1.0)
+  import <file>            Ingest and decompile .vrma, .glb, or .bvh into ClipKit JSON
   sheet <clip>             Render headless annotated contact sheet (SVG + JSON sidecar)
   poses <subcommand>       Browse pose library (list | show <name>)
   compose <clip>           Flatten layer clip into a normal clip
@@ -4801,6 +5722,8 @@ async function main(argv = process.argv.slice(2)) {
         return await runRules(commandArgs, options);
       case "export":
         return await runExport(commandArgs, options);
+      case "import":
+        return await runImport(commandArgs, options);
       case "sheet":
         return await runSheet(commandArgs, options);
       case "poses":

@@ -16,7 +16,7 @@ import { getMeshRenderer, getRigLoader, rigState } from '../state/rig-store.js';
  * Creates the single, unified agent API for programmatic and headless testing.
  */
 export function createAgentApi(options = {}) {
-  const { onExportVrma, onRefreshAll, onRenderContactSheet } = options;
+  const { onExportVrma, onImportVrma, onImportBvh, onRefreshAll, onRenderContactSheet } = options;
 
   return {
     getRig: () => rigState.rig,
@@ -65,6 +65,16 @@ export function createAgentApi(options = {}) {
       if (!clip) throw new Error('No clip specified for export');
       if (typeof onExportVrma !== 'function') throw new Error('VRMA exporter not configured');
       return onExportVrma({ clip }, rig, ctx);
+    },
+
+    importVrma: (buffer, opts = {}) => {
+      if (typeof onImportVrma !== 'function') throw new Error('VRMA importer not configured');
+      return onImportVrma(buffer, opts);
+    },
+
+    importBvh: (text, opts = {}) => {
+      if (typeof onImportBvh !== 'function') throw new Error('BVH importer not configured');
+      return onImportBvh(text, opts);
     },
 
     renderContactSheet: (
