@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import fs from "node:fs";
 import path from "node:path";
+import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
 const name$o = "MotusMan_v55";
 const skeleton_scene = "res://characters/motus_man/MotusMan_v55.fbx";
 const path_prefix = "Skeleton3D";
@@ -1006,6 +1007,7 @@ function matchesAnyPattern(channelName, patterns) {
   if (!patterns || !patterns.length) return true;
   return patterns.some((pat) => matchChannelPattern(channelName, pat));
 }
+const asMoveList = (m) => Array.isArray(m) ? [...m] : [m];
 function composeClips(baseClip, layers = [], options = {}) {
   const warnings = [];
   const addWarn = (code, message, extra = {}) => {
@@ -1025,7 +1027,7 @@ function composeClips(baseClip, layers = [], options = {}) {
     events: JSON.parse(JSON.stringify(baseClip.events || [])),
     claims: baseClip.claims ? JSON.parse(JSON.stringify(baseClip.claims)) : void 0,
     validate: baseClip.validate ? JSON.parse(JSON.stringify(baseClip.validate)) : void 0,
-    move: baseClip.move ? [...baseClip.move] : void 0
+    move: baseClip.move ? asMoveList(baseClip.move) : void 0
   };
   const channelOwners = /* @__PURE__ */ new Map();
   for (const ch of Object.keys(composite.channels)) {
@@ -1178,7 +1180,7 @@ function composeClips(baseClip, layers = [], options = {}) {
           `Multiple sources define root motion 'move'. Base motion retained; layer [${layerIdx}] move ignored.`
         );
       } else {
-        composite.move = [...layerClip.move];
+        composite.move = asMoveList(layerClip.move);
       }
     }
   }
@@ -5304,9 +5306,72 @@ function importBvhToClip(bvhText, options = {}) {
   }
   return decompiled;
 }
+function parseFbxTracks(input) {
+  const ab = ArrayBuffer.isView(input) ? input.buffer.slice(input.byteOffset, input.byteOffset + input.byteLength) : input;
+  const loader = new FBXLoader();
+  const group2 = loader.parse(ab, "");
+  if (!group2.animations || group2.animations.length === 0) {
+    throw new Error("Tidak ada klip animasi ditemukan di dalam file FBX.");
+  }
+  const anim = group2.animations[0];
+  const boneRotations = {};
+  let hipsTranslation = [];
+  let primaryTimes = null;
+  for (const track of anim.tracks) {
+    const parts = track.name.split(".");
+    const rawBoneName = parts[0];
+    const property = parts[parts.length - 1];
+    const canonicalBone = resolveBoneAlias(rawBoneName);
+    if (!canonicalBone) continue;
+    if (property === "quaternion" && track.times.length > 1) {
+      if (!primaryTimes || track.times.length > primaryTimes.length) {
+        primaryTimes = Array.from(track.times);
+      }
+      const rots = [];
+      for (let i = 0; i < track.times.length; i++) {
+        rots.push([
+          track.values[i * 4],
+          track.values[i * 4 + 1],
+          track.values[i * 4 + 2],
+          track.values[i * 4 + 3]
+        ]);
+      }
+      boneRotations[canonicalBone] = rots;
+    } else if (canonicalBone === "Hips" && property === "position" && track.times.length > 1) {
+      const trs = [];
+      const sampleY = Math.abs(track.values[1] || 0);
+      const scale2 = sampleY > 10 ? 0.01 : 1;
+      const initialY = (track.values[1] || 0) * scale2;
+      const yOffset = initialY > 0.5 ? initialY : 0;
+      for (let i = 0; i < track.times.length; i++) {
+        trs.push([
+          track.values[i * 3] * scale2,
+          track.values[i * 3 + 1] * scale2 - yOffset,
+          track.values[i * 3 + 2] * scale2
+        ]);
+      }
+      hipsTranslation = trs;
+    }
+  }
+  const timesArr = Array.from(primaryTimes || []);
+  const duration2 = timesArr.length > 0 ? timesArr[timesArr.length - 1] : anim.duration || 1;
+  return {
+    name: anim.name || "imported_fbx",
+    duration: duration2,
+    times: timesArr,
+    boneRotations,
+    hipsTranslation,
+    expressions: {}
+  };
+}
+function importFbxToClip(buffer, options = {}) {
+  const sampleData = parseFbxTracks(buffer);
+  return decompileAnimation(sampleData, options);
+}
 const CHUNK_JSON = 1313821514;
 const CHUNK_BIN = 5130562;
-function parseGlbChunks(buf) {
+function parseGlbChunks(input) {
+  const buf = ArrayBuffer.isView(input) ? input.buffer.slice(input.byteOffset, input.byteOffset + input.byteLength) : input;
   const dv = new DataView(buf);
   if (buf.byteLength < 20 || dv.getUint32(0, true) !== 1179937895) {
     throw new Error("Bukan file GLB/VRM (header glTF tidak ditemukan).");
@@ -5458,7 +5523,7 @@ function importVrmaToClip(buffer, options = {}) {
 async function runImport(args, options = {}) {
   const filePath = args[0];
   if (!filePath) {
-    console.error('Error: "clipkit import" requires an input file (.vrma, .glb, or .bvh).');
+    console.error('Error: "clipkit import" requires an input file (.vrma, .glb, .bvh, or .fbx).');
     console.error("Example: clipkit import motion.vrma --output imported_clip.json");
     return 2;
   }
@@ -5489,8 +5554,16 @@ async function runImport(args, options = {}) {
       });
       resultClip = res.clip;
       telemetry = res.telemetry;
+    } else if (ext === ".fbx") {
+      const buffer = fs.readFileSync(resolved);
+      const res = importFbxToClip(buffer, {
+        epsilon,
+        filterJitter: filterJitter2
+      });
+      resultClip = res.clip;
+      telemetry = res.telemetry;
     } else {
-      console.error(`Error: Unsupported file format "${ext}". Supported: .vrma, .glb, .bvh`);
+      console.error(`Error: Unsupported file format "${ext}". Supported: .vrma, .glb, .bvh, .fbx`);
       return 2;
     }
   } catch (err) {

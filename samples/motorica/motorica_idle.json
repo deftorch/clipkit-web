@@ -1,0 +1,140 @@
+{
+  "name": "Take 001",
+  "duration": 15,
+  "channels": {
+    "hip_x": [[0, -0.023, "linear"], [15, -0.023, "linear"]],
+    "hip_y": [[0, 0, "linear"], [15, 0, "linear"]],
+    "hip_z": [[0, 0.034, "linear"], [15, 0.034, "linear"]],
+    "lean": [
+      [0, 0.33, "linear"],
+      [1.3667, -0.52, "linear"],
+      [2.3333, 0.98, "inOutSine"],
+      [4.8667, 1.88, "inCubic"],
+      [7.6333, 0.52, "linear"],
+      [9.3, 1.49, "outSine"],
+      [10, 0.44, "inOutSine"],
+      [14.3667, 1.34, "inQuad"],
+      [15, 0.34, "inOutQuad"]
+    ],
+    "side_lean": [
+      [0, 1.22, "linear"],
+      [2.3333, 0.31, "inCubic"],
+      [6.1, 2.13, "inQuad"],
+      [8.6333, 0.65, "inOutSine"],
+      [10.1, 1.82, "inSine"],
+      [15, 1.28, "outCubic"]
+    ],
+    "twist": [[0, 1.27, "linear"], [15, 1.28, "inCubic"]],
+    "hip_pitch": [
+      [0, -2.89, "linear"],
+      [6.1, -4.99, "linear"],
+      [8.5333, -2.73, "linear"],
+      [11.4333, -3.7, "outSine"],
+      [15, -2.91, "linear"]
+    ],
+    "hip_twist": [
+      [0, -6.39, "linear"],
+      [4.5, -7.14, "inCubic"],
+      [6.4333, -5.29, "inSine"],
+      [8.0667, -6.82, "inSine"],
+      [14.5333, -5.35, "linear"],
+      [15, -6.38, "inOutQuad"]
+    ],
+    "hip_roll": [[0, 0.95, "linear"], [15, 0.95, "linear"]],
+    "head_pitch": [
+      [0, 4.94, "linear"],
+      [0.6333, 4.01, "linear"],
+      [1.6, 5.51, "inSine"],
+      [2.5333, 3.78, "outSine"],
+      [3.9333, 9.04, "inOutSine"],
+      [5.0667, 4.54, "inOutSine"],
+      [6.1667, 6.32, "inSine"],
+      [7.0667, 4.36, "outQuad"],
+      [7.8667, 6.69, "outSine"],
+      [9.3333, 2.48, "outSine"],
+      [9.9, 4.37, "inOutSine"],
+      [10.4333, 3.55, "inOutQuad"],
+      [11.8667, 5.4, "outCubic"],
+      [12.5333, 7.8, "outSine"],
+      [13.1667, 5.09, "inOutSine"],
+      [15, 5, "outCubic"]
+    ],
+    "head_yaw": [
+      [0, 2.53, "linear"],
+      [4.1, 4.2, "inSine"],
+      [8.6333, 1.44, "linear"],
+      [9.7667, 2.8, "outSine"],
+      [15, 2.5, "outCubic"]
+    ],
+    "armL_elev": [[0, -65.26, "linear"], [1.1333, -64.26, "linear"], [15, -65.26, "outSine"]],
+    "armL_azim": [
+      [0, -19.34, "linear"],
+      [4.3333, -22.15, "inSine"],
+      [5.5333, -20.76, "linear"],
+      [6.3333, -22.1, "outSine"],
+      [9.8667, -18.4, "outSine"],
+      [11.2333, -22.29, "outSine"],
+      [12.1, -19.46, "linear"],
+      [13.6667, -20.53, "inSine"],
+      [15, -19.51, "outCubic"]
+    ],
+    "armL_roll": [
+      [0, 35.18, "linear"],
+      [3.3333, 36.36, "inCubic"],
+      [5.4, 35.19, "outSine"],
+      [8.8667, 36.21, "inSine"],
+      [12.7, 34.3, "linear"],
+      [15, 35.2, "outCubic"]
+    ],
+    "armR_elev": [
+      [0, -66.94, "linear"],
+      [3.2, -66.2, "inCubic"],
+      [8.4, -68.04, "inSine"],
+      [10.7667, -66.32, "inSine"],
+      [15, -66.91, "linear"]
+    ],
+    "armR_azim": [
+      [0, -10.28, "linear"],
+      [2.4667, -12.15, "inQuad"],
+      [5.1, -10.89, "outCubic"],
+      [6.2667, -12.64, "outSine"],
+      [8.9, -8.09, "linear"],
+      [10.9333, -12.34, "inSine"],
+      [13.8, -10.61, "outCubic"],
+      [14.3, -9.05, "outSine"],
+      [15, -10.29, "outQuad"]
+    ],
+    "armR_roll": [
+      [0, -35.78, "linear"],
+      [1.2, -37.18, "linear"],
+      [4.4, -35.73, "linear"],
+      [8.4667, -37.99, "linear"],
+      [9.8333, -37.68, "outQuad"],
+      [10.8667, -35.84, "linear"],
+      [15, -35.77, "outCubic"]
+    ],
+    "elbowL": [[0, 30.12, "linear"], [15, 30.11, "inCubic"]],
+    "elbowR": [[0, 26.91, "linear"], [15, 26.93, "outCubic"]],
+    "legL_swing": [[0, -0.48, "linear"], [3.7333, -2.64, "outSine"], [15, -0.48, "outQuad"]],
+    "legL_abd": [[0, 5.1, "linear"], [15, 5.09, "outCubic"]],
+    "legR_swing": [
+      [0, -9.16, "linear"],
+      [6.1333, -9.8, "linear"],
+      [8.8667, -7.47, "linear"],
+      [15, -9.18, "outCubic"]
+    ],
+    "legR_abd": [[0, 4.13, "linear"], [5.2667, 5.19, "linear"], [15, 4.13, "outQuad"]],
+    "kneeL": [
+      [0, 14.28, "linear"],
+      [1.6667, 12.19, "outSine"],
+      [4.0333, 13.66, "linear"],
+      [5.5333, 12.72, "inSine"],
+      [6.4667, 14.1, "inOutSine"],
+      [8.5333, 12.18, "inOutSine"],
+      [15, 14.31, "outSine"]
+    ],
+    "kneeR": [[0, 7.54, "linear"], [4.8333, 8.71, "linear"], [15, 7.49, "outSine"]],
+    "footL_pitch": [[0, -11.01, "linear"], [8.5333, -9.84, "inCubic"], [15, -11.01, "outQuad"]],
+    "footR_pitch": [[0, -13.57, "linear"], [8.4, -12.33, "inCubic"], [15, -13.56, "outQuad"]]
+  }
+}

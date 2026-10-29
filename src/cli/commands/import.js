@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { importBvhToClip } from '../../infrastructure/mocap/bvh-parser.js';
+import { importFbxToClip } from '../../infrastructure/mocap/fbx-importer.js';
 import { importVrmaToClip } from '../../infrastructure/vrma/vrma-importer.js';
 import { formatDeterministicJson } from '../io.js';
 
@@ -8,7 +9,7 @@ export async function runImport(args, options = {}) {
   const filePath = args[0];
 
   if (!filePath) {
-    console.error('Error: "clipkit import" requires an input file (.vrma, .glb, or .bvh).');
+    console.error('Error: "clipkit import" requires an input file (.vrma, .glb, .bvh, or .fbx).');
     console.error('Example: clipkit import motion.vrma --output imported_clip.json');
     return 2;
   }
@@ -43,8 +44,16 @@ export async function runImport(args, options = {}) {
       });
       resultClip = res.clip;
       telemetry = res.telemetry;
+    } else if (ext === '.fbx') {
+      const buffer = fs.readFileSync(resolved);
+      const res = importFbxToClip(buffer, {
+        epsilon,
+        filterJitter,
+      });
+      resultClip = res.clip;
+      telemetry = res.telemetry;
     } else {
-      console.error(`Error: Unsupported file format "${ext}". Supported: .vrma, .glb, .bvh`);
+      console.error(`Error: Unsupported file format "${ext}". Supported: .vrma, .glb, .bvh, .fbx`);
       return 2;
     }
   } catch (err) {

@@ -36,7 +36,7 @@ clipkit <command> [options]
 | `check <clip>` | Run schema check, validation, and optional contact sheet together | `--sheet <dir>`, `--style`, `--json` |
 | `schema <clip>` | Verify syntax and provide suggestions for misspelled channels | `--json` |
 | `export <clip>` | Compile ClipKit JSON to binary `.vrma` container | `--out <file>` |
-| `import <file>` | Ingest and decompile `.vrma`, `.glb`, or `.bvh` into ClipKit JSON | `--output <file>`, `--epsilon`, `--filter-jitter`, `--report` |
+| `import <file>` | Ingest and decompile `.vrma`, `.glb`, `.bvh`, or `.fbx` into ClipKit JSON | `--output <file>`, `--epsilon`, `--filter-jitter`, `--report` |
 | `sheet <clip>` | Render headless SVG contact sheet with annotated kinematics | `--out <dir>`, `--frames <n>`, `--view <cam>` |
 | `compose <clip>` | Flatten multi-layer animation into a single standalone clip | `--output <file>` |
 | `compare <a> <b>` | Compare kinematics metrics and generate visual diff sheet | `--sheet <dir>`, `--json` |
@@ -88,6 +88,9 @@ clipkit import mocap.bvh --output walk.json --filter-jitter --report
 
 # Import VRMA animation
 clipkit import emote.vrma --output emote.json --epsilon 0.5 --report
+
+# Import FBX mocap (e.g. Motorica MM Dataset)
+clipkit import locomotion.fbx --output locomotion.json --report
 ```
 
 Telemetry output:
