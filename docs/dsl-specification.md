@@ -152,3 +152,66 @@ Animations can be composed dynamically from multiple layers:
 - `channels`: Array of channel names or glob expressions (`armR_*`, `*flex`).
 - `mode`: `"override"` (replaces base values) or `"additive"` (accumulates relative offsets).
 - `offset`: Temporal shift in seconds relative to base clip start.
+
+---
+
+## 6. Directional Root Motion (`move`)
+
+Clips that displace the character in world space define root motion segments in `move`:
+
+```json
+"move": [
+  {
+    "dir": [0, 0, 1],
+    "distance": 1.2,
+    "t0": 0.1,
+    "t1": 0.7,
+    "ease": "outQuad"
+  }
+]
+```
+
+- `dir` (`[x, y, z]`): Normalized travel direction vector ($Z=1$ is forward).
+- `distance` (number): Total travel distance in meters.
+- `t0` (number): Start timestamp of translation.
+- `t1` (number): End timestamp of translation.
+- `ease` (string): Velocity profile curve (`"linear"`, `"inQuad"`, `"outQuad"`, `"inOutQuad"`).
+
+The Forward Kinematics engine and the `VRMC_vrm_animation` compiler integrate these segments into root `Hips` translation tracks automatically.
+
+---
+
+## 7. Discrete Events (`events`)
+
+Markers synchronized to precise timestamps for external engine dispatch:
+
+```json
+"events": [
+  { "t": 0.32, "type": "sfx", "id": "sword_swing_heavy" },
+  { "t": 0.40, "type": "vfx", "id": "slash_arc_trail" },
+  { "t": 0.45, "type": "gameplay", "id": "spawn_hitbox_active" }
+]
+```
+
+- `t` (number): Trigger timestamp in seconds.
+- `type` (string): Event domain category (`"sfx"`, `"vfx"`, `"gameplay"`, `"step"`).
+- `id` (string): Asset or gameplay event identifier.
+
+---
+
+## 8. Author Claims & Validation Overrides
+
+```json
+"claims": {
+  "duration": 0.8,
+  "tolerance": 0.05
+},
+"validate": {
+  "foot_slide": true,
+  "style": "stylized"
+}
+```
+
+- `claims`: Self-assertions made by an AI generator used by automated regression tests to verify that duration or speed claims match calculated kinematics.
+- `validate`: Per-clip validator overrides (e.g. selectively disabling or enforcing foot slide checks).
+

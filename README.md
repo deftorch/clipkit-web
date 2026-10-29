@@ -77,11 +77,15 @@ sequenceDiagram
 
 ## Documentation Index
 
-Detailed documentation guides are available in the [`docs/`](docs/) directory:
+Comprehensive documentation guides are organized in the [`docs/`](docs/) directory:
 
 - [CLI Reference Guide](docs/cli.md): Complete command-line manual (`validate`, `check`, `export`, `import`, `compose`, `compare`, `edit`, `poses`).
-- [Animation DSL Specification](docs/dsl-specification.md): Schema reference, channels, easing curves, gameplay windows, and layer composition.
-- [Web UI & Features Guide](docs/web-ui.md): Interactive 3D viewport, real-time validation, editor with procedural overlap controls, and curve visualizer.
+- [Animation DSL Specification](docs/dsl-specification.md): Schema reference, channels, easing curves, gameplay windows, root motion, and layer composition.
+- [Web UI & Walkthrough Guide](docs/web-ui.md): Interactive 3D viewport, real-time validation, editor with procedural overlap controls, and curve visualizer with UI screenshots.
+- [Validation Rules & Limits Matrix](docs/validation-rules.md): Detailed 8-rule registry, mathematical thresholds, style limits (`realistic`, `stylized`, `exaggerated`), and structured issue hints.
+- [Clean Architecture Guide](docs/architecture.md): Layer dependency rules, Port & Adapter interfaces, forward kinematics and inverse solver pipelines.
+- [Channels & Humanoid Rig Reference](docs/channels-and-rig.md): 55-bone humanoid catalog, 22 canonical joints, aim spherical coordinates, and axial sign conventions.
+- [Programmatic Agent API Reference](docs/agent-api.md): Integration guide for `window.clipkit` and headless browser automation frameworks (Playwright, Puppeteer).
 - [Changelog](CHANGELOG.md): Complete release history from v1.0.0 to v1.5.0 following Keep a Changelog.
 - [Contributing Guidelines](CONTRIBUTING.md): Architectural rules, code organization, and pull request workflows.
 - [Agent Skill Guide](skills/clipkit/SKILL.md): Agent prompt guide, workflow principles, and reference sheets.
