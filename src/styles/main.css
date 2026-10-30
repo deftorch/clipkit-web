@@ -518,6 +518,47 @@ select {
   border-bottom: 1px dashed var(--line);
   align-items: baseline;
 }
+.val-filters {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin: 8px 0 12px;
+}
+.val-filter-btn {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--line);
+  background: var(--panel2);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.val-filter-btn:hover {
+  color: var(--ink);
+  border-color: var(--line-focus);
+}
+.val-filter-btn.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  font-weight: 600;
+}
+.val-content {
+  display: flex;
+  flex-direction: column;
+}
+.actionable-hint {
+  font-size: 11px;
+  color: var(--accent);
+  background: rgba(255, 123, 0, 0.08);
+  border-left: 2px solid var(--accent);
+  padding: 3px 7px;
+  margin-top: 4px;
+  border-radius: 2px;
+  line-height: 1.35;
+}
 .row:last-child {
   border-bottom: 0;
 }

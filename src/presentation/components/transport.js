@@ -53,6 +53,7 @@ export function initTransport({
   cFollow,
   bVrma,
   bSheet,
+  sheetFramesSel,
   onExportVrma,
   onExportContactSheet,
   onDirty,
@@ -139,7 +140,8 @@ export function initTransport({
   if (bSheet) {
     bSheet.onclick = () => {
       if (onExportContactSheet) {
-        onExportContactSheet(curItem(), rigState.rig, rigState.ctx);
+        const frameCount = sheetFramesSel ? parseInt(sheetFramesSel.value, 10) : 8;
+        onExportContactSheet(curItem(), rigState.rig, rigState.ctx, { frameCount });
       }
     };
   }

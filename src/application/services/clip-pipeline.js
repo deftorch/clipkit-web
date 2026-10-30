@@ -1,4 +1,5 @@
 import limitsData from '../../data/limits.json';
+import { defaultPoses } from '../../data/poses/index.js';
 import { checkVrm10 } from '../../domain/validation/rules/vrm10.js';
 import { validateSchema } from '../../domain/validation/schema-validator.js';
 import { validate } from '../../domain/validation/validator.js';
@@ -38,7 +39,13 @@ export function rebuild(it, rig, ctx, style = 'stylized') {
 
   it.clip = c;
   if (rig && ctx) {
-    it.res = validate(rig, ctx, limitsData, c, style);
+    it.res = validate(rig, ctx, limitsData, c, style, undefined, {
+      resolveRef: (ref) => {
+        if (!ref) return null;
+        const clean = ref.replace(/^poses\//, '').replace(/\.json$/, '');
+        return defaultPoses[clean] || null;
+      },
+    });
     it.lines = it.res.lines.concat(checkVrm10(rig, ctx, c), snapshotLines(c));
   } else {
     it.lines = [];

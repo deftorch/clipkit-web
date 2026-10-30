@@ -117,7 +117,7 @@ export function initViewportController({
     const f = e.dataTransfer.files[0];
     if (!f) return;
 
-    if (/\.(vrma|bvh|json)$/i.test(f.name)) {
+    if (/\.(vrma|bvh|fbx|json)$/i.test(f.name)) {
       if (onImportAnimation) onImportAnimation(f);
       return;
     }

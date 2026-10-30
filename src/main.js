@@ -20,6 +20,7 @@ import {
 import { C, onThemeChange, winColor } from './application/theme.js';
 import ClipKit from './domain/clipkit.js';
 import { importBvhToClip } from './infrastructure/mocap/bvh-parser.js';
+import { importFbxToClip } from './infrastructure/mocap/fbx-importer.js';
 import { LocalStorageClipRepository } from './infrastructure/storage/local-storage-clip-repo.js';
 import VrmView from './infrastructure/three/three-mesh-renderer.js';
 import { parseGlb } from './infrastructure/vrm/glb-parser.js';
@@ -210,6 +211,14 @@ export async function handleImportAnimationFile(file, options = {}) {
       });
       clip = res.clip;
       report = res.telemetry;
+    } else if (ext === 'fbx') {
+      const buffer = await file.arrayBuffer();
+      const res = importFbxToClip(buffer, {
+        name: name.replace(/\.fbx$/i, ''),
+        ...options,
+      });
+      clip = res.clip;
+      report = res.telemetry;
     } else if (ext === 'bvh') {
       const text = await file.text();
       const res = importBvhToClip(text, {
@@ -284,6 +293,7 @@ initTransport({
   cFollow: $('#cFollow'),
   bVrma: $('#bVrma'),
   bSheet: $('#bSheet'),
+  sheetFramesSel: $('#sheetFrames'),
   onExportVrma: (it, rig, ctx) => {
     if (!it || !it.clip) return;
     const blob = buildVrmaGlb(rig, ctx, it.clip);
@@ -293,9 +303,9 @@ initTransport({
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 1500);
   },
-  onExportContactSheet: (it, rig, ctx) => {
+  onExportContactSheet: (it, rig, ctx, opts = {}) => {
     if (!it || !it.clip) return;
-    const res = renderContactSheet(rig, ctx, it.clip, { frameCount: 8 });
+    const res = renderContactSheet(rig, ctx, it.clip, { frameCount: 8, ...opts });
     if (!res || !res.svg) return;
     const blob = new Blob([res.svg], { type: 'image/svg+xml' });
     const a = document.createElement('a');
@@ -415,6 +425,7 @@ const agentApi = createAgentApi({
   onExportVrma: (it, rig, ctx) => buildVrmaGlb(rig, ctx, it.clip),
   onImportVrma: (buffer, opts) => importVrmaToClip(buffer, opts),
   onImportBvh: (text, opts) => importBvhToClip(text, opts),
+  onImportFbx: (buffer, opts) => importFbxToClip(buffer, opts),
   onRefreshAll: refreshAll,
   onRenderContactSheet: (rig, ctx, clip, opts) => renderContactSheet(rig, ctx, clip, opts),
 });

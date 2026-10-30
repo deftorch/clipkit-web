@@ -45,6 +45,12 @@
         <label><input type="checkbox" id="cOnion"> bayangan</label>
         <button class="btn sm primary" id="bVrma" type="button" title="Ekspor klip aktif sebagai .vrma (VRMC_vrm_animation-1.0)">Ekspor .vrma</button>
         <button class="btn sm" id="bSheet" type="button" title="Ekspor Contact Sheet (.svg) dengan pose kunci beranotasi">Contact Sheet</button>
+        <select id="sheetFrames" title="Jumlah pose pada Contact Sheet" style="font-size: 11.5px; padding: 2px 4px; margin-left: -3px; height: 26px;">
+          <option value="6">6f</option>
+          <option value="8" selected>8f</option>
+          <option value="10">10f</option>
+          <option value="12">12f</option>
+        </select>
         <label><input type="checkbox" id="cFollow"> ikuti pinggul</label>
       </div>
       <div class="timeline" id="tl"><canvas id="tlc" aria-label="Timeline jendela, event, dan kecepatan"></canvas></div>

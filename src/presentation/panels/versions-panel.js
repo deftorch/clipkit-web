@@ -113,6 +113,28 @@ export function renderVer(host) {
     applyEdit(aliveClip, 'Applied procedural micro-dynamics');
   };
 
+  const btnInPlace = el('button', {
+    class: 'btn',
+    text: 'Jadikan In-Place',
+    title: 'Hapus translasi move agar animasi berjalan di tempat (in-place)',
+  });
+  btnInPlace.onclick = () => {
+    const inPlaceClip = JSON.parse(JSON.stringify(c));
+    delete inPlaceClip.move;
+    applyEdit(inPlaceClip, 'Converted to in-place motion (stripped root displacement)');
+  };
+
+  const btnBakeRoot = el('button', {
+    class: 'btn',
+    text: 'Bake Root (+1m Maju)',
+    title: 'Tambahkan perpindahan linear maju 1 meter pada koordinat Z',
+  });
+  btnBakeRoot.onclick = () => {
+    const rootClip = JSON.parse(JSON.stringify(c));
+    rootClip.move = [0, 0, 1.0];
+    applyEdit(rootClip, 'Added linear forward root displacement (+1m Z)');
+  };
+
   const editRow = el(
     'div',
     { class: 'btnrow' },
@@ -123,6 +145,8 @@ export function renderVer(host) {
     btnOverlap,
     btnFootIK,
     btnMicroDynamics,
+    btnInPlace,
+    btnBakeRoot,
   );
 
   if (c.layers && c.layers.length > 0) {

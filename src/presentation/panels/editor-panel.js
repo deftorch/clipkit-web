@@ -8,6 +8,7 @@ import {
   selectClip,
 } from '../../application/state/clip-store.js';
 import { playbackState } from '../../application/state/playback-store.js';
+import { defaultPoses } from '../../data/poses/index.js';
 import { applyOverlap } from '../../domain/animation/overlap-processor.js';
 import { copyText, el } from '../dom/h.js';
 
@@ -73,7 +74,7 @@ export function renderEditor(host, onRefreshAll, onSelectTab, onImportFile) {
 
   const fi = el('input', {
     type: 'file',
-    accept: '.json,application/json,.vrma,.glb,.bvh',
+    accept: '.json,application/json,.vrma,.glb,.bvh,.fbx',
     id: 'fileIn',
     hidden: '',
   });
@@ -98,8 +99,120 @@ export function renderEditor(host, onRefreshAll, onSelectTab, onImportFile) {
     }
     fi.value = '';
   };
-  mk('Impor file (.json, .vrma, .bvh)', () => fi.click());
+  mk('Impor file (.json, .vrma, .bvh, .fbx)', () => fi.click());
   row.append(fi);
+
+  // Pose Library Controls (Pustaka Pose Preset)
+  const poseRow = el(
+    'div',
+    { class: 'btnrow', style: 'align-items: center; gap: 8px; margin-top: 6px;' },
+    el('span', {
+      class: 'hint',
+      style: 'font-weight: 500;',
+      text: 'Pustaka Pose:',
+    }),
+  );
+
+  const poseSelect = el('select', { id: 'poseSelect', 'aria-label': 'Pilih Pose Preset' });
+  const poseEntries = Object.entries(defaultPoses);
+  for (const [key, p] of poseEntries) {
+    const opt = el('option', { value: key, text: `${p.name} [${p.part}]` });
+    poseSelect.append(opt);
+  }
+
+  const poseDesc = el('span', {
+    class: 'hint',
+    style: 'max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;',
+    text: poseEntries[0]?.[1]?.description || '',
+  });
+
+  poseSelect.onchange = () => {
+    const p = defaultPoses[poseSelect.value];
+    if (p && p.description) {
+      poseDesc.textContent = p.description;
+    }
+  };
+
+  const btnApplyPose = el('button', {
+    class: 'btn sm',
+    type: 'button',
+    text: 'Terapkan Pose',
+    title: 'Gabungkan channel dan ekspresi pose ini langsung ke klip aktif',
+  });
+  btnApplyPose.onclick = () => {
+    const it = curItem();
+    if (!it || !it.clip) return;
+    const pose = defaultPoses[poseSelect.value];
+    if (!pose) return;
+
+    const modified = JSON.parse(JSON.stringify(it.clip));
+    const dur = modified.duration || 1.0;
+
+    if (pose.channels) {
+      modified.channels = modified.channels || {};
+      for (const [ch, kfs] of Object.entries(pose.channels)) {
+        if (kfs.length === 1) {
+          const val = kfs[0][1];
+          const easing = kfs[0][2] || 'linear';
+          modified.channels[ch] = [
+            [0, val],
+            [dur, val, easing],
+          ];
+        } else {
+          modified.channels[ch] = JSON.parse(JSON.stringify(kfs));
+        }
+      }
+    }
+
+    if (pose.expressions) {
+      modified.expressions = modified.expressions || {};
+      for (const [expr, kfs] of Object.entries(pose.expressions)) {
+        if (kfs.length === 1) {
+          const val = kfs[0][1];
+          modified.expressions[expr] = [
+            [0, val],
+            [dur, val],
+          ];
+        } else {
+          modified.expressions[expr] = JSON.parse(JSON.stringify(kfs));
+        }
+      }
+    }
+
+    it.text = fmtClip(modified);
+    it.dirty = true;
+    rebuild(it);
+    persist();
+    syncEditor(true);
+    if (onRefreshAll) onRefreshAll(true);
+  };
+
+  const btnAddPoseLayer = el('button', {
+    class: 'btn sm',
+    type: 'button',
+    text: 'Tambah Layer Pose',
+    title: 'Tambahkan pose sebagai modular layer non-destruktif',
+  });
+  btnAddPoseLayer.onclick = () => {
+    const it = curItem();
+    if (!it || !it.clip) return;
+    const poseKey = poseSelect.value;
+    const modified = JSON.parse(JSON.stringify(it.clip));
+    modified.layers = modified.layers || [];
+    modified.layers.push({
+      ref: `poses/${poseKey}.json`,
+      mode: 'override',
+    });
+
+    it.text = fmtClip(modified);
+    it.dirty = true;
+    rebuild(it);
+    persist();
+    syncEditor(true);
+    if (onRefreshAll) onRefreshAll(true);
+  };
+
+  poseRow.append(poseSelect, btnApplyPose, btnAddPoseLayer, poseDesc);
 
   // Overlap & Kinetic Chain Controls
   const overlapRow = el(
@@ -188,6 +301,7 @@ export function renderEditor(host, onRefreshAll, onSelectTab, onImportFile) {
 
   host.append(
     row,
+    poseRow,
     overlapRow,
     ta,
     stat,
