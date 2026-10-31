@@ -40,6 +40,13 @@ export function check({ ctx, limits, clip, poses, floorY, tAt, FPS = 30 }) {
           fl.contact_height_m,
         );
         if (nextInC) {
+          const hasPlanted = Boolean(clip.windows?.planted_L || clip.windows?.planted_R);
+          const isAirClip =
+            clip.tags?.includes('air') || clip.tags?.includes('jump') || clip.name === 'jump';
+          // Filter false-positive frame 0 takeoff transition and aerial flight clips without planted windows
+          if (!hasPlanted && (f === 0 || isAirClip)) {
+            continue;
+          }
           const tn = poses[f + 1].pos[ti];
           const spd = Math.hypot(tn[0] - tp[0], tn[2] - tp[2]) * FPS;
           slide.push(spd);
@@ -55,9 +62,10 @@ export function check({ ctx, limits, clip, poses, floorY, tAt, FPS = 30 }) {
   const pen = floorY - minToe;
   if (vm.check_floor !== false) {
     const isPenFail = pen > fl.penetration_fail_m;
+    const toeJoint = minToeSide === 'kiri' ? 'LeftToeBase' : 'RightToeBase';
     lines.push([
       isPenFail ? 'FAIL' : 'PASS',
-      `lantai: toe ${minToeSide} terendah ${(minToe - floorY).toFixed(3)} m dari lantai di t=${minToeT.toFixed(2)}s (penetrasi ${Math.max(
+      `lantai: toe ${minToeSide} terendah Y=${minToe.toFixed(3)} m (${(minToe - floorY).toFixed(3)} m dari lantai referensi ${floorY.toFixed(3)} m) di t=${minToeT.toFixed(2)}s (penetrasi ${Math.max(
         pen,
         0,
       ).toFixed(3)} m, batas maks ${fl.penetration_fail_m} m)`,
@@ -67,12 +75,12 @@ export function check({ ctx, limits, clip, poses, floorY, tAt, FPS = 30 }) {
         createIssue({
           level: 'FAIL',
           rule: RULE_CODES.FLOOR_PENETRATION,
-          joint: minToeSide === 'kiri' ? 'LeftToeBase' : 'RightToeBase',
+          joint: toeJoint,
           t: minToeT,
           value: pen,
           limit: fl.penetration_fail_m,
           unit: 'm',
-          hint: `Raise hip_y/root by at least ${(pen - fl.penetration_fail_m).toFixed(3)}m or adjust foot flexion.`,
+          hint: `${toeJoint} world Y=${minToe.toFixed(3)}m penetrates ground plane (floorY=${floorY.toFixed(3)}m) by ${pen.toFixed(3)}m. Raise hip_y/root by at least ${(pen - fl.penetration_fail_m).toFixed(3)}m or adjust foot flexion.`,
         }),
       );
     }

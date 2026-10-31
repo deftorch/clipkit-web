@@ -3,8 +3,8 @@
 > **AI-First 3D Animation Sandbox, Linter, & Compiler.**  
 > A declarative authoring, validation, and ingestion runtime bridging **Large Language Models (LLMs)** with **3D character animation (VRM 1.0 & Godot)**.
 
-[![Version](https://img.shields.io/badge/version-1.5.0-blue.svg)](CHANGELOG.md)
-[![Tests](https://img.shields.io/badge/tests-150%20passing-brightgreen.svg)](tests/)
+[![Version](https://img.shields.io/badge/version-1.6.0-blue.svg)](CHANGELOG.md)
+[![Tests](https://img.shields.io/badge/tests-183%20passing-brightgreen.svg)](tests/)
 [![Architecture](https://img.shields.io/badge/architecture-Clean%20Architecture-informational.svg)](CONTRIBUTING.md)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
@@ -14,7 +14,7 @@
 
 ## Table of Contents
 - [Vision & Purpose](#vision--purpose)
-- [Key Features (v1.5.0)](#key-features-v150)
+- [Key Features (v1.6.0)](#key-features-v160)
 - [The Agentic Generation Loop](#the-agentic-generation-loop)
 - [Documentation Index](#documentation-index)
 - [Quick Start](#quick-start)
@@ -39,7 +39,7 @@ Large Language Models (LLMs) excel at generating structured text and code, but c
 
 ---
 
-## Key Features (v1.5.0)
+## Key Features (v1.6.0)
 
 - **Clean Architecture Core**: Strictly enforced layer separation (Domain, Application, Infrastructure, Presentation, Composition Roots) verified by automated architectural boundary tests.
 - **Rule Registry Linter**: Modular rule evaluators for angular speed, anatomical limits, floor penetration, foot sliding, root motion continuity, cyclic loops, and VRM 1.0 humanoid bone constraints.
@@ -86,7 +86,7 @@ Comprehensive documentation guides are organized in the [`docs/`](docs/) directo
 - [Clean Architecture Guide](docs/architecture.md): Layer dependency rules, Port & Adapter interfaces, forward kinematics and inverse solver pipelines.
 - [Channels & Humanoid Rig Reference](docs/channels-and-rig.md): 55-bone humanoid catalog (22 canonical body joints plus fingers, eyes and jaw), aim spherical coordinates, and axial sign conventions.
 - [Programmatic Agent API Reference](docs/agent-api.md): Integration guide for `window.clipkit` and headless browser automation frameworks (Playwright, Puppeteer).
-- [Changelog](CHANGELOG.md): Complete release history from v1.0.0 to v1.5.0 following Keep a Changelog.
+- [Changelog](CHANGELOG.md): Complete release history from v1.0.0 to v1.6.0 following Keep a Changelog.
 - [Contributing Guidelines](CONTRIBUTING.md): Architectural rules, code organization, and pull request workflows.
 - [Agent Skill Guide](skills/clipkit/SKILL.md): Agent prompt guide, workflow principles, and reference sheets.
 
@@ -109,7 +109,7 @@ npm install
 npm run dev
 # Open http://localhost:5173
 
-# 3. Run automated test suite (24 suites, 150 tests)
+# 3. Run automated test suite (30 suites, 183 tests)
 npm test
 
 # 4. Check code quality & formatting with Biome
@@ -204,7 +204,7 @@ clipkit-web/
 │   ├── infrastructure/          # Adapters (Three.js renderer, VRMA/BVH I/O, storage)
 │   ├── presentation/            # 3D viewport, 2D canvas renderers, UI panels
 │   └── data/                    # Canonical rigs (MotusMan, VRM) & 14 reference clips
-└── tests/                       # 24 automated test suites (150 tests)
+└── tests/                       # 30 automated test suites (183 tests)
 ```
 
 ---

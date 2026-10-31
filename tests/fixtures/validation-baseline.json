@@ -10,15 +10,15 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 96.6° (kanan @0.33s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 50.0° (kiri @0.33s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 50.0° (kiri @0.33s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kiri terendah -0.022 m dari lantai di t=0.03s (penetrasi 0.022 m, batas maks 0.04 m)"
+          "lantai: toe kiri terendah Y=0.008 m (-0.022 m dari lantai referensi 0.030 m) di t=0.03s (penetrasi 0.022 m, batas maks 0.04 m)"
         ],
         [
           "WARN",
-          "foot sliding: 32 frame kontak, rata-rata 0.16 m/s, p95 0.57 m/s (maks 0.57 m/s @0.00s kaki kiri, batas 0.25 m/s)"
+          "foot sliding: 32 frame kontak, rata-rata 0.13 m/s, p95 0.29 m/s (maks 0.29 m/s @0.03s kaki kiri, batas 0.25 m/s)"
         ],
         ["PASS", "root motion: 2.50 m horizontal dalam 0.80 s"],
         ["PASS", "kecepatan root maks 7.8 m/s @0.40s"],
@@ -40,11 +40,11 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 10.2° (kiri @0.00s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 16.0° (kiri @1.00s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 16.0° (kiri @1.00s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah Y=0.025 m (-0.005 m dari lantai referensi 0.030 m) di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
         ],
         [
           "PASS",
@@ -66,11 +66,11 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 10.2° (kiri @0.00s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 16.0° (kiri @1.00s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 16.0° (kiri @1.00s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah Y=0.025 m (-0.005 m dari lantai referensi 0.030 m) di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
         ],
         [
           "PASS",
@@ -83,7 +83,7 @@
     },
     "jump": {
       "fail": 0,
-      "warn": 2,
+      "warn": 1,
       "lines": [
         ["WARN", "kecepatan sudut maks 787 °/s (LeftArm @0.23s) > 720 (menyentak?)"],
         ["PASS", "percepatan sudut maks 14690 °/s² (LeftArm @0.20s)"],
@@ -91,16 +91,13 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 86.7° (kiri @0.43s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 44.5° (kiri @0.73s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 44.5° (kiri @0.73s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 24.0° (@0.17s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kiri terendah -0.021 m dari lantai di t=0.03s (penetrasi 0.021 m, batas maks 0.04 m)"
+          "lantai: toe kiri terendah Y=0.009 m (-0.021 m dari lantai referensi 0.030 m) di t=0.03s (penetrasi 0.021 m, batas maks 0.04 m)"
         ],
-        [
-          "WARN",
-          "foot sliding: 24 frame kontak, rata-rata 0.83 m/s, p95 1.49 m/s (maks 1.49 m/s @0.00s kaki kiri, batas 0.25 m/s)"
-        ],
+        ["PASS", "foot sliding: tidak ada frame kontak (klip melayang/tanpa tumpuan)"],
         ["PASS", "root motion: 1.50 m horizontal dalam 0.90 s"],
         ["PASS", "kecepatan root maks 4.4 m/s @0.47s"],
         ["PASS", "klaim jarak 1.50 m (±10%): terukur 1.50 m"],
@@ -118,11 +115,11 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 48.9° (kiri @0.17s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 65.0° (kiri @0.40s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 65.0° (kiri @0.40s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kanan terendah -0.015 m dari lantai di t=0.10s (penetrasi 0.015 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah Y=0.015 m (-0.015 m dari lantai referensi 0.030 m) di t=0.10s (penetrasi 0.015 m, batas maks 0.04 m)"
         ],
         ["PASS", "root motion: 1.10 m horizontal dalam 1.00 s"],
         ["PASS", "kecepatan root maks 3.7 m/s @0.40s"],
@@ -144,11 +141,11 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 86.0° (kanan @0.23s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 84.8° (kanan @0.47s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 84.8° (kanan @0.47s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kanan terendah -0.007 m dari lantai di t=0.03s (penetrasi 0.007 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah Y=0.024 m (-0.007 m dari lantai referensi 0.030 m) di t=0.03s (penetrasi 0.007 m, batas maks 0.04 m)"
         ],
         ["PASS", "root motion: 0.00 m horizontal dalam 0.95 s"],
         ["PASS", "klaim durasi 0.95 s: terukur 0.95 s"],
@@ -168,11 +165,11 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 98.8° (kanan @0.20s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 90.0° (kiri @0.37s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 90.0° (kiri @0.37s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kanan terendah -0.009 m dari lantai di t=0.77s (penetrasi 0.009 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah Y=0.021 m (-0.009 m dari lantai referensi 0.030 m) di t=0.77s (penetrasi 0.009 m, batas maks 0.04 m)"
         ],
         ["PASS", "root motion: 0.00 m horizontal dalam 0.85 s"],
         ["PASS", "klaim durasi 0.85 s: terukur 0.85 s"],
@@ -192,11 +189,11 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 42.3° (kanan @0.20s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 80.0° (kiri @0.40s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 80.0° (kiri @0.40s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kanan terendah -0.008 m dari lantai di t=0.03s (penetrasi 0.008 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah Y=0.022 m (-0.008 m dari lantai referensi 0.030 m) di t=0.03s (penetrasi 0.008 m, batas maks 0.04 m)"
         ],
         ["PASS", "root motion: 0.00 m horizontal dalam 0.80 s"],
         ["PASS", "klaim durasi 0.80 s: terukur 0.80 s"],
@@ -216,11 +213,11 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 98.1° (kanan @0.23s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 95.0° (kiri @0.43s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 95.0° (kiri @0.43s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.90s (penetrasi 0.005 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah Y=0.025 m (-0.005 m dari lantai referensi 0.030 m) di t=0.90s (penetrasi 0.005 m, batas maks 0.04 m)"
         ],
         ["PASS", "root motion: 0.35 m horizontal dalam 0.95 s"],
         ["PASS", "kecepatan root maks 1.8 m/s @0.33s"],
@@ -242,11 +239,11 @@
           "PASS",
           "lutut: fleksi 7.6° (kanan @0.43s) sampai 99.3° (kanan @0.23s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 84.9° (kiri @0.43s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 84.9° (kiri @0.43s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah Y=0.025 m (-0.005 m dari lantai referensi 0.030 m) di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
         ],
         ["PASS", "root motion: 0.00 m horizontal dalam 0.90 s"],
         ["PASS", "klaim durasi 0.90 s: terukur 0.90 s"],
@@ -266,15 +263,15 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 41.9° (kiri @0.17s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 95.0° (kanan @0.17s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 95.0° (kanan @0.17s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kiri terendah -0.007 m dari lantai di t=0.47s (penetrasi 0.007 m, batas maks 0.04 m)"
+          "lantai: toe kiri terendah Y=0.023 m (-0.007 m dari lantai referensi 0.030 m) di t=0.47s (penetrasi 0.007 m, batas maks 0.04 m)"
         ],
         [
           "WARN",
-          "foot sliding: 38 frame kontak, rata-rata 0.10 m/s, p95 0.33 m/s (maks 0.33 m/s @0.00s kaki kiri, batas 0.25 m/s)"
+          "foot sliding: 38 frame kontak, rata-rata 0.08 m/s, p95 0.26 m/s (maks 0.26 m/s @0.03s kaki kiri, batas 0.25 m/s)"
         ],
         ["PASS", "root motion: 0.00 m horizontal dalam 0.60 s"],
         ["PASS", "klaim durasi 0.60 s: terukur 0.60 s"],
@@ -293,15 +290,15 @@
           "PASS",
           "lutut: fleksi 7.2° (kanan @0.47s) sampai 76.8° (kiri @0.30s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 89.6° (kanan @0.23s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 89.6° (kanan @0.23s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kiri terendah -0.018 m dari lantai di t=0.70s (penetrasi 0.018 m, batas maks 0.04 m)"
+          "lantai: toe kiri terendah Y=0.012 m (-0.018 m dari lantai referensi 0.030 m) di t=0.70s (penetrasi 0.018 m, batas maks 0.04 m)"
         ],
         [
           "WARN",
-          "foot sliding: 45 frame kontak, rata-rata 0.78 m/s, p95 1.42 m/s (maks 2.69 m/s @0.17s kaki kiri, batas 0.25 m/s)"
+          "foot sliding: 45 frame kontak, rata-rata 0.81 m/s, p95 1.82 m/s (maks 2.69 m/s @0.17s kaki kiri, batas 0.25 m/s)"
         ],
         ["PASS", "root motion: 0.00 m horizontal dalam 0.90 s"],
         ["PASS", "klaim durasi 0.90 s: terukur 0.90 s"],
@@ -322,11 +319,11 @@
           "PASS",
           "lutut: fleksi 15.1° (kanan @0.50s) sampai 54.7° (kanan @0.23s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 30.0° (kanan @0.00s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 30.0° (kanan @0.00s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kanan terendah 0.001 m dari lantai di t=0.77s (penetrasi 0.000 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah Y=0.031 m (0.001 m dari lantai referensi 0.030 m) di t=0.77s (penetrasi 0.000 m, batas maks 0.04 m)"
         ],
         ["PASS", "root motion: 1.30 m horizontal dalam 1.00 s"],
         ["PASS", "kecepatan root maks 1.3 m/s @0.77s"],
@@ -346,11 +343,11 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 10.2° (kiri @0.00s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 105.0° (kanan @0.80s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 105.0° (kanan @0.80s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.8° (@1.20s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah Y=0.025 m (-0.005 m dari lantai referensi 0.030 m) di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
         ],
         [
           "PASS",
@@ -373,15 +370,15 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 96.6° (kanan @0.33s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 50.0° (kiri @0.33s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 50.0° (kiri @0.33s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kiri terendah -0.022 m dari lantai di t=0.03s (penetrasi 0.022 m, batas maks 0.04 m)"
+          "lantai: toe kiri terendah Y=0.008 m (-0.022 m dari lantai referensi 0.030 m) di t=0.03s (penetrasi 0.022 m, batas maks 0.04 m)"
         ],
         [
           "WARN",
-          "foot sliding: 32 frame kontak, rata-rata 0.16 m/s, p95 0.57 m/s (maks 0.57 m/s @0.00s kaki kiri, batas 0.25 m/s)"
+          "foot sliding: 32 frame kontak, rata-rata 0.13 m/s, p95 0.29 m/s (maks 0.29 m/s @0.03s kaki kiri, batas 0.25 m/s)"
         ],
         ["PASS", "root motion: 2.50 m horizontal dalam 0.80 s"],
         ["PASS", "kecepatan root maks 7.8 m/s @0.40s"],
@@ -403,11 +400,11 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 10.2° (kiri @0.00s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 16.0° (kiri @1.00s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 16.0° (kiri @1.00s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah Y=0.025 m (-0.005 m dari lantai referensi 0.030 m) di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
         ],
         [
           "PASS",
@@ -429,11 +426,11 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 10.2° (kiri @0.00s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 16.0° (kiri @1.00s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 16.0° (kiri @1.00s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah Y=0.025 m (-0.005 m dari lantai referensi 0.030 m) di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
         ],
         [
           "PASS",
@@ -446,7 +443,7 @@
     },
     "jump": {
       "fail": 0,
-      "warn": 1,
+      "warn": 0,
       "lines": [
         ["PASS", "kecepatan sudut maks 787 °/s (LeftArm @0.23s)"],
         ["PASS", "percepatan sudut maks 14690 °/s² (LeftArm @0.20s)"],
@@ -454,16 +451,13 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 86.7° (kiri @0.43s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 44.5° (kiri @0.73s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 44.5° (kiri @0.73s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 24.0° (@0.17s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kiri terendah -0.021 m dari lantai di t=0.03s (penetrasi 0.021 m, batas maks 0.04 m)"
+          "lantai: toe kiri terendah Y=0.009 m (-0.021 m dari lantai referensi 0.030 m) di t=0.03s (penetrasi 0.021 m, batas maks 0.04 m)"
         ],
-        [
-          "WARN",
-          "foot sliding: 24 frame kontak, rata-rata 0.83 m/s, p95 1.49 m/s (maks 1.49 m/s @0.00s kaki kiri, batas 0.25 m/s)"
-        ],
+        ["PASS", "foot sliding: tidak ada frame kontak (klip melayang/tanpa tumpuan)"],
         ["PASS", "root motion: 1.50 m horizontal dalam 0.90 s"],
         ["PASS", "kecepatan root maks 4.4 m/s @0.47s"],
         ["PASS", "klaim jarak 1.50 m (±10%): terukur 1.50 m"],
@@ -481,11 +475,11 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 48.9° (kiri @0.17s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 65.0° (kiri @0.40s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 65.0° (kiri @0.40s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kanan terendah -0.015 m dari lantai di t=0.10s (penetrasi 0.015 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah Y=0.015 m (-0.015 m dari lantai referensi 0.030 m) di t=0.10s (penetrasi 0.015 m, batas maks 0.04 m)"
         ],
         ["PASS", "root motion: 1.10 m horizontal dalam 1.00 s"],
         ["PASS", "kecepatan root maks 3.7 m/s @0.40s"],
@@ -507,11 +501,11 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 86.0° (kanan @0.23s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 84.8° (kanan @0.47s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 84.8° (kanan @0.47s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kanan terendah -0.007 m dari lantai di t=0.03s (penetrasi 0.007 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah Y=0.024 m (-0.007 m dari lantai referensi 0.030 m) di t=0.03s (penetrasi 0.007 m, batas maks 0.04 m)"
         ],
         ["PASS", "root motion: 0.00 m horizontal dalam 0.95 s"],
         ["PASS", "klaim durasi 0.95 s: terukur 0.95 s"],
@@ -531,11 +525,11 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 98.8° (kanan @0.20s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 90.0° (kiri @0.37s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 90.0° (kiri @0.37s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kanan terendah -0.009 m dari lantai di t=0.77s (penetrasi 0.009 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah Y=0.021 m (-0.009 m dari lantai referensi 0.030 m) di t=0.77s (penetrasi 0.009 m, batas maks 0.04 m)"
         ],
         ["PASS", "root motion: 0.00 m horizontal dalam 0.85 s"],
         ["PASS", "klaim durasi 0.85 s: terukur 0.85 s"],
@@ -555,11 +549,11 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 42.3° (kanan @0.20s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 80.0° (kiri @0.40s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 80.0° (kiri @0.40s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kanan terendah -0.008 m dari lantai di t=0.03s (penetrasi 0.008 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah Y=0.022 m (-0.008 m dari lantai referensi 0.030 m) di t=0.03s (penetrasi 0.008 m, batas maks 0.04 m)"
         ],
         ["PASS", "root motion: 0.00 m horizontal dalam 0.80 s"],
         ["PASS", "klaim durasi 0.80 s: terukur 0.80 s"],
@@ -579,11 +573,11 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 98.1° (kanan @0.23s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 95.0° (kiri @0.43s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 95.0° (kiri @0.43s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.90s (penetrasi 0.005 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah Y=0.025 m (-0.005 m dari lantai referensi 0.030 m) di t=0.90s (penetrasi 0.005 m, batas maks 0.04 m)"
         ],
         ["PASS", "root motion: 0.35 m horizontal dalam 0.95 s"],
         ["PASS", "kecepatan root maks 1.8 m/s @0.33s"],
@@ -605,11 +599,11 @@
           "PASS",
           "lutut: fleksi 7.6° (kanan @0.43s) sampai 99.3° (kanan @0.23s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 84.9° (kiri @0.43s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 84.9° (kiri @0.43s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah Y=0.025 m (-0.005 m dari lantai referensi 0.030 m) di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
         ],
         ["PASS", "root motion: 0.00 m horizontal dalam 0.90 s"],
         ["PASS", "klaim durasi 0.90 s: terukur 0.90 s"],
@@ -629,15 +623,15 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 41.9° (kiri @0.17s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 95.0° (kanan @0.17s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 95.0° (kanan @0.17s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kiri terendah -0.007 m dari lantai di t=0.47s (penetrasi 0.007 m, batas maks 0.04 m)"
+          "lantai: toe kiri terendah Y=0.023 m (-0.007 m dari lantai referensi 0.030 m) di t=0.47s (penetrasi 0.007 m, batas maks 0.04 m)"
         ],
         [
           "WARN",
-          "foot sliding: 38 frame kontak, rata-rata 0.10 m/s, p95 0.33 m/s (maks 0.33 m/s @0.00s kaki kiri, batas 0.25 m/s)"
+          "foot sliding: 38 frame kontak, rata-rata 0.08 m/s, p95 0.26 m/s (maks 0.26 m/s @0.03s kaki kiri, batas 0.25 m/s)"
         ],
         ["PASS", "root motion: 0.00 m horizontal dalam 0.60 s"],
         ["PASS", "klaim durasi 0.60 s: terukur 0.60 s"],
@@ -656,15 +650,15 @@
           "PASS",
           "lutut: fleksi 7.2° (kanan @0.47s) sampai 76.8° (kiri @0.30s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 89.6° (kanan @0.23s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 89.6° (kanan @0.23s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kiri terendah -0.018 m dari lantai di t=0.70s (penetrasi 0.018 m, batas maks 0.04 m)"
+          "lantai: toe kiri terendah Y=0.012 m (-0.018 m dari lantai referensi 0.030 m) di t=0.70s (penetrasi 0.018 m, batas maks 0.04 m)"
         ],
         [
           "WARN",
-          "foot sliding: 45 frame kontak, rata-rata 0.78 m/s, p95 1.42 m/s (maks 2.69 m/s @0.17s kaki kiri, batas 0.25 m/s)"
+          "foot sliding: 45 frame kontak, rata-rata 0.81 m/s, p95 1.82 m/s (maks 2.69 m/s @0.17s kaki kiri, batas 0.25 m/s)"
         ],
         ["PASS", "root motion: 0.00 m horizontal dalam 0.90 s"],
         ["PASS", "klaim durasi 0.90 s: terukur 0.90 s"],
@@ -685,11 +679,11 @@
           "PASS",
           "lutut: fleksi 15.1° (kanan @0.50s) sampai 54.7° (kanan @0.23s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 30.0° (kanan @0.00s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 30.0° (kanan @0.00s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kanan terendah 0.001 m dari lantai di t=0.77s (penetrasi 0.000 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah Y=0.031 m (0.001 m dari lantai referensi 0.030 m) di t=0.77s (penetrasi 0.000 m, batas maks 0.04 m)"
         ],
         ["PASS", "root motion: 1.30 m horizontal dalam 1.00 s"],
         ["PASS", "kecepatan root maks 1.3 m/s @0.77s"],
@@ -709,11 +703,11 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 10.2° (kiri @0.00s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 105.0° (kanan @0.80s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 105.0° (kanan @0.80s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.8° (@1.20s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah Y=0.025 m (-0.005 m dari lantai referensi 0.030 m) di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
         ],
         [
           "PASS",
@@ -736,15 +730,15 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 96.6° (kanan @0.33s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 50.0° (kiri @0.33s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 50.0° (kiri @0.33s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kiri terendah -0.022 m dari lantai di t=0.03s (penetrasi 0.022 m, batas maks 0.04 m)"
+          "lantai: toe kiri terendah Y=0.008 m (-0.022 m dari lantai referensi 0.030 m) di t=0.03s (penetrasi 0.022 m, batas maks 0.04 m)"
         ],
         [
           "WARN",
-          "foot sliding: 32 frame kontak, rata-rata 0.16 m/s, p95 0.57 m/s (maks 0.57 m/s @0.00s kaki kiri, batas 0.25 m/s)"
+          "foot sliding: 32 frame kontak, rata-rata 0.13 m/s, p95 0.29 m/s (maks 0.29 m/s @0.03s kaki kiri, batas 0.25 m/s)"
         ],
         ["PASS", "root motion: 2.50 m horizontal dalam 0.80 s"],
         ["PASS", "kecepatan root maks 7.8 m/s @0.40s"],
@@ -766,11 +760,11 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 10.2° (kiri @0.00s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 16.0° (kiri @1.00s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 16.0° (kiri @1.00s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah Y=0.025 m (-0.005 m dari lantai referensi 0.030 m) di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
         ],
         [
           "PASS",
@@ -792,11 +786,11 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 10.2° (kiri @0.00s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 16.0° (kiri @1.00s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 16.0° (kiri @1.00s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah Y=0.025 m (-0.005 m dari lantai referensi 0.030 m) di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
         ],
         [
           "PASS",
@@ -809,7 +803,7 @@
     },
     "jump": {
       "fail": 0,
-      "warn": 1,
+      "warn": 0,
       "lines": [
         ["PASS", "kecepatan sudut maks 787 °/s (LeftArm @0.23s)"],
         ["PASS", "percepatan sudut maks 14690 °/s² (LeftArm @0.20s)"],
@@ -817,16 +811,13 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 86.7° (kiri @0.43s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 44.5° (kiri @0.73s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 44.5° (kiri @0.73s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 24.0° (@0.17s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kiri terendah -0.021 m dari lantai di t=0.03s (penetrasi 0.021 m, batas maks 0.04 m)"
+          "lantai: toe kiri terendah Y=0.009 m (-0.021 m dari lantai referensi 0.030 m) di t=0.03s (penetrasi 0.021 m, batas maks 0.04 m)"
         ],
-        [
-          "WARN",
-          "foot sliding: 24 frame kontak, rata-rata 0.83 m/s, p95 1.49 m/s (maks 1.49 m/s @0.00s kaki kiri, batas 0.25 m/s)"
-        ],
+        ["PASS", "foot sliding: tidak ada frame kontak (klip melayang/tanpa tumpuan)"],
         ["PASS", "root motion: 1.50 m horizontal dalam 0.90 s"],
         ["PASS", "kecepatan root maks 4.4 m/s @0.47s"],
         ["PASS", "klaim jarak 1.50 m (±10%): terukur 1.50 m"],
@@ -844,11 +835,11 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 48.9° (kiri @0.17s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 65.0° (kiri @0.40s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 65.0° (kiri @0.40s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kanan terendah -0.015 m dari lantai di t=0.10s (penetrasi 0.015 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah Y=0.015 m (-0.015 m dari lantai referensi 0.030 m) di t=0.10s (penetrasi 0.015 m, batas maks 0.04 m)"
         ],
         ["PASS", "root motion: 1.10 m horizontal dalam 1.00 s"],
         ["PASS", "kecepatan root maks 3.7 m/s @0.40s"],
@@ -870,11 +861,11 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 86.0° (kanan @0.23s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 84.8° (kanan @0.47s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 84.8° (kanan @0.47s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kanan terendah -0.007 m dari lantai di t=0.03s (penetrasi 0.007 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah Y=0.024 m (-0.007 m dari lantai referensi 0.030 m) di t=0.03s (penetrasi 0.007 m, batas maks 0.04 m)"
         ],
         ["PASS", "root motion: 0.00 m horizontal dalam 0.95 s"],
         ["PASS", "klaim durasi 0.95 s: terukur 0.95 s"],
@@ -894,11 +885,11 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 98.8° (kanan @0.20s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 90.0° (kiri @0.37s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 90.0° (kiri @0.37s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kanan terendah -0.009 m dari lantai di t=0.77s (penetrasi 0.009 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah Y=0.021 m (-0.009 m dari lantai referensi 0.030 m) di t=0.77s (penetrasi 0.009 m, batas maks 0.04 m)"
         ],
         ["PASS", "root motion: 0.00 m horizontal dalam 0.85 s"],
         ["PASS", "klaim durasi 0.85 s: terukur 0.85 s"],
@@ -918,11 +909,11 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 42.3° (kanan @0.20s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 80.0° (kiri @0.40s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 80.0° (kiri @0.40s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kanan terendah -0.008 m dari lantai di t=0.03s (penetrasi 0.008 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah Y=0.022 m (-0.008 m dari lantai referensi 0.030 m) di t=0.03s (penetrasi 0.008 m, batas maks 0.04 m)"
         ],
         ["PASS", "root motion: 0.00 m horizontal dalam 0.80 s"],
         ["PASS", "klaim durasi 0.80 s: terukur 0.80 s"],
@@ -942,11 +933,11 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 98.1° (kanan @0.23s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 95.0° (kiri @0.43s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 95.0° (kiri @0.43s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.90s (penetrasi 0.005 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah Y=0.025 m (-0.005 m dari lantai referensi 0.030 m) di t=0.90s (penetrasi 0.005 m, batas maks 0.04 m)"
         ],
         ["PASS", "root motion: 0.35 m horizontal dalam 0.95 s"],
         ["PASS", "kecepatan root maks 1.8 m/s @0.33s"],
@@ -968,11 +959,11 @@
           "PASS",
           "lutut: fleksi 7.6° (kanan @0.43s) sampai 99.3° (kanan @0.23s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 84.9° (kiri @0.43s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 84.9° (kiri @0.43s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah Y=0.025 m (-0.005 m dari lantai referensi 0.030 m) di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
         ],
         ["PASS", "root motion: 0.00 m horizontal dalam 0.90 s"],
         ["PASS", "klaim durasi 0.90 s: terukur 0.90 s"],
@@ -992,15 +983,15 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 41.9° (kiri @0.17s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 95.0° (kanan @0.17s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 95.0° (kanan @0.17s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kiri terendah -0.007 m dari lantai di t=0.47s (penetrasi 0.007 m, batas maks 0.04 m)"
+          "lantai: toe kiri terendah Y=0.023 m (-0.007 m dari lantai referensi 0.030 m) di t=0.47s (penetrasi 0.007 m, batas maks 0.04 m)"
         ],
         [
           "WARN",
-          "foot sliding: 38 frame kontak, rata-rata 0.10 m/s, p95 0.33 m/s (maks 0.33 m/s @0.00s kaki kiri, batas 0.25 m/s)"
+          "foot sliding: 38 frame kontak, rata-rata 0.08 m/s, p95 0.26 m/s (maks 0.26 m/s @0.03s kaki kiri, batas 0.25 m/s)"
         ],
         ["PASS", "root motion: 0.00 m horizontal dalam 0.60 s"],
         ["PASS", "klaim durasi 0.60 s: terukur 0.60 s"],
@@ -1019,15 +1010,15 @@
           "PASS",
           "lutut: fleksi 7.2° (kanan @0.47s) sampai 76.8° (kiri @0.30s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 89.6° (kanan @0.23s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 89.6° (kanan @0.23s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kiri terendah -0.018 m dari lantai di t=0.70s (penetrasi 0.018 m, batas maks 0.04 m)"
+          "lantai: toe kiri terendah Y=0.012 m (-0.018 m dari lantai referensi 0.030 m) di t=0.70s (penetrasi 0.018 m, batas maks 0.04 m)"
         ],
         [
           "WARN",
-          "foot sliding: 45 frame kontak, rata-rata 0.78 m/s, p95 1.42 m/s (maks 2.69 m/s @0.17s kaki kiri, batas 0.25 m/s)"
+          "foot sliding: 45 frame kontak, rata-rata 0.81 m/s, p95 1.82 m/s (maks 2.69 m/s @0.17s kaki kiri, batas 0.25 m/s)"
         ],
         ["PASS", "root motion: 0.00 m horizontal dalam 0.90 s"],
         ["PASS", "klaim durasi 0.90 s: terukur 0.90 s"],
@@ -1048,11 +1039,11 @@
           "PASS",
           "lutut: fleksi 15.1° (kanan @0.50s) sampai 54.7° (kanan @0.23s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 30.0° (kanan @0.00s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 30.0° (kanan @0.00s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kanan terendah 0.001 m dari lantai di t=0.77s (penetrasi 0.000 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah Y=0.031 m (0.001 m dari lantai referensi 0.030 m) di t=0.77s (penetrasi 0.000 m, batas maks 0.04 m)"
         ],
         ["PASS", "root motion: 1.30 m horizontal dalam 1.00 s"],
         ["PASS", "kecepatan root maks 1.3 m/s @0.77s"],
@@ -1072,11 +1063,11 @@
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 10.2° (kiri @0.00s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 105.0° (kanan @0.80s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 105.0° (kanan @0.80s, batas maks 150°)"],
         ["PASS", "leher-kepala: tekuk maks 20.8° (@1.20s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah Y=0.025 m (-0.005 m dari lantai referensi 0.030 m) di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
         ],
         [
           "PASS",

@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+import { execSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -41,4 +41,9 @@ for (const style of ['realistic', 'stylized', 'exaggerated']) {
 }
 
 fs.writeFileSync(BASELINE_PATH, `${JSON.stringify(output, null, 2)}\n`, 'utf8');
+try {
+  execSync(`npx biome format --write "${BASELINE_PATH}"`, { stdio: 'inherit' });
+} catch (e) {
+  console.warn(`Biome formatting failed: ${e.message}`);
+}
 console.log(`Validation baseline fixture successfully updated for ${Object.keys(clips).length} clips at ${BASELINE_PATH}`);

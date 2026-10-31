@@ -27,6 +27,9 @@ export function checkChannelRanges(rig, clip) {
       continue;
     }
     const rg = channelRange(rig, c);
+    if (!rg) {
+      continue;
+    }
     let worst = 0;
     let wt = 0;
     let valAtWorst = 0;

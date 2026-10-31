@@ -191,14 +191,17 @@ Options:
   --frames <n>             Number of sampled frames (4 to 16, default: 8)
   --view <mode>            Camera view: perspective (default) | front | side | multi
   --silhouette             Render high-contrast silhouette contrast mode
-  --dir <dir>              Output directory for SVG and metadata sidecar
-  --out <file>             Specific SVG output file path
+  --png                    Export rasterized PNG image alongside SVG
+  --gif                    Render animated looping GIF of character motion
+  --dir <dir>              Output directory for SVG, PNG/GIF, and metadata sidecar
+  --out <file>             Specific output file path (.svg, .png, or .gif)
   --json                   Output metadata JSON to stdout
   --force                  Overwrite existing files
   --allow-outside          Allow writing outside current working directory
 
 Example:
   clipkit sheet src/data/clips/slash.json --frames 10 --view multi --dir ./sheets
+  clipkit sheet src/data/clips/jump.json --gif --out ./sheets/jump.gif
 `);
     return;
   }
@@ -387,7 +390,7 @@ Commands:
   pose <clip>              Sample world joint positions at timestamp t (e.g. --t 0.5)
   measure <clip>           Measure anatomical clearances, stance, and hand/head metrics
   compose <clip>           Flatten layer clip into a normal clip
-  edit <op> <clip>         Deterministic edit operations (mirror | retime | scale-amplitude | close-loop)
+  edit <op> <clip>         Deterministic edit operations (mirror | retime | scale-amplitude | close-loop | overlap | foot-ik | micro-dynamics)
   compare <a> <b>          Compare kinematics and render side-by-side contact sheet
   version <clip>           Create immutable variant version with manifest.json tracking
 

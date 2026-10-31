@@ -27,14 +27,23 @@ export function runChannels(_args, options = {}) {
       continue;
     }
 
-    const range = def.range || [def.min ?? -180, def.max ?? 180];
+    let min = null;
+    let max = null;
+    if (def.range !== undefined && def.range !== null) {
+      min = def.range[0];
+      max = def.range[1];
+    } else if (def.min != null || def.max != null) {
+      min = def.min ?? -180;
+      max = def.max ?? 180;
+    }
+    const bone = def.bone || (def.bones ? Object.keys(def.bones).join(', ') : null);
     results.push({
       name,
       part,
-      bone: def.bone || null,
+      bone,
       type: def.type || 'rot',
-      min: range[0],
-      max: range[1],
+      min,
+      max,
       default: def.default ?? 0,
     });
   }
@@ -64,8 +73,9 @@ export function runChannels(_args, options = {}) {
     console.log(`Channels (${results.length}${partFilter ? ` for part '${partFilter}'` : ''}):`);
     for (const ch of results) {
       const typeStr = ch.type === 'pos' ? 'pos (m)' : 'rot (deg)';
+      const rangeStr = ch.min != null && ch.max != null ? `[${ch.min}, ${ch.max}]` : 'unbounded';
       console.log(
-        `  ${ch.name.padEnd(16)} [${ch.part.padEnd(5)}] ${ch.bone?.padEnd(14) || ''} range: [${ch.min}, ${ch.max}] ${typeStr}`,
+        `  ${ch.name.padEnd(16)} [${ch.part.padEnd(5)}] ${(ch.bone || '').padEnd(14)} range: ${rangeStr.padEnd(12)} ${typeStr}`,
       );
     }
   }

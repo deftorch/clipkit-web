@@ -43,15 +43,27 @@ for (const [partName, partDef] of Object.entries(parts)) {
   for (const chName of partDef.channels || []) {
     const ch = motus.channels[chName];
     if (ch) {
-      doc += `| \`${chName}\` | \`${ch.bone || ''}\` | \`${ch.type || 'rot'}\` | ${ch.min ?? -180}° | ${ch.max ?? 180}° | ${ch.default ?? 0}° | ${ch.desc || ''} |\n`;
+      const boneStr = ch.bone || (ch.bones ? Object.keys(ch.bones).join(', ') : '');
+      const unit = ch.unit === 'm' ? 'm' : '°';
+      const minStr = ch.range ? `${ch.range[0]}${unit}` : (ch.min != null ? `${ch.min}${unit}` : 'unbounded');
+      const maxStr = ch.range ? `${ch.range[1]}${unit}` : (ch.max != null ? `${ch.max}${unit}` : 'unbounded');
+      const defStr = `${ch.default ?? 0}${unit}`;
+      doc += `| \`${chName}\` | \`${boneStr}\` | \`${ch.type || 'rot'}\` | ${minStr} | ${maxStr} | ${defStr} | ${ch.desc || ''} |\n`;
     }
   }
 
   if (partDef.aims) {
     for (const a of partDef.aims) {
-      doc += `| \`${a}_elev\` | \`${a}\` | \`aim\` | -180° | 180° | 0° | Aim elevation angle |\n`;
-      doc += `| \`${a}_azim\` | \`${a}\` | \`aim\` | -180° | 180° | 0° | Aim azimuth angle |\n`;
-      doc += `| \`${a}_roll\` | \`${a}\` | \`aim\` | -180° | 180° | 0° | Aim roll angle |\n`;
+      const aim = motus.aims?.[a];
+      const elevRange = aim?.range?.elev || [-95, 175];
+      const azimRange = aim?.range?.azim || [-100, 140];
+      const rollRange = aim?.range?.roll || [-120, 120];
+      const elevDef = aim?.default?.elev ?? -75;
+      const azimDef = aim?.default?.azim ?? 0;
+      const rollDef = aim?.default?.roll ?? 0;
+      doc += `| \`${a}_elev\` | \`${a}\` | \`aim\` | ${elevRange[0]}° | ${elevRange[1]}° | ${elevDef}° | Aim elevation angle (horizontal = 0°) |\n`;
+      doc += `| \`${a}_azim\` | \`${a}\` | \`aim\` | ${azimRange[0]}° | ${azimRange[1]}° | ${azimDef}° | Aim azimuth angle (forward = 90°) |\n`;
+      doc += `| \`${a}_roll\` | \`${a}\` | \`aim\` | ${rollRange[0]}° | ${rollRange[1]}° | ${rollDef}° | Aim axial roll angle |\n`;
     }
   }
 

@@ -39,4 +39,28 @@ describe('Rule: channel-ranges', () => {
     expect(res.lines[0][0]).toBe('WARN');
     expect(res.lines[0][1]).toContain('kneeL keluar range');
   });
+
+  it('allows unbounded root rotation (e.g. 360° salto or rolls) without warnings', () => {
+    const clip = {
+      duration: 1.0,
+      channels: {
+        root_pitch: [
+          [0, 0],
+          [0.5, 180],
+          [1.0, 360],
+        ],
+        root_yaw: [
+          [0, 0],
+          [1.0, 720],
+        ],
+        root_roll: [
+          [0, 0],
+          [1.0, -360],
+        ],
+      },
+    };
+    const res = check({ rig: motus, clip });
+    expect(res.lines.length).toBe(0);
+    expect(res.issues.length).toBe(0);
+  });
 });

@@ -10,9 +10,9 @@ This reference documents all valid rotation and displacement channels for the Mo
 
 | Channel | Bone | Type | Min | Max | Default | Description |
 |---|---|---|---|---|---|---|
-| `eye_yaw` | `` | `axis` | -180° | 180° | 0° | + = melirik ke kiri karakter |
-| `eye_pitch` | `` | `axis` | -180° | 180° | 0° | + = melirik ke atas |
-| `jaw_open` | `` | `axis` | -180° | 180° | 0° | + = rahang terbuka |
+| `eye_yaw` | `LeftEye, RightEye` | `axis` | -35° | 35° | 0° | + = melirik ke kiri karakter |
+| `eye_pitch` | `LeftEye, RightEye` | `axis` | -30° | 30° | 0° | + = melirik ke atas |
+| `jaw_open` | `Jaw` | `axis` | 0° | 35° | 0° | + = rahang terbuka |
 
 *Supports all standard VRM 1.0 blend shape expressions (see [face.md](face.md)).*
 
@@ -24,18 +24,18 @@ This reference documents all valid rotation and displacement channels for the Mo
 
 | Channel | Bone | Type | Min | Max | Default | Description |
 |---|---|---|---|---|---|---|
-| `thumbL` | `` | `axis` | -180° | 180° | 0° | + = thumb left menekuk (kepal) |
-| `indexL` | `` | `axis` | -180° | 180° | 0° | + = index left menekuk (kepal) |
-| `middleL` | `` | `axis` | -180° | 180° | 0° | + = middle left menekuk (kepal) |
-| `ringL` | `` | `axis` | -180° | 180° | 0° | + = ring left menekuk (kepal) |
-| `littleL` | `` | `axis` | -180° | 180° | 0° | + = little left menekuk (kepal) |
-| `spreadL` | `` | `axis` | -180° | 180° | 0° | + = jari tangan left merenggang |
-| `thumbR` | `` | `axis` | -180° | 180° | 0° | + = thumb right menekuk (kepal) |
-| `indexR` | `` | `axis` | -180° | 180° | 0° | + = index right menekuk (kepal) |
-| `middleR` | `` | `axis` | -180° | 180° | 0° | + = middle right menekuk (kepal) |
-| `ringR` | `` | `axis` | -180° | 180° | 0° | + = ring right menekuk (kepal) |
-| `littleR` | `` | `axis` | -180° | 180° | 0° | + = little right menekuk (kepal) |
-| `spreadR` | `` | `axis` | -180° | 180° | 0° | + = jari tangan right merenggang |
+| `thumbL` | `LeftHandThumb1, LeftHandThumb2, LeftHandThumb3` | `axis` | -20° | 95° | 0° | + = thumb left menekuk (kepal) |
+| `indexL` | `LeftHandIndex1, LeftHandIndex2, LeftHandIndex3` | `axis` | -20° | 95° | 0° | + = index left menekuk (kepal) |
+| `middleL` | `LeftHandMiddle1, LeftHandMiddle2, LeftHandMiddle3` | `axis` | -20° | 95° | 0° | + = middle left menekuk (kepal) |
+| `ringL` | `LeftHandRing1, LeftHandRing2, LeftHandRing3` | `axis` | -20° | 95° | 0° | + = ring left menekuk (kepal) |
+| `littleL` | `LeftHandPinky1, LeftHandPinky2, LeftHandPinky3` | `axis` | -20° | 95° | 0° | + = little left menekuk (kepal) |
+| `spreadL` | `LeftHandIndex1, LeftHandRing1, LeftHandPinky1` | `axis` | -10° | 30° | 0° | + = jari tangan left merenggang |
+| `thumbR` | `RightHandThumb1, RightHandThumb2, RightHandThumb3` | `axis` | -20° | 95° | 0° | + = thumb right menekuk (kepal) |
+| `indexR` | `RightHandIndex1, RightHandIndex2, RightHandIndex3` | `axis` | -20° | 95° | 0° | + = index right menekuk (kepal) |
+| `middleR` | `RightHandMiddle1, RightHandMiddle2, RightHandMiddle3` | `axis` | -20° | 95° | 0° | + = middle right menekuk (kepal) |
+| `ringR` | `RightHandRing1, RightHandRing2, RightHandRing3` | `axis` | -20° | 95° | 0° | + = ring right menekuk (kepal) |
+| `littleR` | `RightHandPinky1, RightHandPinky2, RightHandPinky3` | `axis` | -20° | 95° | 0° | + = little right menekuk (kepal) |
+| `spreadR` | `RightHandIndex1, RightHandRing1, RightHandPinky1` | `axis` | -10° | 30° | 0° | + = jari tangan right merenggang |
 
 ---
 
@@ -45,14 +45,14 @@ This reference documents all valid rotation and displacement channels for the Mo
 
 | Channel | Bone | Type | Min | Max | Default | Description |
 |---|---|---|---|---|---|---|
-| `elbowL` | `` | `axis` | -180° | 180° | 10° | + = siku menekuk |
-| `elbowR` | `` | `axis` | -180° | 180° | 10° | + = siku menekuk |
-| `armL_elev` | `armL` | `aim` | -180° | 180° | 0° | Aim elevation angle |
-| `armL_azim` | `armL` | `aim` | -180° | 180° | 0° | Aim azimuth angle |
-| `armL_roll` | `armL` | `aim` | -180° | 180° | 0° | Aim roll angle |
-| `armR_elev` | `armR` | `aim` | -180° | 180° | 0° | Aim elevation angle |
-| `armR_azim` | `armR` | `aim` | -180° | 180° | 0° | Aim azimuth angle |
-| `armR_roll` | `armR` | `aim` | -180° | 180° | 0° | Aim roll angle |
+| `elbowL` | `LeftForeArm` | `axis` | -5° | 150° | 10° | + = siku menekuk |
+| `elbowR` | `RightForeArm` | `axis` | -5° | 150° | 10° | + = siku menekuk |
+| `armL_elev` | `armL` | `aim` | -95° | 175° | -75° | Aim elevation angle (horizontal = 0°) |
+| `armL_azim` | `armL` | `aim` | -100° | 140° | 0° | Aim azimuth angle (forward = 90°) |
+| `armL_roll` | `armL` | `aim` | -120° | 120° | 0° | Aim axial roll angle |
+| `armR_elev` | `armR` | `aim` | -95° | 175° | -75° | Aim elevation angle (horizontal = 0°) |
+| `armR_azim` | `armR` | `aim` | -100° | 140° | 0° | Aim azimuth angle (forward = 90°) |
+| `armR_roll` | `armR` | `aim` | -120° | 120° | 0° | Aim axial roll angle |
 
 ---
 
@@ -62,14 +62,14 @@ This reference documents all valid rotation and displacement channels for the Mo
 
 | Channel | Bone | Type | Min | Max | Default | Description |
 |---|---|---|---|---|---|---|
-| `lean` | `` | `axis` | -180° | 180° | 0° | + = membungkuk ke depan |
-| `side_lean` | `` | `axis` | -180° | 180° | 0° | + = miring ke kanan karakter |
-| `twist` | `` | `axis` | -180° | 180° | 0° | + = dada berputar ke kiri karakter |
-| `hip_pitch` | `` | `axis` | -180° | 180° | 0° | + = panggul condong ke depan |
-| `hip_twist` | `` | `axis` | -180° | 180° | 0° | + = panggul berputar ke kiri |
-| `hip_roll` | `` | `axis` | -180° | 180° | 0° | + = panggul miring ke kanan |
-| `head_pitch` | `` | `axis` | -180° | 180° | 0° | + = kepala menunduk |
-| `head_yaw` | `` | `axis` | -180° | 180° | 0° | + = menoleh ke kiri |
+| `lean` | `Spine, Spine1, Spine2` | `axis` | -30° | 60° | 0° | + = membungkuk ke depan |
+| `side_lean` | `Spine, Spine1, Spine2` | `axis` | -35° | 35° | 0° | + = miring ke kanan karakter |
+| `twist` | `Spine, Spine1, Spine2` | `axis` | -60° | 60° | 0° | + = dada berputar ke kiri karakter |
+| `hip_pitch` | `Hips` | `axis` | -30° | 45° | 0° | + = panggul condong ke depan |
+| `hip_twist` | `Hips` | `axis` | -60° | 60° | 0° | + = panggul berputar ke kiri |
+| `hip_roll` | `Hips` | `axis` | -25° | 25° | 0° | + = panggul miring ke kanan |
+| `head_pitch` | `Neck, Head` | `axis` | -40° | 45° | 0° | + = kepala menunduk |
+| `head_yaw` | `Neck, Head` | `axis` | -70° | 70° | 0° | + = menoleh ke kiri |
 
 ---
 
@@ -79,14 +79,14 @@ This reference documents all valid rotation and displacement channels for the Mo
 
 | Channel | Bone | Type | Min | Max | Default | Description |
 |---|---|---|---|---|---|---|
-| `legL_swing` | `` | `axis` | -180° | 180° | 0° | + = paha terangkat ke depan |
-| `legL_abd` | `` | `axis` | -180° | 180° | 0° | + = paha membuka ke luar |
-| `kneeL` | `` | `axis` | -180° | 180° | 0° | + = lutut menekuk |
-| `footL_pitch` | `` | `axis` | -180° | 180° | 0° | + = ujung kaki turun |
-| `legR_swing` | `` | `axis` | -180° | 180° | 0° | + = paha terangkat ke depan |
-| `legR_abd` | `` | `axis` | -180° | 180° | 0° | + = paha membuka ke luar |
-| `kneeR` | `` | `axis` | -180° | 180° | 0° | + = lutut menekuk |
-| `footR_pitch` | `` | `axis` | -180° | 180° | 0° | + = ujung kaki turun |
+| `legL_swing` | `LeftUpLeg` | `axis` | -45° | 120° | 0° | + = paha terangkat ke depan |
+| `legL_abd` | `LeftUpLeg` | `axis` | -30° | 60° | 0° | + = paha membuka ke luar |
+| `kneeL` | `LeftLeg` | `axis` | -5° | 150° | 0° | + = lutut menekuk |
+| `footL_pitch` | `LeftFoot` | `axis` | -45° | 60° | 0° | + = ujung kaki turun |
+| `legR_swing` | `RightUpLeg` | `axis` | -45° | 120° | 0° | + = paha terangkat ke depan |
+| `legR_abd` | `RightUpLeg` | `axis` | -30° | 60° | 0° | + = paha membuka ke luar |
+| `kneeR` | `RightLeg` | `axis` | -5° | 150° | 0° | + = lutut menekuk |
+| `footR_pitch` | `RightFoot` | `axis` | -45° | 60° | 0° | + = ujung kaki turun |
 
 ---
 
@@ -96,9 +96,12 @@ This reference documents all valid rotation and displacement channels for the Mo
 
 | Channel | Bone | Type | Min | Max | Default | Description |
 |---|---|---|---|---|---|---|
-| `hip_x` | `Hips` | `pos` | -180° | 180° | 0° | offset posisi panggul (frame model: X kiri, Y atas, Z depan) |
-| `hip_y` | `Hips` | `pos` | -180° | 180° | 0° | offset posisi panggul (frame model: X kiri, Y atas, Z depan) |
-| `hip_z` | `Hips` | `pos` | -180° | 180° | 0° | offset posisi panggul (frame model: X kiri, Y atas, Z depan) |
+| `hip_x` | `Hips` | `pos` | -1.5m | 1.5m | 0m | offset posisi panggul (frame model: X kiri, Y atas, Z depan) |
+| `hip_y` | `Hips` | `pos` | -0.6m | 0.5m | 0m | offset posisi panggul (frame model: X kiri, Y atas, Z depan) |
+| `hip_z` | `Hips` | `pos` | -1.5m | 1.5m | 0m | offset posisi panggul (frame model: X kiri, Y atas, Z depan) |
+| `root_pitch` | `Hips` | `axis` | unbounded | unbounded | 0° | + = rotasi pitch seluruh tubuh ke depan (salto/roll) |
+| `root_yaw` | `Hips` | `axis` | unbounded | unbounded | 0° | + = rotasi yaw seluruh tubuh ke kiri |
+| `root_roll` | `Hips` | `axis` | unbounded | unbounded | 0° | + = rotasi roll seluruh tubuh miring ke kanan |
 
 *Supports 3D linear root translation via `move: [x, y, z]`.*
 

@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Unbounded Whole-Body Rotation Channels: Added `root_pitch`, `root_yaw`, and `root_roll` (`range: null`) on `Hips` to enable unlimited 360°/720° rolls, flips, and acrobatics without triggering `CHANNEL_RANGE_EXCEEDED`.
+- Hand Environmental Contact Validator (`HAND_CONTACT_HEIGHT`): 10th validation rule checking hand heights against declared contact targets during parkour vaults, climbs, and wall-runs.
+- Contact Sheet PNG & Animated GIF: Added `--png` and `--gif` flags to `clipkit sheet` CLI to render high-resolution raster sheets and animated preview loops.
+- CLI Overlap Command Documentation: Exposed and documented `clipkit edit overlap <clip.json>` in CLI manual and `--help`.
+- Automated Clip & Pose Registry: Dynamic clip and pose discovery using `import.meta.glob`.
+
+### Changed
+- Clarified `FLOOR_PENETRATION` Diagnostics: Error messages now report both world ToeBase Y and the reference ground plane height.
+- Synchronized Channel Limits: Harmonized `limits.json` elbow limits to 150° and fixed `scripts/build-skill.js` to output actual angular ranges and bone mappings in `channels.md`.
+- Reduced Foot Slide False Positives: Filtered frame 0 liftoff transitions and aerial/jump tagged clips from unplanted foot-sliding warnings.
+- Clean Baseline Updates: Integrated Biome formatting into `scripts/update-baseline.js` to eliminate multi-line diff noise.
+
 ## [1.6.0] - 2026-10-29
 
 ### Added

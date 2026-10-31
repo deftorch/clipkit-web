@@ -21,7 +21,7 @@ This reference documents the diagnostic rule codes, severity levels, and mathema
 ## Biological & Floor Constraints
 
 - **Knee Flexion**: `-5°` to `160°` (knees only bend backwards).
-- **Elbow Flexion**: Max `165°` (elbows only bend inward).
+- **Elbow Flexion**: Max `150°` (elbows only bend inward).
 - **Neck Bending**: Max `70°` total inclination.
 - **Floor Penetration**: Max `0.04m` below ground baseline ($Y < 0$).
 - **Foot Slide Threshold**: Ground movement exceeding `0.25 m/s` during active planted windows emits `FOOT_SLIDE`.

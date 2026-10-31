@@ -463,3 +463,55 @@ export function renderComparisonContactSheet(rig, ctx, clipA, clipB, options = {
     height: totalH,
   };
 }
+
+/**
+ * Renders an isolated single animation frame SVG suitable for GIF sequence rendering.
+ */
+export function renderSingleFrameSvg(rig, ctx, clip, t, options = {}) {
+  const cellW = options.width || 320;
+  const cellH = options.height || 420;
+  const g = new SvgContext2D(cellW, cellH);
+  const silhouette = !!options.silhouette;
+  const C = { ...DEFAULT_PALETTE };
+  if (silhouette) {
+    C['--fig'] = '#00f0ff';
+    C['--figL'] = '#00f0ff';
+    C['--figR'] = '#00b4d8';
+    C['--view'] = '#0d1117';
+  }
+  g.fillStyle = C['--view'] || '#111318';
+  g.fillRect(0, 0, cellW, cellH);
+
+  const pose = evalPose(rig, ctx, clip, t);
+  const camYaw = options.yaw ?? 0.55;
+  const camPitch = options.pitch ?? 0.15;
+  const camDist = options.dist ?? 4.2;
+  const target = options.target || [pose.root[0], 0.9 + pose.root[1], pose.root[2]];
+  const B = buildCamBasis(camYaw, camPitch, camDist, target);
+  const KF = (cellH / 2) * 2.2;
+
+  const yFloor = floorY(ctx);
+  const prjFn = (p) => projectPoint(p, 0, 0, cellW, cellH, KF, B);
+
+  // Floor grid line
+  const fl0 = prjFn([-1.5 + pose.root[0], yFloor, pose.root[2]]);
+  const fl1 = prjFn([1.5 + pose.root[0], yFloor, pose.root[2]]);
+  if (fl0 && fl1) {
+    g.strokeStyle = C['--grid2'] || '#30363d';
+    g.lineWidth = 1;
+    g.beginPath();
+    g.moveTo(fl0[0], fl0[1]);
+    g.lineTo(fl1[0], fl1[1]);
+    g.stroke();
+  }
+
+  drawFigure(g, pose, ctx, rig, 1, false, prjFn, C, KF);
+
+  // Timestamp caption
+  g.fillStyle = C['--muted'] || '#8b949e';
+  g.font = '12px monospace';
+  g.textAlign = 'left';
+  g.fillText(`t=${t.toFixed(2)}s / ${(clip.duration || 1).toFixed(2)}s`, 12, cellH - 12);
+
+  return g.toSvg ? g.toSvg() : null;
+}

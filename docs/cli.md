@@ -37,10 +37,10 @@ clipkit <command> [options]
 | `schema <clip>` | Verify syntax and provide suggestions for misspelled channels | `--json` |
 | `export <clip>` | Compile ClipKit JSON to binary `.vrma` container | `--out <file>` |
 | `import <file>` | Ingest and decompile `.vrma`, `.glb`, `.bvh`, or `.fbx` into ClipKit JSON | `--output <file>`, `--epsilon`, `--filter-jitter`, `--report` |
-| `sheet <clip>` | Render headless SVG contact sheet with annotated kinematics | `--out <dir>`, `--frames <n>`, `--view <cam>` |
+| `sheet <clip>` | Render headless SVG/PNG contact sheet or animated GIF with annotated kinematics | `--out <dir>`, `--frames <n>`, `--view <cam>`, `--png`, `--gif` |
 | `compose <clip>` | Flatten multi-layer animation into a single standalone clip | `--output <file>` |
 | `compare <a> <b>` | Compare kinematics metrics and generate visual diff sheet | `--sheet <dir>`, `--json` |
-| `edit <op> <clip>` | Perform deterministic edits (`mirror`, `retime`, `scale-amplitude`, `close-loop`, `foot-ik`, `micro-dynamics`) | `--output <file>`, `--scale <n>` |
+| `edit <op> <clip>` | Perform deterministic edits (`mirror`, `retime`, `scale-amplitude`, `close-loop`, `overlap`, `foot-ik`, `micro-dynamics`) | `--output <file>`, `--scale <n>`, `--delay <f>` |
 | `version <clip>` | Create an immutable version snapshot with `manifest.json` | `--parent <v>`, `--note <text>`, `--force` |
 | `poses <subcmd>` | Browse single-keyframe pose library (`list`, `show <name>`) | `--part <part>`, `--json` |
 | `channels` | List available rig channels, ranges, and assigned body parts | `--part <part>`, `--json` |
@@ -137,6 +137,9 @@ clipkit edit foot-ik walk.json --output walk_pinned.json
 
 # Procedural idle micro-dynamics (breathing, subtle sway, eye saccades)
 clipkit edit micro-dynamics idle.json --output idle_alive.json
+
+# Automated overlap & kinetic chain engine (eliminates robotic stiffness via hierarchical delay and damped overshoot)
+clipkit edit overlap slash.json --delay 0.03 --damping 12 --overshoot 0.08 --output slash_fluid.json
 ```
 
 ### 8. `version`

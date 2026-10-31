@@ -28,7 +28,7 @@
   "anatomy": {
     "knee_flex_min": -5,
     "knee_flex_max": 160,
-    "elbow_flex_max": 165,
+    "elbow_flex_max": 150,
     "neck_bend_max": 70
   },
   "floor": {

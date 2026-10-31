@@ -3,6 +3,7 @@ import { angularSpeedRule } from './rules/angular-speed.js';
 import { channelRangesRule } from './rules/channel-ranges.js';
 import { comBalanceRule } from './rules/com-balance.js';
 import { floorRule } from './rules/floor.js';
+import { handContactRule } from './rules/hand-contact.js';
 import { loopRule } from './rules/loop.js';
 import { rootMotionRule } from './rules/root-motion.js';
 import { versionRule } from './rules/version.js';
@@ -56,6 +57,8 @@ export function createDefaultRuleRegistry() {
   registry.register(channelRangesRule);
   // 9. Center of Mass balance projection
   registry.register(comBalanceRule);
+  // 10. Hand environmental contact validation
+  registry.register(handContactRule);
   return registry;
 }
 

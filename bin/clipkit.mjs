@@ -2,12 +2,13 @@
 import fs from "node:fs";
 import path from "node:path";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
+import { execSync } from "node:child_process";
 const name$o = "MotusMan_v55";
 const skeleton_scene = "res://characters/motus_man/MotusMan_v55.fbx";
 const path_prefix = "Skeleton3D";
 const frame = "model: +X kiri karakter, +Y atas, +Z depan (diverifikasi oleh tests/test_clip_rig.gd)";
 const animated_bones = ["Hips", "Spine", "Spine1", "Spine2", "LeftShoulder", "LeftArm", "LeftForeArm", "LeftHand", "RightShoulder", "RightArm", "RightForeArm", "RightHand", "Neck", "Head", "LeftUpLeg", "LeftLeg", "LeftFoot", "LeftToeBase", "RightUpLeg", "RightLeg", "RightFoot", "RightToeBase", "LeftHandThumb1", "LeftHandThumb2", "LeftHandThumb3", "LeftHandIndex1", "LeftHandIndex2", "LeftHandIndex3", "LeftHandMiddle1", "LeftHandMiddle2", "LeftHandMiddle3", "LeftHandRing1", "LeftHandRing2", "LeftHandRing3", "LeftHandPinky1", "LeftHandPinky2", "LeftHandPinky3", "RightHandThumb1", "RightHandThumb2", "RightHandThumb3", "RightHandIndex1", "RightHandIndex2", "RightHandIndex3", "RightHandMiddle1", "RightHandMiddle2", "RightHandMiddle3", "RightHandRing1", "RightHandRing2", "RightHandRing3", "RightHandPinky1", "RightHandPinky2", "RightHandPinky3", "LeftEye", "RightEye", "Jaw"];
-const channels$n = { "lean": { "type": "axis", "bones": { "Spine": 0.4, "Spine1": 0.3, "Spine2": 0.3 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": [-30, 60], "unit": "deg", "desc": "+ = membungkuk ke depan" }, "side_lean": { "type": "axis", "bones": { "Spine": 0.4, "Spine1": 0.3, "Spine2": 0.3 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": [-35, 35], "unit": "deg", "desc": "+ = miring ke kanan karakter" }, "twist": { "type": "axis", "bones": { "Spine": 0.4, "Spine1": 0.3, "Spine2": 0.3 }, "axis": [0, 1, 0], "sign": 1, "default": 0, "range": [-60, 60], "unit": "deg", "desc": "+ = dada berputar ke kiri karakter" }, "hip_pitch": { "type": "axis", "bones": { "Hips": 1 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": [-30, 45], "unit": "deg", "desc": "+ = panggul condong ke depan" }, "hip_twist": { "type": "axis", "bones": { "Hips": 1 }, "axis": [0, 1, 0], "sign": 1, "default": 0, "range": [-60, 60], "unit": "deg", "desc": "+ = panggul berputar ke kiri" }, "hip_roll": { "type": "axis", "bones": { "Hips": 1 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": [-25, 25], "unit": "deg", "desc": "+ = panggul miring ke kanan" }, "head_pitch": { "type": "axis", "bones": { "Neck": 0.4, "Head": 0.6 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": [-40, 45], "unit": "deg", "desc": "+ = kepala menunduk" }, "head_yaw": { "type": "axis", "bones": { "Neck": 0.4, "Head": 0.6 }, "axis": [0, 1, 0], "sign": 1, "default": 0, "range": [-70, 70], "unit": "deg", "desc": "+ = menoleh ke kiri" }, "legL_swing": { "type": "axis", "bones": { "LeftUpLeg": 1 }, "axis": [1, 0, 0], "sign": -1, "default": 0, "range": [-45, 120], "unit": "deg", "desc": "+ = paha terangkat ke depan" }, "legL_abd": { "type": "axis", "bones": { "LeftUpLeg": 1 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": [-30, 60], "unit": "deg", "desc": "+ = paha membuka ke luar" }, "kneeL": { "type": "axis", "bones": { "LeftLeg": 1 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": [-5, 150], "unit": "deg", "desc": "+ = lutut menekuk" }, "footL_pitch": { "type": "axis", "bones": { "LeftFoot": 1 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": [-45, 60], "unit": "deg", "desc": "+ = ujung kaki turun" }, "elbowL": { "type": "axis", "bones": { "LeftForeArm": 1 }, "axis": [0, 1, 0], "sign": -1, "default": 10, "range": [-5, 150], "unit": "deg", "desc": "+ = siku menekuk" }, "legR_swing": { "type": "axis", "bones": { "RightUpLeg": 1 }, "axis": [1, 0, 0], "sign": -1, "default": 0, "range": [-45, 120], "unit": "deg", "desc": "+ = paha terangkat ke depan" }, "legR_abd": { "type": "axis", "bones": { "RightUpLeg": 1 }, "axis": [0, 0, 1], "sign": -1, "default": 0, "range": [-30, 60], "unit": "deg", "desc": "+ = paha membuka ke luar" }, "kneeR": { "type": "axis", "bones": { "RightLeg": 1 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": [-5, 150], "unit": "deg", "desc": "+ = lutut menekuk" }, "footR_pitch": { "type": "axis", "bones": { "RightFoot": 1 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": [-45, 60], "unit": "deg", "desc": "+ = ujung kaki turun" }, "elbowR": { "type": "axis", "bones": { "RightForeArm": 1 }, "axis": [0, 1, 0], "sign": 1, "default": 10, "range": [-5, 150], "unit": "deg", "desc": "+ = siku menekuk" }, "hip_x": { "type": "pos", "bone": "Hips", "axis": [1, 0, 0], "default": 0, "range": [-1.5, 1.5], "unit": "m", "desc": "offset posisi panggul (frame model: X kiri, Y atas, Z depan)" }, "hip_y": { "type": "pos", "bone": "Hips", "axis": [0, 1, 0], "default": 0, "range": [-0.6, 0.5], "unit": "m", "desc": "offset posisi panggul (frame model: X kiri, Y atas, Z depan)" }, "hip_z": { "type": "pos", "bone": "Hips", "axis": [0, 0, 1], "default": 0, "range": [-1.5, 1.5], "unit": "m", "desc": "offset posisi panggul (frame model: X kiri, Y atas, Z depan)" }, "thumbL": { "type": "axis", "bones": { "LeftHandThumb1": 0.3, "LeftHandThumb2": 0.9, "LeftHandThumb3": 0.9 }, "axis": [0, 0, 1], "sign": -1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = thumb left menekuk (kepal)" }, "indexL": { "type": "axis", "bones": { "LeftHandIndex1": 1, "LeftHandIndex2": 1.1, "LeftHandIndex3": 0.7 }, "axis": [0, 0, 1], "sign": -1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = index left menekuk (kepal)" }, "middleL": { "type": "axis", "bones": { "LeftHandMiddle1": 1, "LeftHandMiddle2": 1.1, "LeftHandMiddle3": 0.7 }, "axis": [0, 0, 1], "sign": -1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = middle left menekuk (kepal)" }, "ringL": { "type": "axis", "bones": { "LeftHandRing1": 1, "LeftHandRing2": 1.1, "LeftHandRing3": 0.7 }, "axis": [0, 0, 1], "sign": -1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = ring left menekuk (kepal)" }, "littleL": { "type": "axis", "bones": { "LeftHandPinky1": 1, "LeftHandPinky2": 1.1, "LeftHandPinky3": 0.7 }, "axis": [0, 0, 1], "sign": -1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = little left menekuk (kepal)" }, "spreadL": { "type": "axis", "bones": { "LeftHandIndex1": -0.5, "LeftHandRing1": 0.5, "LeftHandPinky1": 1 }, "axis": [0, 1, 0], "sign": 1, "default": 0, "range": [-10, 30], "unit": "deg", "desc": "+ = jari tangan left merenggang" }, "thumbR": { "type": "axis", "bones": { "RightHandThumb1": 0.3, "RightHandThumb2": 0.9, "RightHandThumb3": 0.9 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = thumb right menekuk (kepal)" }, "indexR": { "type": "axis", "bones": { "RightHandIndex1": 1, "RightHandIndex2": 1.1, "RightHandIndex3": 0.7 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = index right menekuk (kepal)" }, "middleR": { "type": "axis", "bones": { "RightHandMiddle1": 1, "RightHandMiddle2": 1.1, "RightHandMiddle3": 0.7 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = middle right menekuk (kepal)" }, "ringR": { "type": "axis", "bones": { "RightHandRing1": 1, "RightHandRing2": 1.1, "RightHandRing3": 0.7 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = ring right menekuk (kepal)" }, "littleR": { "type": "axis", "bones": { "RightHandPinky1": 1, "RightHandPinky2": 1.1, "RightHandPinky3": 0.7 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = little right menekuk (kepal)" }, "spreadR": { "type": "axis", "bones": { "RightHandIndex1": -0.5, "RightHandRing1": 0.5, "RightHandPinky1": 1 }, "axis": [0, 1, 0], "sign": -1, "default": 0, "range": [-10, 30], "unit": "deg", "desc": "+ = jari tangan right merenggang" }, "eye_yaw": { "type": "axis", "bones": { "LeftEye": 1, "RightEye": 1 }, "axis": [0, 1, 0], "sign": 1, "default": 0, "range": [-35, 35], "unit": "deg", "desc": "+ = melirik ke kiri karakter" }, "eye_pitch": { "type": "axis", "bones": { "LeftEye": 1, "RightEye": 1 }, "axis": [1, 0, 0], "sign": -1, "default": 0, "range": [-30, 30], "unit": "deg", "desc": "+ = melirik ke atas" }, "jaw_open": { "type": "axis", "bones": { "Jaw": 1 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": [0, 35], "unit": "deg", "desc": "+ = rahang terbuka" } };
+const channels$n = { "lean": { "type": "axis", "bones": { "Spine": 0.4, "Spine1": 0.3, "Spine2": 0.3 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": [-30, 60], "unit": "deg", "desc": "+ = membungkuk ke depan" }, "side_lean": { "type": "axis", "bones": { "Spine": 0.4, "Spine1": 0.3, "Spine2": 0.3 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": [-35, 35], "unit": "deg", "desc": "+ = miring ke kanan karakter" }, "twist": { "type": "axis", "bones": { "Spine": 0.4, "Spine1": 0.3, "Spine2": 0.3 }, "axis": [0, 1, 0], "sign": 1, "default": 0, "range": [-60, 60], "unit": "deg", "desc": "+ = dada berputar ke kiri karakter" }, "hip_pitch": { "type": "axis", "bones": { "Hips": 1 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": [-30, 45], "unit": "deg", "desc": "+ = panggul condong ke depan" }, "hip_twist": { "type": "axis", "bones": { "Hips": 1 }, "axis": [0, 1, 0], "sign": 1, "default": 0, "range": [-60, 60], "unit": "deg", "desc": "+ = panggul berputar ke kiri" }, "hip_roll": { "type": "axis", "bones": { "Hips": 1 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": [-25, 25], "unit": "deg", "desc": "+ = panggul miring ke kanan" }, "head_pitch": { "type": "axis", "bones": { "Neck": 0.4, "Head": 0.6 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": [-40, 45], "unit": "deg", "desc": "+ = kepala menunduk" }, "head_yaw": { "type": "axis", "bones": { "Neck": 0.4, "Head": 0.6 }, "axis": [0, 1, 0], "sign": 1, "default": 0, "range": [-70, 70], "unit": "deg", "desc": "+ = menoleh ke kiri" }, "legL_swing": { "type": "axis", "bones": { "LeftUpLeg": 1 }, "axis": [1, 0, 0], "sign": -1, "default": 0, "range": [-45, 120], "unit": "deg", "desc": "+ = paha terangkat ke depan" }, "legL_abd": { "type": "axis", "bones": { "LeftUpLeg": 1 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": [-30, 60], "unit": "deg", "desc": "+ = paha membuka ke luar" }, "kneeL": { "type": "axis", "bones": { "LeftLeg": 1 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": [-5, 150], "unit": "deg", "desc": "+ = lutut menekuk" }, "footL_pitch": { "type": "axis", "bones": { "LeftFoot": 1 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": [-45, 60], "unit": "deg", "desc": "+ = ujung kaki turun" }, "elbowL": { "type": "axis", "bones": { "LeftForeArm": 1 }, "axis": [0, 1, 0], "sign": -1, "default": 10, "range": [-5, 150], "unit": "deg", "desc": "+ = siku menekuk" }, "legR_swing": { "type": "axis", "bones": { "RightUpLeg": 1 }, "axis": [1, 0, 0], "sign": -1, "default": 0, "range": [-45, 120], "unit": "deg", "desc": "+ = paha terangkat ke depan" }, "legR_abd": { "type": "axis", "bones": { "RightUpLeg": 1 }, "axis": [0, 0, 1], "sign": -1, "default": 0, "range": [-30, 60], "unit": "deg", "desc": "+ = paha membuka ke luar" }, "kneeR": { "type": "axis", "bones": { "RightLeg": 1 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": [-5, 150], "unit": "deg", "desc": "+ = lutut menekuk" }, "footR_pitch": { "type": "axis", "bones": { "RightFoot": 1 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": [-45, 60], "unit": "deg", "desc": "+ = ujung kaki turun" }, "elbowR": { "type": "axis", "bones": { "RightForeArm": 1 }, "axis": [0, 1, 0], "sign": 1, "default": 10, "range": [-5, 150], "unit": "deg", "desc": "+ = siku menekuk" }, "hip_x": { "type": "pos", "bone": "Hips", "axis": [1, 0, 0], "default": 0, "range": [-1.5, 1.5], "unit": "m", "desc": "offset posisi panggul (frame model: X kiri, Y atas, Z depan)" }, "hip_y": { "type": "pos", "bone": "Hips", "axis": [0, 1, 0], "default": 0, "range": [-0.6, 0.5], "unit": "m", "desc": "offset posisi panggul (frame model: X kiri, Y atas, Z depan)" }, "hip_z": { "type": "pos", "bone": "Hips", "axis": [0, 0, 1], "default": 0, "range": [-1.5, 1.5], "unit": "m", "desc": "offset posisi panggul (frame model: X kiri, Y atas, Z depan)" }, "root_pitch": { "type": "axis", "bones": { "Hips": 1 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": null, "unit": "deg", "desc": "+ = rotasi pitch seluruh tubuh ke depan (salto/roll)" }, "root_yaw": { "type": "axis", "bones": { "Hips": 1 }, "axis": [0, 1, 0], "sign": 1, "default": 0, "range": null, "unit": "deg", "desc": "+ = rotasi yaw seluruh tubuh ke kiri" }, "root_roll": { "type": "axis", "bones": { "Hips": 1 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": null, "unit": "deg", "desc": "+ = rotasi roll seluruh tubuh miring ke kanan" }, "thumbL": { "type": "axis", "bones": { "LeftHandThumb1": 0.3, "LeftHandThumb2": 0.9, "LeftHandThumb3": 0.9 }, "axis": [0, 0, 1], "sign": -1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = thumb left menekuk (kepal)" }, "indexL": { "type": "axis", "bones": { "LeftHandIndex1": 1, "LeftHandIndex2": 1.1, "LeftHandIndex3": 0.7 }, "axis": [0, 0, 1], "sign": -1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = index left menekuk (kepal)" }, "middleL": { "type": "axis", "bones": { "LeftHandMiddle1": 1, "LeftHandMiddle2": 1.1, "LeftHandMiddle3": 0.7 }, "axis": [0, 0, 1], "sign": -1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = middle left menekuk (kepal)" }, "ringL": { "type": "axis", "bones": { "LeftHandRing1": 1, "LeftHandRing2": 1.1, "LeftHandRing3": 0.7 }, "axis": [0, 0, 1], "sign": -1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = ring left menekuk (kepal)" }, "littleL": { "type": "axis", "bones": { "LeftHandPinky1": 1, "LeftHandPinky2": 1.1, "LeftHandPinky3": 0.7 }, "axis": [0, 0, 1], "sign": -1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = little left menekuk (kepal)" }, "spreadL": { "type": "axis", "bones": { "LeftHandIndex1": -0.5, "LeftHandRing1": 0.5, "LeftHandPinky1": 1 }, "axis": [0, 1, 0], "sign": 1, "default": 0, "range": [-10, 30], "unit": "deg", "desc": "+ = jari tangan left merenggang" }, "thumbR": { "type": "axis", "bones": { "RightHandThumb1": 0.3, "RightHandThumb2": 0.9, "RightHandThumb3": 0.9 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = thumb right menekuk (kepal)" }, "indexR": { "type": "axis", "bones": { "RightHandIndex1": 1, "RightHandIndex2": 1.1, "RightHandIndex3": 0.7 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = index right menekuk (kepal)" }, "middleR": { "type": "axis", "bones": { "RightHandMiddle1": 1, "RightHandMiddle2": 1.1, "RightHandMiddle3": 0.7 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = middle right menekuk (kepal)" }, "ringR": { "type": "axis", "bones": { "RightHandRing1": 1, "RightHandRing2": 1.1, "RightHandRing3": 0.7 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = ring right menekuk (kepal)" }, "littleR": { "type": "axis", "bones": { "RightHandPinky1": 1, "RightHandPinky2": 1.1, "RightHandPinky3": 0.7 }, "axis": [0, 0, 1], "sign": 1, "default": 0, "range": [-20, 95], "unit": "deg", "desc": "+ = little right menekuk (kepal)" }, "spreadR": { "type": "axis", "bones": { "RightHandIndex1": -0.5, "RightHandRing1": 0.5, "RightHandPinky1": 1 }, "axis": [0, 1, 0], "sign": -1, "default": 0, "range": [-10, 30], "unit": "deg", "desc": "+ = jari tangan right merenggang" }, "eye_yaw": { "type": "axis", "bones": { "LeftEye": 1, "RightEye": 1 }, "axis": [0, 1, 0], "sign": 1, "default": 0, "range": [-35, 35], "unit": "deg", "desc": "+ = melirik ke kiri karakter" }, "eye_pitch": { "type": "axis", "bones": { "LeftEye": 1, "RightEye": 1 }, "axis": [1, 0, 0], "sign": -1, "default": 0, "range": [-30, 30], "unit": "deg", "desc": "+ = melirik ke atas" }, "jaw_open": { "type": "axis", "bones": { "Jaw": 1 }, "axis": [1, 0, 0], "sign": 1, "default": 0, "range": [0, 35], "unit": "deg", "desc": "+ = rahang terbuka" } };
 const aims = { "armL": { "bone": "LeftArm", "child": "LeftForeArm", "lateral": [1, 0, 0], "default": { "elev": -75, "azim": 0, "roll": 0 }, "range": { "elev": [-95, 175], "azim": [-100, 140], "roll": [-120, 120] }, "desc": "elev: sudut di atas horizontal (-90 = tergantung); azim: 0 = ke samping, 90 = ke depan; roll: putar sekitar lengan" }, "armR": { "bone": "RightArm", "child": "RightForeArm", "lateral": [-1, 0, 0], "default": { "elev": -75, "azim": 0, "roll": 0 }, "range": { "elev": [-95, 175], "azim": [-100, 140], "roll": [-120, 120] }, "desc": "elev: sudut di atas horizontal (-90 = tergantung); azim: 0 = ke samping, 90 = ke depan; roll: putar sekitar lengan" } };
 const rest$1 = { "parents": [-1, 0, 1, 2, 3, 4, 5, 6, 3, 8, 9, 10, 3, 12, 0, 14, 15, 16, 0, 18, 19, 20, 7, 22, 23, 7, 25, 26, 7, 28, 29, 7, 31, 32, 7, 34, 35, 11, 37, 38, 11, 40, 41, 11, 43, 44, 11, 46, 47, 11, 49, 50, 13, 13, 13], "offsets": [[0, 0.9675, -0.01057], [0, 0.10807, 891e-5], [0, 0.19205, -0.01352], [0, 0.13268, -0.01981], [0.03781, 0.1217, 738e-5], [0.13919, -0.02671, -0.06951], [0.30339, -1e-5, 0], [0.26976, 0, -1e-5], [-0.03781, 0.1217, 738e-5], [-0.13919, -0.02671, -0.06951], [-0.3034, -1e-5, 0], [-0.26975, 1e-5, -1e-5], [0, 0.1639, -0.02378], [0, 0.09096, 0.01897], [0.09009, -0.01451, 526e-5], [0.05211, -0.42231, -0.01271], [0.0286, -0.39602, -0.06271], [-8e-4, -0.10454, 0.16578], [-0.09009, -0.01451, 527e-5], [-0.05211, -0.42232, -0.01271], [-0.02859, -0.39602, -0.06271], [8e-4, -0.10454, 0.16578], [0.02, -4e-3, 0.026], [0.021, -15e-4, 0.021], [0.0224, -16e-4, 0.0224], [0.075, 0, 0.022], [0.04, 0, 0], [0.025, 0, 0], [0.078, 0, 7e-3], [0.045, 0, 0], [0.028, 0, 0], [0.074, 0, -8e-3], [0.042, 0, 0], [0.026, 0, 0], [0.068, 0, -0.022], [0.032, 0, 0], [0.02, 0, 0], [-0.02, -4e-3, 0.026], [-0.021, -15e-4, 0.021], [-0.0224, -16e-4, 0.0224], [-0.075, 0, 0.022], [-0.04, 0, 0], [-0.025, 0, 0], [-0.078, 0, 7e-3], [-0.045, 0, 0], [-0.028, 0, 0], [-0.074, 0, -8e-3], [-0.042, 0, 0], [-0.026, 0, 0], [-0.068, 0, -0.022], [-0.032, 0, 0], [-0.02, 0, 0], [0.032, 0.07, 0.08], [-0.032, 0.07, 0.08], [0, 0.02, 0.015]] };
 const motus = {
@@ -58,7 +59,7 @@ const hands = { "channels": ["thumbL", "indexL", "middleL", "ringL", "littleL", 
 const arms = { "channels": ["elbowL", "elbowR"], "aims": ["armL", "armR"], "joints": ["LeftShoulder", "LeftArm", "LeftForeArm", "RightShoulder", "RightArm", "RightForeArm"] };
 const torso = { "channels": ["lean", "side_lean", "twist", "hip_pitch", "hip_twist", "hip_roll", "head_pitch", "head_yaw"], "joints": ["Hips", "Spine", "Spine1", "Spine2", "Neck"] };
 const legs = { "channels": ["legL_swing", "legL_abd", "kneeL", "footL_pitch", "legR_swing", "legR_abd", "kneeR", "footR_pitch"], "joints": ["LeftUpLeg", "LeftLeg", "LeftFoot", "LeftToeBase", "RightUpLeg", "RightLeg", "RightFoot", "RightToeBase"] };
-const root = { "channels": ["hip_x", "hip_y", "hip_z"], "move": true, "joints": ["Hips"] };
+const root = { "channels": ["hip_x", "hip_y", "hip_z", "root_pitch", "root_yaw", "root_roll"], "move": true, "joints": ["Hips"] };
 const partsData = {
   face,
   hands,
@@ -132,14 +133,23 @@ function runChannels(_args, options = {}) {
     if (partFilter && part2 !== partFilter) {
       continue;
     }
-    const range = def.range || [def.min ?? -180, def.max ?? 180];
+    let min = null;
+    let max = null;
+    if (def.range !== void 0 && def.range !== null) {
+      min = def.range[0];
+      max = def.range[1];
+    } else if (def.min != null || def.max != null) {
+      min = def.min ?? -180;
+      max = def.max ?? 180;
+    }
+    const bone = def.bone || (def.bones ? Object.keys(def.bones).join(", ") : null);
     results.push({
       name: name2,
       part: part2,
-      bone: def.bone || null,
+      bone,
       type: def.type || "rot",
-      min: range[0],
-      max: range[1],
+      min,
+      max,
       default: def.default ?? 0
     });
   }
@@ -166,15 +176,16 @@ function runChannels(_args, options = {}) {
     console.log(`Channels (${results.length}${partFilter ? ` for part '${partFilter}'` : ""}):`);
     for (const ch of results) {
       const typeStr = ch.type === "pos" ? "pos (m)" : "rot (deg)";
+      const rangeStr = ch.min != null && ch.max != null ? `[${ch.min}, ${ch.max}]` : "unbounded";
       console.log(
-        `  ${ch.name.padEnd(16)} [${ch.part.padEnd(5)}] ${ch.bone?.padEnd(14) || ""} range: [${ch.min}, ${ch.max}] ${typeStr}`
+        `  ${ch.name.padEnd(16)} [${ch.part.padEnd(5)}] ${(ch.bone || "").padEnd(14)} range: ${rangeStr.padEnd(12)} ${typeStr}`
       );
     }
   }
   return 0;
 }
 const styles = { "realistic": { "ang_speed_warn": 720, "ang_speed_fail": 1200, "ang_accel_warn": 6e4, "loop_pose_diff_deg": 8, "root_speed_warn": 8, "root_speed_fail": 12 }, "stylized": { "ang_speed_warn": 1200, "ang_speed_fail": 2e3, "ang_accel_warn": 12e4, "loop_pose_diff_deg": 10, "root_speed_warn": 10, "root_speed_fail": 15 }, "exaggerated": { "ang_speed_warn": 1800, "ang_speed_fail": 3e3, "ang_accel_warn": 24e4, "loop_pose_diff_deg": 15, "root_speed_warn": 14, "root_speed_fail": 22 } };
-const anatomy = { "knee_flex_min": -5, "knee_flex_max": 160, "elbow_flex_max": 165, "neck_bend_max": 70 };
+const anatomy = { "knee_flex_min": -5, "knee_flex_max": 160, "elbow_flex_max": 150, "neck_bend_max": 70 };
 const floor = { "penetration_fail_m": 0.04, "contact_height_m": 0.03, "floating_warn_m": 0.035, "floating_fail_m": 0.08, "slide_warn_ms": 0.25 };
 const limitsData = {
   styles,
@@ -540,7 +551,8 @@ const RULE_CODES = {
   TORSO_OVERRIDE_CONFLICT: "TORSO_OVERRIDE_CONFLICT",
   WINDOW_COLLISION: "WINDOW_COLLISION",
   MOVE_COLLISION: "MOVE_COLLISION",
-  COM_BALANCE_UNSTABLE: "COM_BALANCE_UNSTABLE"
+  COM_BALANCE_UNSTABLE: "COM_BALANCE_UNSTABLE",
+  HAND_CONTACT_HEIGHT: "HAND_CONTACT_HEIGHT"
 };
 function createIssue({
   level = "FAIL",
@@ -981,6 +993,9 @@ const CHANNEL_HIERARCHY_MAP = {
   hip_pitch: HIERARCHY_LEVELS.PELVIS,
   hip_twist: HIERARCHY_LEVELS.PELVIS,
   hip_roll: HIERARCHY_LEVELS.PELVIS,
+  root_pitch: HIERARCHY_LEVELS.PELVIS,
+  root_yaw: HIERARCHY_LEVELS.PELVIS,
+  root_roll: HIERARCHY_LEVELS.PELVIS,
   // Level 1: Spine, Torso & Thighs
   lean: HIERARCHY_LEVELS.SPINE,
   side_lean: HIERARCHY_LEVELS.SPINE,
@@ -1366,7 +1381,7 @@ function composeClips(baseClip, layers = [], options = {}) {
     warnings
   };
 }
-function check$8({ ctx, limits, poses, tAt }) {
+function check$9({ ctx, limits, poses, tAt }) {
   const an = limits.anatomy;
   const I = ctx.idx;
   const lines = [];
@@ -1484,9 +1499,9 @@ function check$8({ ctx, limits, poses, tAt }) {
 }
 const anatomyRule = {
   name: "anatomy",
-  check: check$8
+  check: check$9
 };
-function check$7({ ctx, limits, style = "stylized", poses, frames, FPS: FPS2 = 30 }) {
+function check$8({ ctx, limits, style = "stylized", poses, frames, FPS: FPS2 = 30 }) {
   const lim = limits.styles[style];
   const lines = [];
   const issues = [];
@@ -1570,7 +1585,7 @@ function check$7({ ctx, limits, style = "stylized", poses, frames, FPS: FPS2 = 3
 }
 const angularSpeedRule = {
   name: "angular-speed",
-  check: check$7
+  check: check$8
 };
 function checkChannelRanges(rig, clip) {
   const w = [];
@@ -1592,6 +1607,9 @@ function checkChannelRanges(rig, clip) {
       continue;
     }
     const rg = channelRange(rig, c);
+    if (!rg) {
+      continue;
+    }
     let worst = 0;
     let wt = 0;
     let valAtWorst = 0;
@@ -1627,14 +1645,14 @@ function checkChannelRanges(rig, clip) {
   }
   return { lines: w, issues };
 }
-function check$6({ rig, clip }) {
+function check$7({ rig, clip }) {
   const result = checkChannelRanges(rig, clip);
   const lines = result.lines.map((item) => Array.isArray(item) ? item : ["WARN", item]);
   return { lines, issues: result.issues };
 }
 const channelRangesRule = {
   name: "channel-ranges",
-  check: check$6
+  check: check$7
 };
 function isFootPlanted(clip, t, side, toeHeight = null, floorY2 = 0, contactThreshold = 0.03) {
   const isLeft = side === "Left" || side === "kiri" || side === "L";
@@ -1929,7 +1947,7 @@ function isPointInPolygon2D(pt, poly, margin = 0.03) {
   const effectiveDist = Math.max(0, minDist - margin);
   return { inside: effectiveDist <= 1e-5, distance: effectiveDist };
 }
-function check$5({ ctx, limits, clip, poses, floorY: floorY2, tAt, FPS: FPS2 = 30 }) {
+function check$6({ ctx, limits, clip, poses, floorY: floorY2, tAt, FPS: FPS2 = 30 }) {
   const vm = clip.validate || {};
   const isStance = clip.name?.includes("stance") || clip.tags?.includes("stance") || clip.claims?.type === "stance" || vm.stance === true;
   const isExplicit = vm.com_balance === true || vm.balance === true || isStance;
@@ -2034,9 +2052,9 @@ function check$5({ ctx, limits, clip, poses, floorY: floorY2, tAt, FPS: FPS2 = 3
 }
 const comBalanceRule = {
   name: "com-balance",
-  check: check$5
+  check: check$6
 };
-function check$4({ ctx, limits, clip, poses, floorY: floorY2, tAt, FPS: FPS2 = 30 }) {
+function check$5({ ctx, limits, clip, poses, floorY: floorY2, tAt, FPS: FPS2 = 30 }) {
   const fl = limits.floor;
   const vm = clip.validate || {};
   const I = ctx.idx;
@@ -2068,6 +2086,11 @@ function check$4({ ctx, limits, clip, poses, floorY: floorY2, tAt, FPS: FPS2 = 3
           fl.contact_height_m
         );
         if (nextInC) {
+          const hasPlanted = Boolean(clip.windows?.planted_L || clip.windows?.planted_R);
+          const isAirClip = clip.tags?.includes("air") || clip.tags?.includes("jump") || clip.name === "jump";
+          if (!hasPlanted && (f === 0 || isAirClip)) {
+            continue;
+          }
           const tn = poses[f + 1].pos[ti];
           const spd = Math.hypot(tn[0] - tp[0], tn[2] - tp[2]) * FPS2;
           slide.push(spd);
@@ -2083,9 +2106,10 @@ function check$4({ ctx, limits, clip, poses, floorY: floorY2, tAt, FPS: FPS2 = 3
   const pen = floorY2 - minToe;
   if (vm.check_floor !== false) {
     const isPenFail = pen > fl.penetration_fail_m;
+    const toeJoint = minToeSide === "kiri" ? "LeftToeBase" : "RightToeBase";
     lines.push([
       isPenFail ? "FAIL" : "PASS",
-      `lantai: toe ${minToeSide} terendah ${(minToe - floorY2).toFixed(3)} m dari lantai di t=${minToeT.toFixed(2)}s (penetrasi ${Math.max(
+      `lantai: toe ${minToeSide} terendah Y=${minToe.toFixed(3)} m (${(minToe - floorY2).toFixed(3)} m dari lantai referensi ${floorY2.toFixed(3)} m) di t=${minToeT.toFixed(2)}s (penetrasi ${Math.max(
         pen,
         0
       ).toFixed(3)} m, batas maks ${fl.penetration_fail_m} m)`
@@ -2095,12 +2119,12 @@ function check$4({ ctx, limits, clip, poses, floorY: floorY2, tAt, FPS: FPS2 = 3
         createIssue({
           level: "FAIL",
           rule: RULE_CODES.FLOOR_PENETRATION,
-          joint: minToeSide === "kiri" ? "LeftToeBase" : "RightToeBase",
+          joint: toeJoint,
           t: minToeT,
           value: pen,
           limit: fl.penetration_fail_m,
           unit: "m",
-          hint: `Raise hip_y/root by at least ${(pen - fl.penetration_fail_m).toFixed(3)}m or adjust foot flexion.`
+          hint: `${toeJoint} world Y=${minToe.toFixed(3)}m penetrates ground plane (floorY=${floorY2.toFixed(3)}m) by ${pen.toFixed(3)}m. Raise hip_y/root by at least ${(pen - fl.penetration_fail_m).toFixed(3)}m or adjust foot flexion.`
         })
       );
     }
@@ -2199,6 +2223,107 @@ function check$4({ ctx, limits, clip, poses, floorY: floorY2, tAt, FPS: FPS2 = 3
 }
 const floorRule = {
   name: "floor",
+  check: check$5
+};
+function check$4({ ctx, clip, poses, tAt }) {
+  const lines = [];
+  const issues = [];
+  const I = ctx.idx;
+  const handSpecs = [];
+  const contacts = clip.contacts || {};
+  for (const side of ["Left", "Right"]) {
+    const key = side === "Left" ? "hand_L" : "hand_R";
+    const altKey = side === "Left" ? "left_hand" : "right_hand";
+    const spec = contacts[key] || contacts[altKey] || (contacts.hands ? { ...contacts.hands } : null);
+    const win = clip.windows?.[`planted_hand_${side === "Left" ? "L" : "R"}`];
+    if (spec || win) {
+      const targetHeight = spec?.height ?? clip.validate?.obstacle_height ?? 0.9;
+      const tolerance = spec?.tolerance ?? 0.05;
+      let t0 = 0;
+      let t1 = clip.duration || 1;
+      if (Array.isArray(win) && win.length >= 2) {
+        t0 = win[0];
+        t1 = win[1];
+      } else if (spec?.t != null) {
+        if (Array.isArray(spec.t)) {
+          t0 = spec.t[0];
+          t1 = spec.t[1];
+        } else {
+          t0 = spec.t;
+          t1 = spec.t;
+        }
+      }
+      handSpecs.push({
+        joint: `${side}Hand`,
+        side,
+        targetHeight,
+        tolerance,
+        t0,
+        t1
+      });
+    }
+  }
+  if (handSpecs.length === 0) {
+    return { lines, issues };
+  }
+  for (const spec of handSpecs) {
+    const jointIdx = I[spec.joint];
+    if (jointIdx == null) continue;
+    let worstDiff = 0;
+    let worstT = spec.t0;
+    let worstHandY = 0;
+    let sampleCount = 0;
+    let bestHandY = null;
+    let bestDiff = Infinity;
+    for (let f = 0; f < poses.length; f++) {
+      const t = tAt(f);
+      if (t >= spec.t0 - 1e-4 && t <= spec.t1 + 1e-4) {
+        sampleCount++;
+        const handPos = poses[f].pos[jointIdx];
+        const handY = handPos[1];
+        const diff = Math.abs(handY - spec.targetHeight);
+        if (diff < bestDiff) {
+          bestDiff = diff;
+          bestHandY = handY;
+        }
+        if (diff > worstDiff) {
+          worstDiff = diff;
+          worstT = t;
+          worstHandY = handY;
+        }
+      }
+    }
+    if (sampleCount === 0) continue;
+    if (worstDiff > spec.tolerance) {
+      const isFail = worstDiff > spec.tolerance * 2.5;
+      const level = isFail ? "FAIL" : "WARN";
+      lines.push([
+        level,
+        `kontak tangan: ${spec.joint} di t=${worstT.toFixed(2)}s berada di Y=${worstHandY.toFixed(3)} m (target ${spec.targetHeight.toFixed(2)} m ± ${spec.tolerance} m, selisih ${worstDiff.toFixed(3)} m)`
+      ]);
+      issues.push(
+        createIssue({
+          level,
+          rule: RULE_CODES.HAND_CONTACT_HEIGHT,
+          joint: spec.joint,
+          t: worstT,
+          value: worstHandY,
+          limit: spec.targetHeight,
+          unit: "m",
+          hint: `Adjust arm angles or shoulder elevation so ${spec.joint} reaches target obstacle height ${spec.targetHeight.toFixed(2)}m (currently ${worstHandY.toFixed(3)}m, error ${worstDiff.toFixed(3)}m).`
+        })
+      );
+    } else {
+      lines.push([
+        "PASS",
+        `kontak tangan: ${spec.joint} menumpu di ketinggian ${spec.targetHeight.toFixed(2)} m (terukur ${(bestHandY ?? spec.targetHeight).toFixed(3)} m) pada t=${spec.t0.toFixed(2)}s..${spec.t1.toFixed(2)}s`
+      ]);
+    }
+  }
+  return { lines, issues };
+}
+const handContactRule = {
+  name: "hand-contact",
   check: check$4
 };
 function check$3({ ctx, clip, limits, style = "stylized", poses, frames }) {
@@ -2499,6 +2624,7 @@ function createDefaultRuleRegistry() {
   registry.register(versionRule);
   registry.register(channelRangesRule);
   registry.register(comBalanceRule);
+  registry.register(handContactRule);
   return registry;
 }
 const defaultRuleRegistry = createDefaultRuleRegistry();
@@ -3396,6 +3522,46 @@ function renderComparisonContactSheet(rig, ctx, clipA, clipB, options = {}) {
     height: totalH
   };
 }
+function renderSingleFrameSvg(rig, ctx, clip, t, options = {}) {
+  const cellW = options.width || 320;
+  const cellH = options.height || 420;
+  const g = new SvgContext2D(cellW, cellH);
+  const silhouette = !!options.silhouette;
+  const C2 = { ...DEFAULT_PALETTE };
+  if (silhouette) {
+    C2["--fig"] = "#00f0ff";
+    C2["--figL"] = "#00f0ff";
+    C2["--figR"] = "#00b4d8";
+    C2["--view"] = "#0d1117";
+  }
+  g.fillStyle = C2["--view"] || "#111318";
+  g.fillRect(0, 0, cellW, cellH);
+  const pose = evalPose(rig, ctx, clip, t);
+  const camYaw = options.yaw ?? 0.55;
+  const camPitch = options.pitch ?? 0.15;
+  const camDist = options.dist ?? 4.2;
+  const target = options.target || [pose.root[0], 0.9 + pose.root[1], pose.root[2]];
+  const B = buildCamBasis(camYaw, camPitch, camDist, target);
+  const KF = cellH / 2 * 2.2;
+  const yFloor = floorY(ctx);
+  const prjFn = (p) => projectPoint(p, 0, 0, cellW, cellH, KF, B);
+  const fl0 = prjFn([-1.5 + pose.root[0], yFloor, pose.root[2]]);
+  const fl1 = prjFn([1.5 + pose.root[0], yFloor, pose.root[2]]);
+  if (fl0 && fl1) {
+    g.strokeStyle = C2["--grid2"] || "#30363d";
+    g.lineWidth = 1;
+    g.beginPath();
+    g.moveTo(fl0[0], fl0[1]);
+    g.lineTo(fl1[0], fl1[1]);
+    g.stroke();
+  }
+  drawFigure(g, pose, ctx, rig, 1, false, prjFn, C2, KF);
+  g.fillStyle = C2["--muted"] || "#8b949e";
+  g.font = "12px monospace";
+  g.textAlign = "left";
+  g.fillText(`t=${t.toFixed(2)}s / ${(clip.duration || 1).toFixed(2)}s`, 12, cellH - 12);
+  return g.toSvg ? g.toSvg() : null;
+}
 function runCheck(args, options = {}) {
   const inputPath = args[0];
   if (!inputPath) {
@@ -3556,6 +3722,25 @@ const dodge = {
   events: events$d,
   claims: claims$d
 };
+const __vite_glob_0_0$1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  changelog: changelog$d,
+  channels: channels$m,
+  claims: claims$d,
+  default: dodge,
+  duration: duration$m,
+  events: events$d,
+  expressions: expressions$f,
+  format_version: format_version$d,
+  group: group$d,
+  loop: loop$d,
+  move: move$4,
+  name: name$m,
+  tags: tags$d,
+  version: version$d,
+  vrm_spec: vrm_spec$d,
+  windows: windows$8
+}, Symbol.toStringTag, { value: "Module" }));
 const name$l = "hands_eyes_jaw";
 const vrm_spec$c = "1.0";
 const format_version$c = 1;
@@ -3584,6 +3769,23 @@ const hands_eyes_jaw = {
   events: events$c,
   claims: claims$c
 };
+const __vite_glob_0_1$1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  changelog: changelog$c,
+  channels: channels$l,
+  claims: claims$c,
+  default: hands_eyes_jaw,
+  duration: duration$l,
+  events: events$c,
+  expressions: expressions$e,
+  format_version: format_version$c,
+  group: group$c,
+  loop: loop$c,
+  name: name$l,
+  tags: tags$c,
+  version: version$c,
+  vrm_spec: vrm_spec$c
+}, Symbol.toStringTag, { value: "Module" }));
 const name$k = "idle";
 const vrm_spec$b = "1.0";
 const format_version$b = 1;
@@ -3612,6 +3814,23 @@ const idle = {
   events: events$b,
   claims: claims$b
 };
+const __vite_glob_0_2$1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  changelog: changelog$b,
+  channels: channels$k,
+  claims: claims$b,
+  default: idle,
+  duration: duration$k,
+  events: events$b,
+  expressions: expressions$d,
+  format_version: format_version$b,
+  group: group$b,
+  loop: loop$b,
+  name: name$k,
+  tags: tags$b,
+  version: version$b,
+  vrm_spec: vrm_spec$b
+}, Symbol.toStringTag, { value: "Module" }));
 const name$j = "jump";
 const vrm_spec$a = "1.0";
 const format_version$a = 1;
@@ -3642,6 +3861,24 @@ const jump = {
   events: events$a,
   claims: claims$a
 };
+const __vite_glob_0_3$1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  changelog: changelog$a,
+  channels: channels$j,
+  claims: claims$a,
+  default: jump,
+  duration: duration$j,
+  events: events$a,
+  expressions: expressions$c,
+  format_version: format_version$a,
+  group: group$a,
+  loop: loop$a,
+  move: move$3,
+  name: name$j,
+  tags: tags$a,
+  version: version$a,
+  vrm_spec: vrm_spec$a
+}, Symbol.toStringTag, { value: "Module" }));
 const name$i = "kick_axe";
 const vrm_spec$9 = "1.0";
 const format_version$9 = 1;
@@ -3676,6 +3913,26 @@ const kick_axe = {
   claims: claims$9,
   validate: validate$6
 };
+const __vite_glob_0_4$1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  changelog: changelog$9,
+  channels: channels$i,
+  claims: claims$9,
+  default: kick_axe,
+  duration: duration$i,
+  events: events$9,
+  expressions: expressions$b,
+  format_version: format_version$9,
+  group: group$9,
+  loop: loop$9,
+  move: move$2,
+  name: name$i,
+  tags: tags$9,
+  validate: validate$6,
+  version: version$9,
+  vrm_spec: vrm_spec$9,
+  windows: windows$7
+}, Symbol.toStringTag, { value: "Module" }));
 const name$h = "kick_back";
 const vrm_spec$8 = "1.0";
 const format_version$8 = 1;
@@ -3708,6 +3965,25 @@ const kick_back = {
   claims: claims$8,
   validate: validate$5
 };
+const __vite_glob_0_5$1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  changelog: changelog$8,
+  channels: channels$h,
+  claims: claims$8,
+  default: kick_back,
+  duration: duration$h,
+  events: events$8,
+  expressions: expressions$a,
+  format_version: format_version$8,
+  group: group$8,
+  loop: loop$8,
+  name: name$h,
+  tags: tags$8,
+  validate: validate$5,
+  version: version$8,
+  vrm_spec: vrm_spec$8,
+  windows: windows$6
+}, Symbol.toStringTag, { value: "Module" }));
 const name$g = "kick_front";
 const vrm_spec$7 = "1.0";
 const format_version$7 = 1;
@@ -3740,6 +4016,25 @@ const kick_front = {
   claims: claims$7,
   validate: validate$4
 };
+const __vite_glob_0_6$1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  changelog: changelog$7,
+  channels: channels$g,
+  claims: claims$7,
+  default: kick_front,
+  duration: duration$g,
+  events: events$7,
+  expressions: expressions$9,
+  format_version: format_version$7,
+  group: group$7,
+  loop: loop$7,
+  name: name$g,
+  tags: tags$7,
+  validate: validate$4,
+  version: version$7,
+  vrm_spec: vrm_spec$7,
+  windows: windows$5
+}, Symbol.toStringTag, { value: "Module" }));
 const name$f = "kick_low";
 const vrm_spec$6 = "1.0";
 const format_version$6 = 1;
@@ -3772,6 +4067,25 @@ const kick_low = {
   claims: claims$6,
   validate: validate$3
 };
+const __vite_glob_0_7$1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  changelog: changelog$6,
+  channels: channels$f,
+  claims: claims$6,
+  default: kick_low,
+  duration: duration$f,
+  events: events$6,
+  expressions: expressions$8,
+  format_version: format_version$6,
+  group: group$6,
+  loop: loop$6,
+  name: name$f,
+  tags: tags$6,
+  validate: validate$3,
+  version: version$6,
+  vrm_spec: vrm_spec$6,
+  windows: windows$4
+}, Symbol.toStringTag, { value: "Module" }));
 const name$e = "kick_roundhouse";
 const vrm_spec$5 = "1.0";
 const format_version$5 = 1;
@@ -3806,6 +4120,26 @@ const kick_roundhouse = {
   claims: claims$5,
   validate: validate$2
 };
+const __vite_glob_0_8$1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  changelog: changelog$5,
+  channels: channels$e,
+  claims: claims$5,
+  default: kick_roundhouse,
+  duration: duration$e,
+  events: events$5,
+  expressions: expressions$7,
+  format_version: format_version$5,
+  group: group$5,
+  loop: loop$5,
+  move: move$1,
+  name: name$e,
+  tags: tags$5,
+  validate: validate$2,
+  version: version$5,
+  vrm_spec: vrm_spec$5,
+  windows: windows$3
+}, Symbol.toStringTag, { value: "Module" }));
 const name$d = "kick_side";
 const vrm_spec$4 = "1.0";
 const format_version$4 = 1;
@@ -3838,6 +4172,25 @@ const kick_side = {
   claims: claims$4,
   validate: validate$1
 };
+const __vite_glob_0_9 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  changelog: changelog$4,
+  channels: channels$d,
+  claims: claims$4,
+  default: kick_side,
+  duration: duration$d,
+  events: events$4,
+  expressions: expressions$6,
+  format_version: format_version$4,
+  group: group$4,
+  loop: loop$4,
+  name: name$d,
+  tags: tags$4,
+  validate: validate$1,
+  version: version$4,
+  vrm_spec: vrm_spec$4,
+  windows: windows$2
+}, Symbol.toStringTag, { value: "Module" }));
 const name$c = "parry";
 const vrm_spec$3 = "1.0";
 const format_version$3 = 1;
@@ -3868,6 +4221,24 @@ const parry = {
   events: events$3,
   claims: claims$3
 };
+const __vite_glob_0_10 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  changelog: changelog$3,
+  channels: channels$c,
+  claims: claims$3,
+  default: parry,
+  duration: duration$c,
+  events: events$3,
+  expressions: expressions$5,
+  format_version: format_version$3,
+  group: group$3,
+  loop: loop$3,
+  name: name$c,
+  tags: tags$3,
+  version: version$3,
+  vrm_spec: vrm_spec$3,
+  windows: windows$1
+}, Symbol.toStringTag, { value: "Module" }));
 const name$b = "slash";
 const vrm_spec$2 = "1.0";
 const format_version$2 = 1;
@@ -3898,6 +4269,24 @@ const slash = {
   events: events$2,
   claims: claims$2
 };
+const __vite_glob_0_11 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  changelog: changelog$2,
+  channels: channels$b,
+  claims: claims$2,
+  default: slash,
+  duration: duration$b,
+  events: events$2,
+  expressions: expressions$4,
+  format_version: format_version$2,
+  group: group$2,
+  loop: loop$2,
+  name: name$b,
+  tags: tags$2,
+  version: version$2,
+  vrm_spec: vrm_spec$2,
+  windows
+}, Symbol.toStringTag, { value: "Module" }));
 const name$a = "walk";
 const vrm_spec$1 = "1.0";
 const format_version$1 = 1;
@@ -3930,6 +4319,25 @@ const walk = {
   claims: claims$1,
   validate
 };
+const __vite_glob_0_12 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  changelog: changelog$1,
+  channels: channels$a,
+  claims: claims$1,
+  default: walk,
+  duration: duration$a,
+  events: events$1,
+  expressions: expressions$3,
+  format_version: format_version$1,
+  group: group$1,
+  loop: loop$1,
+  move,
+  name: name$a,
+  tags: tags$1,
+  validate,
+  version: version$1,
+  vrm_spec: vrm_spec$1
+}, Symbol.toStringTag, { value: "Module" }));
 const name$9 = "wave";
 const vrm_spec = "1.0";
 const format_version = 1;
@@ -3958,6 +4366,23 @@ const wave = {
   events,
   claims
 };
+const __vite_glob_0_13 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  changelog,
+  channels: channels$9,
+  claims,
+  default: wave,
+  duration: duration$9,
+  events,
+  expressions: expressions$2,
+  format_version,
+  group,
+  loop,
+  name: name$9,
+  tags,
+  version,
+  vrm_spec
+}, Symbol.toStringTag, { value: "Module" }));
 const name$8 = "face_angry";
 const part$8 = "face";
 const description$8 = "Fierce combat facial expression";
@@ -3972,6 +4397,16 @@ const face_angry = {
   channels: channels$8,
   expressions: expressions$1
 };
+const __vite_glob_0_0 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  channels: channels$8,
+  default: face_angry,
+  description: description$8,
+  duration: duration$8,
+  expressions: expressions$1,
+  name: name$8,
+  part: part$8
+}, Symbol.toStringTag, { value: "Module" }));
 const name$7 = "face_happy";
 const part$7 = "face";
 const description$7 = "Happy smiling facial expression";
@@ -3986,6 +4421,16 @@ const face_happy = {
   channels: channels$7,
   expressions
 };
+const __vite_glob_0_1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  channels: channels$7,
+  default: face_happy,
+  description: description$7,
+  duration: duration$7,
+  expressions,
+  name: name$7,
+  part: part$7
+}, Symbol.toStringTag, { value: "Module" }));
 const name$6 = "fist_L";
 const part$6 = "hands";
 const description$6 = "Clenched left fist";
@@ -3998,6 +4443,15 @@ const fist_L = {
   duration: duration$6,
   channels: channels$6
 };
+const __vite_glob_0_2 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  channels: channels$6,
+  default: fist_L,
+  description: description$6,
+  duration: duration$6,
+  name: name$6,
+  part: part$6
+}, Symbol.toStringTag, { value: "Module" }));
 const name$5 = "fist_R";
 const part$5 = "hands";
 const description$5 = "Clenched right fist";
@@ -4010,6 +4464,15 @@ const fist_R = {
   duration: duration$5,
   channels: channels$5
 };
+const __vite_glob_0_3 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  channels: channels$5,
+  default: fist_R,
+  description: description$5,
+  duration: duration$5,
+  name: name$5,
+  part: part$5
+}, Symbol.toStringTag, { value: "Module" }));
 const name$4 = "guard_arms";
 const part$4 = "arms";
 const description$4 = "Defensive combat arm guard position";
@@ -4022,6 +4485,15 @@ const guard_arms = {
   duration: duration$4,
   channels: channels$4
 };
+const __vite_glob_0_4 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  channels: channels$4,
+  default: guard_arms,
+  description: description$4,
+  duration: duration$4,
+  name: name$4,
+  part: part$4
+}, Symbol.toStringTag, { value: "Module" }));
 const name$3 = "open_hand_L";
 const part$3 = "hands";
 const description$3 = "Open relaxed left hand";
@@ -4034,6 +4506,15 @@ const open_hand_L = {
   duration: duration$3,
   channels: channels$3
 };
+const __vite_glob_0_5 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  channels: channels$3,
+  default: open_hand_L,
+  description: description$3,
+  duration: duration$3,
+  name: name$3,
+  part: part$3
+}, Symbol.toStringTag, { value: "Module" }));
 const name$2 = "open_hand_R";
 const part$2 = "hands";
 const description$2 = "Open relaxed right hand";
@@ -4046,6 +4527,15 @@ const open_hand_R = {
   duration: duration$2,
   channels: channels$2
 };
+const __vite_glob_0_6 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  channels: channels$2,
+  default: open_hand_R,
+  description: description$2,
+  duration: duration$2,
+  name: name$2,
+  part: part$2
+}, Symbol.toStringTag, { value: "Module" }));
 const name$1 = "punch_arm_R";
 const part$1 = "arms";
 const description$1 = "Extended right straight punch pose";
@@ -4058,6 +4548,15 @@ const punch_arm_R = {
   duration: duration$1,
   channels: channels$1
 };
+const __vite_glob_0_7 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  channels: channels$1,
+  default: punch_arm_R,
+  description: description$1,
+  duration: duration$1,
+  name: name$1,
+  part: part$1
+}, Symbol.toStringTag, { value: "Module" }));
 const name = "t_pose";
 const part = "torso";
 const description = "Standard neutral T-pose";
@@ -4070,33 +4569,27 @@ const t_pose = {
   duration,
   channels
 };
-const defaultPoses = {
-  face_angry,
-  face_happy,
-  fist_L,
-  fist_R,
-  guard_arms,
-  open_hand_L,
-  open_hand_R,
-  punch_arm_R,
-  t_pose
-};
-const defaultClips = {
-  dodge,
-  slash,
-  parry,
-  idle,
-  walk,
-  jump,
-  wave,
-  kick_front,
-  kick_roundhouse,
-  kick_side,
-  kick_low,
-  kick_axe,
-  kick_back,
-  hands_eyes_jaw
-};
+const __vite_glob_0_8 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  channels,
+  default: t_pose,
+  description,
+  duration,
+  name,
+  part
+}, Symbol.toStringTag, { value: "Module" }));
+const poseModules = /* @__PURE__ */ Object.assign({ "./face_angry.json": __vite_glob_0_0, "./face_happy.json": __vite_glob_0_1, "./fist_L.json": __vite_glob_0_2, "./fist_R.json": __vite_glob_0_3, "./guard_arms.json": __vite_glob_0_4, "./open_hand_L.json": __vite_glob_0_5, "./open_hand_R.json": __vite_glob_0_6, "./punch_arm_R.json": __vite_glob_0_7, "./t_pose.json": __vite_glob_0_8 });
+const defaultPoses = {};
+for (const [filePath, mod] of Object.entries(poseModules)) {
+  const name2 = filePath.replace(/^\.\//, "").replace(/\.json$/, "");
+  defaultPoses[name2] = mod.default || mod;
+}
+const clipModules = /* @__PURE__ */ Object.assign({ "./clips/dodge.json": __vite_glob_0_0$1, "./clips/hands_eyes_jaw.json": __vite_glob_0_1$1, "./clips/idle.json": __vite_glob_0_2$1, "./clips/jump.json": __vite_glob_0_3$1, "./clips/kick_axe.json": __vite_glob_0_4$1, "./clips/kick_back.json": __vite_glob_0_5$1, "./clips/kick_front.json": __vite_glob_0_6$1, "./clips/kick_low.json": __vite_glob_0_7$1, "./clips/kick_roundhouse.json": __vite_glob_0_8$1, "./clips/kick_side.json": __vite_glob_0_9, "./clips/parry.json": __vite_glob_0_10, "./clips/slash.json": __vite_glob_0_11, "./clips/walk.json": __vite_glob_0_12, "./clips/wave.json": __vite_glob_0_13 });
+const defaultClips = {};
+for (const [filePath, mod] of Object.entries(clipModules)) {
+  const name2 = filePath.replace(/^\.\/clips\//, "").replace(/\.json$/, "");
+  defaultClips[name2] = mod.default || mod;
+}
 function computeClipMetrics(rig, ctx, limits, clip, style = "stylized") {
   if (!clip || typeof clip !== "object" || typeof clip.duration !== "number" || Number.isNaN(clip.duration) || clip.duration <= 0 || !clip.channels || typeof clip.channels !== "object") {
     return {
@@ -6239,7 +6732,9 @@ function runSchema(args, options = {}) {
 function runSheet(args, options = {}) {
   const inputPath = args[0];
   if (!inputPath) {
-    throw new Error("Usage: clipkit sheet <clip-file> [--dir <dir>] [--frames <n>] [--silhouette]");
+    throw new Error(
+      "Usage: clipkit sheet <clip-file> [--dir <dir>] [--frames <n>] [--silhouette] [--png] [--gif]"
+    );
   }
   const raw = readInput(inputPath);
   let clip;
@@ -6262,10 +6757,11 @@ function runSheet(args, options = {}) {
   let svgFilename;
   let metaFilename;
   if (options.out) {
-    if (options.out.endsWith(".svg")) {
-      svgFilename = options.out;
+    if (options.out.endsWith(".svg") || options.out.endsWith(".png") || options.out.endsWith(".gif")) {
+      const ext = path.extname(options.out);
       targetDir = path.dirname(options.out);
-      const outBase = path.basename(options.out, ".svg");
+      const outBase = path.basename(options.out, ext);
+      svgFilename = path.join(targetDir, `${outBase}_sheet.svg`);
       metaFilename = path.join(targetDir, `${outBase}_sheet.json`);
     } else {
       targetDir = options.out;
@@ -6287,10 +6783,66 @@ function runSheet(args, options = {}) {
       allowOutside: options.allowOutside
     });
     fs.writeFileSync(safeMetaPath, formatDeterministicJson(sheetRes.metadata), "utf8");
+    let pngPath = null;
+    if (options.png || options.out?.endsWith(".png")) {
+      const pngFilename = svgFilename.replace(/\.svg$/, ".png");
+      try {
+        const safePngPath = resolveSafeOutputPath(pngFilename, {
+          force: options.force,
+          allowOutside: options.allowOutside
+        });
+        execSync(`ffmpeg -y -i "${safeSvgPath}" -frames:v 1 "${safePngPath}" 2>/dev/null`);
+        pngPath = safePngPath;
+      } catch (_e) {
+        try {
+          execSync(`cairosvg "${safeSvgPath}" -o "${pngFilename}" 2>/dev/null`);
+          pngPath = pngFilename;
+        } catch (_e2) {
+          console.warn(
+            "Warning: Could not generate PNG. Please ensure ffmpeg or cairosvg is installed."
+          );
+        }
+      }
+    }
+    let gifPath = null;
+    if (options.gif || options.out?.endsWith(".gif")) {
+      const gifFilename = svgFilename.replace(/\.svg$/, ".gif");
+      try {
+        const safeGifPath = resolveSafeOutputPath(gifFilename, {
+          force: options.force,
+          allowOutside: options.allowOutside
+        });
+        const tmpDir = path.join(
+          "/tmp",
+          `clipkit_gif_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`
+        );
+        fs.mkdirSync(tmpDir, { recursive: true });
+        const gifFps = 15;
+        const dur = clip.duration || 1;
+        const numFrames = Math.max(6, Math.min(60, Math.round(dur * gifFps)));
+        for (let i = 0; i < numFrames; i++) {
+          const t = i / numFrames * dur;
+          const frameSvg = renderSingleFrameSvg(motus2, ctx, clip, t, {
+            silhouette: options.silhouette
+          });
+          const frameFile = path.join(tmpDir, `f_${String(i).padStart(3, "0")}.svg`);
+          fs.writeFileSync(frameFile, frameSvg, "utf8");
+        }
+        execSync(
+          `ffmpeg -y -framerate ${gifFps} -i "${tmpDir}/f_%03d.svg" -vf "split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" "${safeGifPath}" 2>/dev/null`
+        );
+        fs.rmSync(tmpDir, { recursive: true, force: true });
+        gifPath = safeGifPath;
+      } catch (err) {
+        console.warn(`Warning: Could not generate animated GIF: ${err.message}`);
+      }
+    }
     if (options.json) {
       console.log(
         formatDeterministicJson({
           sheetPath: safeSvgPath,
+          pngPath,
+          gifPath,
           metadataPath: safeMetaPath,
           metadata: sheetRes.metadata
         })
@@ -6298,6 +6850,8 @@ function runSheet(args, options = {}) {
     } else {
       console.log(`Contact sheet generated successfully:`);
       console.log(`  SVG image : ${safeSvgPath}`);
+      if (pngPath) console.log(`  PNG image : ${pngPath}`);
+      if (gifPath) console.log(`  GIF anim  : ${gifPath}`);
       console.log(`  Metadata  : ${safeMetaPath}`);
     }
     return 0;
@@ -6631,14 +7185,17 @@ Options:
   --frames <n>             Number of sampled frames (4 to 16, default: 8)
   --view <mode>            Camera view: perspective (default) | front | side | multi
   --silhouette             Render high-contrast silhouette contrast mode
-  --dir <dir>              Output directory for SVG and metadata sidecar
-  --out <file>             Specific SVG output file path
+  --png                    Export rasterized PNG image alongside SVG
+  --gif                    Render animated looping GIF of character motion
+  --dir <dir>              Output directory for SVG, PNG/GIF, and metadata sidecar
+  --out <file>             Specific output file path (.svg, .png, or .gif)
   --json                   Output metadata JSON to stdout
   --force                  Overwrite existing files
   --allow-outside          Allow writing outside current working directory
 
 Example:
   clipkit sheet src/data/clips/slash.json --frames 10 --view multi --dir ./sheets
+  clipkit sheet src/data/clips/jump.json --gif --out ./sheets/jump.gif
 `);
     return;
   }
@@ -6818,7 +7375,7 @@ Commands:
   pose <clip>              Sample world joint positions at timestamp t (e.g. --t 0.5)
   measure <clip>           Measure anatomical clearances, stance, and hand/head metrics
   compose <clip>           Flatten layer clip into a normal clip
-  edit <op> <clip>         Deterministic edit operations (mirror | retime | scale-amplitude | close-loop)
+  edit <op> <clip>         Deterministic edit operations (mirror | retime | scale-amplitude | close-loop | overlap | foot-ik | micro-dynamics)
   compare <a> <b>          Compare kinematics and render side-by-side contact sheet
   version <clip>           Create immutable variant version with manifest.json tracking
 

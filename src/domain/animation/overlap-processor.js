@@ -28,6 +28,9 @@ export const CHANNEL_HIERARCHY_MAP = {
   hip_pitch: HIERARCHY_LEVELS.PELVIS,
   hip_twist: HIERARCHY_LEVELS.PELVIS,
   hip_roll: HIERARCHY_LEVELS.PELVIS,
+  root_pitch: HIERARCHY_LEVELS.PELVIS,
+  root_yaw: HIERARCHY_LEVELS.PELVIS,
+  root_roll: HIERARCHY_LEVELS.PELVIS,
 
   // Level 1: Spine, Torso & Thighs
   lean: HIERARCHY_LEVELS.SPINE,

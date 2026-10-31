@@ -312,6 +312,42 @@
       "unit": "m",
       "desc": "offset posisi panggul (frame model: X kiri, Y atas, Z depan)"
     },
+    "root_pitch": {
+      "type": "axis",
+      "bones": {
+        "Hips": 1
+      },
+      "axis": [1, 0, 0],
+      "sign": 1,
+      "default": 0,
+      "range": null,
+      "unit": "deg",
+      "desc": "+ = rotasi pitch seluruh tubuh ke depan (salto/roll)"
+    },
+    "root_yaw": {
+      "type": "axis",
+      "bones": {
+        "Hips": 1
+      },
+      "axis": [0, 1, 0],
+      "sign": 1,
+      "default": 0,
+      "range": null,
+      "unit": "deg",
+      "desc": "+ = rotasi yaw seluruh tubuh ke kiri"
+    },
+    "root_roll": {
+      "type": "axis",
+      "bones": {
+        "Hips": 1
+      },
+      "axis": [0, 0, 1],
+      "sign": 1,
+      "default": 0,
+      "range": null,
+      "unit": "deg",
+      "desc": "+ = rotasi roll seluruh tubuh miring ke kanan"
+    },
     "thumbL": {
       "type": "axis",
       "bones": {
