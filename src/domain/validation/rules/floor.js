@@ -77,6 +77,77 @@ export function check({ ctx, limits, clip, poses, floorY, tAt, FPS = 30 }) {
       );
     }
   }
+
+  // Check FOOT_FLOATING for stance clips or explicitly requested clips
+  const isStance =
+    clip.name?.includes('stance') ||
+    clip.tags?.includes('stance') ||
+    clip.claims?.type === 'stance' ||
+    vm.stance === true ||
+    vm.check_floating === true ||
+    vm.grounded === true;
+
+  const floatingWarn = fl.floating_warn_m || 0.035;
+  const floatingFail = fl.floating_fail_m || 0.08;
+
+  if (isStance) {
+    if (contact === 0) {
+      const floatDist = minToe - floorY;
+      lines.push([
+        'FAIL',
+        `kaki melayang: klip bertipe stance tetapi tidak ada kaki yang menapak lantai (${floatDist.toFixed(3)} m di atas lantai)`,
+      ]);
+      issues.push(
+        createIssue({
+          level: 'FAIL',
+          rule: RULE_CODES.FOOT_FLOATING,
+          joint: minToeSide === 'kiri' ? 'LeftToeBase' : 'RightToeBase',
+          t: minToeT,
+          value: floatDist,
+          limit: floatingWarn,
+          unit: 'm',
+          hint: 'Lower hip_y or adjust leg channels to ensure feet touch the ground plane in a stance.',
+        }),
+      );
+    } else {
+      let maxFloat = 0;
+      let maxFloatSide = '';
+      let maxFloatT = 0;
+
+      for (let f = 0; f < poses.length; f++) {
+        const t = tAt(f);
+        for (const s of ['Left', 'Right']) {
+          const ti = I[s + 'ToeBase'];
+          const height = poses[f].pos[ti][1] - floorY;
+          if (height > floatingWarn && height > maxFloat) {
+            maxFloat = height;
+            maxFloatSide = s === 'Left' ? 'kiri' : 'kanan';
+            maxFloatT = t;
+          }
+        }
+      }
+
+      if (maxFloat > 0) {
+        lines.push([
+          'WARN',
+          `kaki melayang: toe ${maxFloatSide} melayang ${(maxFloat * 100).toFixed(1)} cm di atas lantai di t=${maxFloatT.toFixed(2)}s (batas maks ${(floatingWarn * 100).toFixed(1)} cm)`,
+        ]);
+        issues.push(
+          createIssue({
+            level: 'WARN',
+            rule: RULE_CODES.FOOT_FLOATING,
+            joint: maxFloatSide === 'kiri' ? 'LeftToeBase' : 'RightToeBase',
+            t: maxFloatT,
+            value: maxFloat,
+            limit: floatingWarn,
+            unit: 'm',
+            hint: `Lower hip_y or adjust foot flexion so foot firmly contacts the floor (max ${(floatingWarn * 100).toFixed(1)} cm clearance).`,
+          }),
+        );
+      }
+    }
+  }
+
   if (vm.foot_slide !== false || clip.windows?.planted_L || clip.windows?.planted_R) {
     if (!slide.length) {
       lines.push(['PASS', 'foot sliding: tidak ada frame kontak (klip melayang/tanpa tumpuan)']);

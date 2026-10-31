@@ -29,59 +29,30 @@
         ["PASS", "versi v2, format 1, changelog 2 entri konsisten"]
       ]
     },
-    "slash": {
+    "hands_eyes_jaw": {
       "fail": 0,
-      "warn": 2,
+      "warn": 0,
       "lines": [
-        ["WARN", "kecepatan sudut maks 1046 °/s (RightArm @0.43s) > 720 (menyentak?)"],
-        ["PASS", "percepatan sudut maks 15492 °/s² (RightArm @0.50s)"],
+        ["PASS", "kecepatan sudut maks 242 °/s (RightHandMiddle2 @0.03s)"],
+        ["PASS", "percepatan sudut maks 3610 °/s² (RightHandPinky1 @2.23s)"],
+        ["PASS", "loop: selisih pose awal-akhir maks 0.0° ()"],
         [
           "PASS",
-          "lutut: fleksi 7.2° (kanan @0.47s) sampai 76.8° (kiri @0.30s) (dalam batas -5..160°)"
+          "lutut: fleksi 10.2° (kanan @0.00s) sampai 10.2° (kiri @0.00s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 89.6° (kanan @0.23s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 16.0° (kiri @1.00s, batas maks 165°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kiri terendah -0.018 m dari lantai di t=0.70s (penetrasi 0.018 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
         ],
-        [
-          "WARN",
-          "foot sliding: 45 frame kontak, rata-rata 0.78 m/s, p95 1.42 m/s (maks 2.69 m/s @0.17s kaki kiri, batas 0.25 m/s)"
-        ],
-        ["PASS", "root motion: 0.00 m horizontal dalam 0.90 s"],
-        ["PASS", "klaim durasi 0.90 s: terukur 0.90 s"],
-        ["PASS", "jendela hitbox [0.36, 0.47] valid"],
-        ["PASS", "jendela cancel [0.6, 0.9] valid"],
-        ["PASS", "urutan: cancel (0.60) dimulai setelah hitbox selesai (0.47)"],
-        ["PASS", "versi v2, format 1, changelog 2 entri konsisten"]
-      ]
-    },
-    "parry": {
-      "fail": 0,
-      "warn": 2,
-      "lines": [
-        ["WARN", "kecepatan sudut maks 1027 °/s (RightArm @0.10s) > 720 (menyentak?)"],
-        ["PASS", "percepatan sudut maks 30222 °/s² (RightForeArm @0.07s)"],
         [
           "PASS",
-          "lutut: fleksi 10.2° (kanan @0.00s) sampai 41.9° (kiri @0.17s) (dalam batas -5..160°)"
+          "foot sliding: 182 frame kontak, rata-rata 0.00 m/s, p95 0.00 m/s (maks 0.00 m/s @0.00s kaki , batas 0.25 m/s)"
         ],
-        ["PASS", "siku: tekuk maks 95.0° (kanan @0.17s, batas maks 165°)"],
-        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
-        [
-          "PASS",
-          "lantai: toe kiri terendah -0.007 m dari lantai di t=0.47s (penetrasi 0.007 m, batas maks 0.04 m)"
-        ],
-        [
-          "WARN",
-          "foot sliding: 38 frame kontak, rata-rata 0.10 m/s, p95 0.33 m/s (maks 0.33 m/s @0.00s kaki kiri, batas 0.25 m/s)"
-        ],
-        ["PASS", "root motion: 0.00 m horizontal dalam 0.60 s"],
-        ["PASS", "klaim durasi 0.60 s: terukur 0.60 s"],
-        ["PASS", "jendela parry [0.16, 0.32] valid"],
-        ["PASS", "jendela cancel [0.42, 0.6] valid"],
-        ["PASS", "versi v3, format 1, changelog 3 entri konsisten"]
+        ["PASS", "root motion: 0.00 m horizontal dalam 3.00 s"],
+        ["PASS", "klaim durasi 3.00 s: terukur 3.00 s"],
+        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
       ]
     },
     "idle": {
@@ -110,30 +81,6 @@
         ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
       ]
     },
-    "walk": {
-      "fail": 0,
-      "warn": 0,
-      "lines": [
-        ["PASS", "kecepatan sudut maks 249 °/s (LeftLeg @1.00s)"],
-        ["PASS", "percepatan sudut maks 7251 °/s² (RightLeg @0.53s)"],
-        ["PASS", "loop: selisih pose awal-akhir maks 0.0° ()"],
-        [
-          "PASS",
-          "lutut: fleksi 15.1° (kanan @0.50s) sampai 54.7° (kanan @0.23s) (dalam batas -5..160°)"
-        ],
-        ["PASS", "siku: tekuk maks 30.0° (kanan @0.00s, batas maks 165°)"],
-        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
-        [
-          "PASS",
-          "lantai: toe kanan terendah 0.001 m dari lantai di t=0.77s (penetrasi 0.000 m, batas maks 0.04 m)"
-        ],
-        ["PASS", "root motion: 1.30 m horizontal dalam 1.00 s"],
-        ["PASS", "kecepatan root maks 1.3 m/s @0.77s"],
-        ["PASS", "klaim jarak 1.30 m (±10%): terukur 1.30 m"],
-        ["PASS", "klaim durasi 1.00 s: terukur 1.00 s"],
-        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
-      ]
-    },
     "jump": {
       "fail": 0,
       "warn": 2,
@@ -158,130 +105,6 @@
         ["PASS", "kecepatan root maks 4.4 m/s @0.47s"],
         ["PASS", "klaim jarak 1.50 m (±10%): terukur 1.50 m"],
         ["PASS", "klaim durasi 0.90 s: terukur 0.90 s"],
-        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
-      ]
-    },
-    "wave": {
-      "fail": 0,
-      "warn": 0,
-      "lines": [
-        ["PASS", "kecepatan sudut maks 701 °/s (RightArm @0.03s)"],
-        ["PASS", "percepatan sudut maks 5988 °/s² (RightArm @1.37s)"],
-        ["PASS", "loop: selisih pose awal-akhir maks 0.0° ()"],
-        [
-          "PASS",
-          "lutut: fleksi 10.2° (kanan @0.00s) sampai 10.2° (kiri @0.00s) (dalam batas -5..160°)"
-        ],
-        ["PASS", "siku: tekuk maks 105.0° (kanan @0.80s, batas maks 165°)"],
-        ["PASS", "leher-kepala: tekuk maks 20.8° (@1.20s, batas maks 70°)"],
-        [
-          "PASS",
-          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
-        ],
-        [
-          "PASS",
-          "foot sliding: 98 frame kontak, rata-rata 0.00 m/s, p95 0.00 m/s (maks 0.00 m/s @0.00s kaki , batas 0.25 m/s)"
-        ],
-        ["PASS", "root motion: 0.00 m horizontal dalam 1.60 s"],
-        ["PASS", "klaim durasi 1.60 s: terukur 1.60 s"],
-        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
-      ]
-    },
-    "kick_front": {
-      "fail": 0,
-      "warn": 1,
-      "lines": [
-        ["WARN", "kecepatan sudut maks 723 °/s (RightLeg @0.23s) > 720 (menyentak?)"],
-        ["PASS", "percepatan sudut maks 16317 °/s² (RightLeg @0.23s)"],
-        [
-          "PASS",
-          "lutut: fleksi 10.2° (kanan @0.00s) sampai 98.8° (kanan @0.20s) (dalam batas -5..160°)"
-        ],
-        ["PASS", "siku: tekuk maks 90.0° (kiri @0.37s, batas maks 165°)"],
-        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
-        [
-          "PASS",
-          "lantai: toe kanan terendah -0.009 m dari lantai di t=0.77s (penetrasi 0.009 m, batas maks 0.04 m)"
-        ],
-        ["PASS", "root motion: 0.00 m horizontal dalam 0.85 s"],
-        ["PASS", "klaim durasi 0.85 s: terukur 0.85 s"],
-        ["PASS", "jendela hitbox [0.32, 0.45] valid"],
-        ["PASS", "jendela cancel [0.6, 0.85] valid"],
-        ["PASS", "urutan: cancel (0.60) dimulai setelah hitbox selesai (0.45)"],
-        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
-      ]
-    },
-    "kick_roundhouse": {
-      "fail": 0,
-      "warn": 0,
-      "lines": [
-        ["PASS", "kecepatan sudut maks 613 °/s (RightLeg @0.13s)"],
-        ["PASS", "percepatan sudut maks 8295 °/s² (RightLeg @0.23s)"],
-        [
-          "PASS",
-          "lutut: fleksi 10.2° (kanan @0.00s) sampai 98.1° (kanan @0.23s) (dalam batas -5..160°)"
-        ],
-        ["PASS", "siku: tekuk maks 95.0° (kiri @0.43s, batas maks 165°)"],
-        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
-        [
-          "PASS",
-          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.90s (penetrasi 0.005 m, batas maks 0.04 m)"
-        ],
-        ["PASS", "root motion: 0.35 m horizontal dalam 0.95 s"],
-        ["PASS", "kecepatan root maks 1.8 m/s @0.33s"],
-        ["PASS", "klaim jarak 0.35 m (±10%): terukur 0.35 m"],
-        ["PASS", "klaim durasi 0.95 s: terukur 0.95 s"],
-        ["PASS", "jendela hitbox [0.36, 0.5] valid"],
-        ["PASS", "jendela cancel [0.65, 0.95] valid"],
-        ["PASS", "urutan: cancel (0.65) dimulai setelah hitbox selesai (0.50)"],
-        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
-      ]
-    },
-    "kick_side": {
-      "fail": 0,
-      "warn": 0,
-      "lines": [
-        ["PASS", "kecepatan sudut maks 667 °/s (RightLeg @0.33s)"],
-        ["PASS", "percepatan sudut maks 9665 °/s² (RightLeg @0.43s)"],
-        [
-          "PASS",
-          "lutut: fleksi 7.6° (kanan @0.43s) sampai 99.3° (kanan @0.23s) (dalam batas -5..160°)"
-        ],
-        ["PASS", "siku: tekuk maks 84.9° (kiri @0.43s, batas maks 165°)"],
-        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
-        [
-          "PASS",
-          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
-        ],
-        ["PASS", "root motion: 0.00 m horizontal dalam 0.90 s"],
-        ["PASS", "klaim durasi 0.90 s: terukur 0.90 s"],
-        ["PASS", "jendela hitbox [0.35, 0.48] valid"],
-        ["PASS", "jendela cancel [0.62, 0.9] valid"],
-        ["PASS", "urutan: cancel (0.62) dimulai setelah hitbox selesai (0.48)"],
-        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
-      ]
-    },
-    "kick_low": {
-      "fail": 0,
-      "warn": 0,
-      "lines": [
-        ["PASS", "kecepatan sudut maks 495 °/s (Hips @0.30s)"],
-        ["PASS", "percepatan sudut maks 6892 °/s² (Hips @0.27s)"],
-        [
-          "PASS",
-          "lutut: fleksi 10.2° (kanan @0.00s) sampai 42.3° (kanan @0.20s) (dalam batas -5..160°)"
-        ],
-        ["PASS", "siku: tekuk maks 80.0° (kiri @0.40s, batas maks 165°)"],
-        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
-        [
-          "PASS",
-          "lantai: toe kanan terendah -0.008 m dari lantai di t=0.03s (penetrasi 0.008 m, batas maks 0.04 m)"
-        ],
-        ["PASS", "root motion: 0.00 m horizontal dalam 0.80 s"],
-        ["PASS", "klaim durasi 0.80 s: terukur 0.80 s"],
-        ["PASS", "jendela hitbox [0.32, 0.45] valid"],
-        ["PASS", "jendela cancel [0.55, 0.8] valid"],
-        ["PASS", "urutan: cancel (0.55) dimulai setelah hitbox selesai (0.45)"],
         ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
       ]
     },
@@ -335,29 +158,206 @@
         ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
       ]
     },
-    "hands_eyes_jaw": {
+    "kick_front": {
+      "fail": 0,
+      "warn": 1,
+      "lines": [
+        ["WARN", "kecepatan sudut maks 723 °/s (RightLeg @0.23s) > 720 (menyentak?)"],
+        ["PASS", "percepatan sudut maks 16317 °/s² (RightLeg @0.23s)"],
+        [
+          "PASS",
+          "lutut: fleksi 10.2° (kanan @0.00s) sampai 98.8° (kanan @0.20s) (dalam batas -5..160°)"
+        ],
+        ["PASS", "siku: tekuk maks 90.0° (kiri @0.37s, batas maks 165°)"],
+        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
+        [
+          "PASS",
+          "lantai: toe kanan terendah -0.009 m dari lantai di t=0.77s (penetrasi 0.009 m, batas maks 0.04 m)"
+        ],
+        ["PASS", "root motion: 0.00 m horizontal dalam 0.85 s"],
+        ["PASS", "klaim durasi 0.85 s: terukur 0.85 s"],
+        ["PASS", "jendela hitbox [0.32, 0.45] valid"],
+        ["PASS", "jendela cancel [0.6, 0.85] valid"],
+        ["PASS", "urutan: cancel (0.60) dimulai setelah hitbox selesai (0.45)"],
+        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
+      ]
+    },
+    "kick_low": {
       "fail": 0,
       "warn": 0,
       "lines": [
-        ["PASS", "kecepatan sudut maks 242 °/s (RightHandMiddle2 @0.03s)"],
-        ["PASS", "percepatan sudut maks 3610 °/s² (RightHandPinky1 @2.23s)"],
+        ["PASS", "kecepatan sudut maks 495 °/s (Hips @0.30s)"],
+        ["PASS", "percepatan sudut maks 6892 °/s² (Hips @0.27s)"],
+        [
+          "PASS",
+          "lutut: fleksi 10.2° (kanan @0.00s) sampai 42.3° (kanan @0.20s) (dalam batas -5..160°)"
+        ],
+        ["PASS", "siku: tekuk maks 80.0° (kiri @0.40s, batas maks 165°)"],
+        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
+        [
+          "PASS",
+          "lantai: toe kanan terendah -0.008 m dari lantai di t=0.03s (penetrasi 0.008 m, batas maks 0.04 m)"
+        ],
+        ["PASS", "root motion: 0.00 m horizontal dalam 0.80 s"],
+        ["PASS", "klaim durasi 0.80 s: terukur 0.80 s"],
+        ["PASS", "jendela hitbox [0.32, 0.45] valid"],
+        ["PASS", "jendela cancel [0.55, 0.8] valid"],
+        ["PASS", "urutan: cancel (0.55) dimulai setelah hitbox selesai (0.45)"],
+        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
+      ]
+    },
+    "kick_roundhouse": {
+      "fail": 0,
+      "warn": 0,
+      "lines": [
+        ["PASS", "kecepatan sudut maks 613 °/s (RightLeg @0.13s)"],
+        ["PASS", "percepatan sudut maks 8295 °/s² (RightLeg @0.23s)"],
+        [
+          "PASS",
+          "lutut: fleksi 10.2° (kanan @0.00s) sampai 98.1° (kanan @0.23s) (dalam batas -5..160°)"
+        ],
+        ["PASS", "siku: tekuk maks 95.0° (kiri @0.43s, batas maks 165°)"],
+        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
+        [
+          "PASS",
+          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.90s (penetrasi 0.005 m, batas maks 0.04 m)"
+        ],
+        ["PASS", "root motion: 0.35 m horizontal dalam 0.95 s"],
+        ["PASS", "kecepatan root maks 1.8 m/s @0.33s"],
+        ["PASS", "klaim jarak 0.35 m (±10%): terukur 0.35 m"],
+        ["PASS", "klaim durasi 0.95 s: terukur 0.95 s"],
+        ["PASS", "jendela hitbox [0.36, 0.5] valid"],
+        ["PASS", "jendela cancel [0.65, 0.95] valid"],
+        ["PASS", "urutan: cancel (0.65) dimulai setelah hitbox selesai (0.50)"],
+        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
+      ]
+    },
+    "kick_side": {
+      "fail": 0,
+      "warn": 0,
+      "lines": [
+        ["PASS", "kecepatan sudut maks 667 °/s (RightLeg @0.33s)"],
+        ["PASS", "percepatan sudut maks 9665 °/s² (RightLeg @0.43s)"],
+        [
+          "PASS",
+          "lutut: fleksi 7.6° (kanan @0.43s) sampai 99.3° (kanan @0.23s) (dalam batas -5..160°)"
+        ],
+        ["PASS", "siku: tekuk maks 84.9° (kiri @0.43s, batas maks 165°)"],
+        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
+        [
+          "PASS",
+          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
+        ],
+        ["PASS", "root motion: 0.00 m horizontal dalam 0.90 s"],
+        ["PASS", "klaim durasi 0.90 s: terukur 0.90 s"],
+        ["PASS", "jendela hitbox [0.35, 0.48] valid"],
+        ["PASS", "jendela cancel [0.62, 0.9] valid"],
+        ["PASS", "urutan: cancel (0.62) dimulai setelah hitbox selesai (0.48)"],
+        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
+      ]
+    },
+    "parry": {
+      "fail": 0,
+      "warn": 2,
+      "lines": [
+        ["WARN", "kecepatan sudut maks 1027 °/s (RightArm @0.10s) > 720 (menyentak?)"],
+        ["PASS", "percepatan sudut maks 30222 °/s² (RightForeArm @0.07s)"],
+        [
+          "PASS",
+          "lutut: fleksi 10.2° (kanan @0.00s) sampai 41.9° (kiri @0.17s) (dalam batas -5..160°)"
+        ],
+        ["PASS", "siku: tekuk maks 95.0° (kanan @0.17s, batas maks 165°)"],
+        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
+        [
+          "PASS",
+          "lantai: toe kiri terendah -0.007 m dari lantai di t=0.47s (penetrasi 0.007 m, batas maks 0.04 m)"
+        ],
+        [
+          "WARN",
+          "foot sliding: 38 frame kontak, rata-rata 0.10 m/s, p95 0.33 m/s (maks 0.33 m/s @0.00s kaki kiri, batas 0.25 m/s)"
+        ],
+        ["PASS", "root motion: 0.00 m horizontal dalam 0.60 s"],
+        ["PASS", "klaim durasi 0.60 s: terukur 0.60 s"],
+        ["PASS", "jendela parry [0.16, 0.32] valid"],
+        ["PASS", "jendela cancel [0.42, 0.6] valid"],
+        ["PASS", "versi v3, format 1, changelog 3 entri konsisten"]
+      ]
+    },
+    "slash": {
+      "fail": 0,
+      "warn": 2,
+      "lines": [
+        ["WARN", "kecepatan sudut maks 1046 °/s (RightArm @0.43s) > 720 (menyentak?)"],
+        ["PASS", "percepatan sudut maks 15492 °/s² (RightArm @0.50s)"],
+        [
+          "PASS",
+          "lutut: fleksi 7.2° (kanan @0.47s) sampai 76.8° (kiri @0.30s) (dalam batas -5..160°)"
+        ],
+        ["PASS", "siku: tekuk maks 89.6° (kanan @0.23s, batas maks 165°)"],
+        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
+        [
+          "PASS",
+          "lantai: toe kiri terendah -0.018 m dari lantai di t=0.70s (penetrasi 0.018 m, batas maks 0.04 m)"
+        ],
+        [
+          "WARN",
+          "foot sliding: 45 frame kontak, rata-rata 0.78 m/s, p95 1.42 m/s (maks 2.69 m/s @0.17s kaki kiri, batas 0.25 m/s)"
+        ],
+        ["PASS", "root motion: 0.00 m horizontal dalam 0.90 s"],
+        ["PASS", "klaim durasi 0.90 s: terukur 0.90 s"],
+        ["PASS", "jendela hitbox [0.36, 0.47] valid"],
+        ["PASS", "jendela cancel [0.6, 0.9] valid"],
+        ["PASS", "urutan: cancel (0.60) dimulai setelah hitbox selesai (0.47)"],
+        ["PASS", "versi v2, format 1, changelog 2 entri konsisten"]
+      ]
+    },
+    "walk": {
+      "fail": 0,
+      "warn": 0,
+      "lines": [
+        ["PASS", "kecepatan sudut maks 249 °/s (LeftLeg @1.00s)"],
+        ["PASS", "percepatan sudut maks 7251 °/s² (RightLeg @0.53s)"],
+        ["PASS", "loop: selisih pose awal-akhir maks 0.0° ()"],
+        [
+          "PASS",
+          "lutut: fleksi 15.1° (kanan @0.50s) sampai 54.7° (kanan @0.23s) (dalam batas -5..160°)"
+        ],
+        ["PASS", "siku: tekuk maks 30.0° (kanan @0.00s, batas maks 165°)"],
+        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
+        [
+          "PASS",
+          "lantai: toe kanan terendah 0.001 m dari lantai di t=0.77s (penetrasi 0.000 m, batas maks 0.04 m)"
+        ],
+        ["PASS", "root motion: 1.30 m horizontal dalam 1.00 s"],
+        ["PASS", "kecepatan root maks 1.3 m/s @0.77s"],
+        ["PASS", "klaim jarak 1.30 m (±10%): terukur 1.30 m"],
+        ["PASS", "klaim durasi 1.00 s: terukur 1.00 s"],
+        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
+      ]
+    },
+    "wave": {
+      "fail": 0,
+      "warn": 0,
+      "lines": [
+        ["PASS", "kecepatan sudut maks 701 °/s (RightArm @0.03s)"],
+        ["PASS", "percepatan sudut maks 5988 °/s² (RightArm @1.37s)"],
         ["PASS", "loop: selisih pose awal-akhir maks 0.0° ()"],
         [
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 10.2° (kiri @0.00s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 16.0° (kiri @1.00s, batas maks 165°)"],
-        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
+        ["PASS", "siku: tekuk maks 105.0° (kanan @0.80s, batas maks 165°)"],
+        ["PASS", "leher-kepala: tekuk maks 20.8° (@1.20s, batas maks 70°)"],
         [
           "PASS",
           "lantai: toe kanan terendah -0.005 m dari lantai di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
         ],
         [
           "PASS",
-          "foot sliding: 182 frame kontak, rata-rata 0.00 m/s, p95 0.00 m/s (maks 0.00 m/s @0.00s kaki , batas 0.25 m/s)"
+          "foot sliding: 98 frame kontak, rata-rata 0.00 m/s, p95 0.00 m/s (maks 0.00 m/s @0.00s kaki , batas 0.25 m/s)"
         ],
-        ["PASS", "root motion: 0.00 m horizontal dalam 3.00 s"],
-        ["PASS", "klaim durasi 3.00 s: terukur 3.00 s"],
+        ["PASS", "root motion: 0.00 m horizontal dalam 1.60 s"],
+        ["PASS", "klaim durasi 1.60 s: terukur 1.60 s"],
         ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
       ]
     }
@@ -392,59 +392,30 @@
         ["PASS", "versi v2, format 1, changelog 2 entri konsisten"]
       ]
     },
-    "slash": {
+    "hands_eyes_jaw": {
       "fail": 0,
-      "warn": 1,
+      "warn": 0,
       "lines": [
-        ["PASS", "kecepatan sudut maks 1046 °/s (RightArm @0.43s)"],
-        ["PASS", "percepatan sudut maks 15492 °/s² (RightArm @0.50s)"],
+        ["PASS", "kecepatan sudut maks 242 °/s (RightHandMiddle2 @0.03s)"],
+        ["PASS", "percepatan sudut maks 3610 °/s² (RightHandPinky1 @2.23s)"],
+        ["PASS", "loop: selisih pose awal-akhir maks 0.0° ()"],
         [
           "PASS",
-          "lutut: fleksi 7.2° (kanan @0.47s) sampai 76.8° (kiri @0.30s) (dalam batas -5..160°)"
+          "lutut: fleksi 10.2° (kanan @0.00s) sampai 10.2° (kiri @0.00s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 89.6° (kanan @0.23s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 16.0° (kiri @1.00s, batas maks 165°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kiri terendah -0.018 m dari lantai di t=0.70s (penetrasi 0.018 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
         ],
-        [
-          "WARN",
-          "foot sliding: 45 frame kontak, rata-rata 0.78 m/s, p95 1.42 m/s (maks 2.69 m/s @0.17s kaki kiri, batas 0.25 m/s)"
-        ],
-        ["PASS", "root motion: 0.00 m horizontal dalam 0.90 s"],
-        ["PASS", "klaim durasi 0.90 s: terukur 0.90 s"],
-        ["PASS", "jendela hitbox [0.36, 0.47] valid"],
-        ["PASS", "jendela cancel [0.6, 0.9] valid"],
-        ["PASS", "urutan: cancel (0.60) dimulai setelah hitbox selesai (0.47)"],
-        ["PASS", "versi v2, format 1, changelog 2 entri konsisten"]
-      ]
-    },
-    "parry": {
-      "fail": 0,
-      "warn": 1,
-      "lines": [
-        ["PASS", "kecepatan sudut maks 1027 °/s (RightArm @0.10s)"],
-        ["PASS", "percepatan sudut maks 30222 °/s² (RightForeArm @0.07s)"],
         [
           "PASS",
-          "lutut: fleksi 10.2° (kanan @0.00s) sampai 41.9° (kiri @0.17s) (dalam batas -5..160°)"
+          "foot sliding: 182 frame kontak, rata-rata 0.00 m/s, p95 0.00 m/s (maks 0.00 m/s @0.00s kaki , batas 0.25 m/s)"
         ],
-        ["PASS", "siku: tekuk maks 95.0° (kanan @0.17s, batas maks 165°)"],
-        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
-        [
-          "PASS",
-          "lantai: toe kiri terendah -0.007 m dari lantai di t=0.47s (penetrasi 0.007 m, batas maks 0.04 m)"
-        ],
-        [
-          "WARN",
-          "foot sliding: 38 frame kontak, rata-rata 0.10 m/s, p95 0.33 m/s (maks 0.33 m/s @0.00s kaki kiri, batas 0.25 m/s)"
-        ],
-        ["PASS", "root motion: 0.00 m horizontal dalam 0.60 s"],
-        ["PASS", "klaim durasi 0.60 s: terukur 0.60 s"],
-        ["PASS", "jendela parry [0.16, 0.32] valid"],
-        ["PASS", "jendela cancel [0.42, 0.6] valid"],
-        ["PASS", "versi v3, format 1, changelog 3 entri konsisten"]
+        ["PASS", "root motion: 0.00 m horizontal dalam 3.00 s"],
+        ["PASS", "klaim durasi 3.00 s: terukur 3.00 s"],
+        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
       ]
     },
     "idle": {
@@ -473,30 +444,6 @@
         ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
       ]
     },
-    "walk": {
-      "fail": 0,
-      "warn": 0,
-      "lines": [
-        ["PASS", "kecepatan sudut maks 249 °/s (LeftLeg @1.00s)"],
-        ["PASS", "percepatan sudut maks 7251 °/s² (RightLeg @0.53s)"],
-        ["PASS", "loop: selisih pose awal-akhir maks 0.0° ()"],
-        [
-          "PASS",
-          "lutut: fleksi 15.1° (kanan @0.50s) sampai 54.7° (kanan @0.23s) (dalam batas -5..160°)"
-        ],
-        ["PASS", "siku: tekuk maks 30.0° (kanan @0.00s, batas maks 165°)"],
-        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
-        [
-          "PASS",
-          "lantai: toe kanan terendah 0.001 m dari lantai di t=0.77s (penetrasi 0.000 m, batas maks 0.04 m)"
-        ],
-        ["PASS", "root motion: 1.30 m horizontal dalam 1.00 s"],
-        ["PASS", "kecepatan root maks 1.3 m/s @0.77s"],
-        ["PASS", "klaim jarak 1.30 m (±10%): terukur 1.30 m"],
-        ["PASS", "klaim durasi 1.00 s: terukur 1.00 s"],
-        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
-      ]
-    },
     "jump": {
       "fail": 0,
       "warn": 1,
@@ -521,130 +468,6 @@
         ["PASS", "kecepatan root maks 4.4 m/s @0.47s"],
         ["PASS", "klaim jarak 1.50 m (±10%): terukur 1.50 m"],
         ["PASS", "klaim durasi 0.90 s: terukur 0.90 s"],
-        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
-      ]
-    },
-    "wave": {
-      "fail": 0,
-      "warn": 0,
-      "lines": [
-        ["PASS", "kecepatan sudut maks 701 °/s (RightArm @0.03s)"],
-        ["PASS", "percepatan sudut maks 5988 °/s² (RightArm @1.37s)"],
-        ["PASS", "loop: selisih pose awal-akhir maks 0.0° ()"],
-        [
-          "PASS",
-          "lutut: fleksi 10.2° (kanan @0.00s) sampai 10.2° (kiri @0.00s) (dalam batas -5..160°)"
-        ],
-        ["PASS", "siku: tekuk maks 105.0° (kanan @0.80s, batas maks 165°)"],
-        ["PASS", "leher-kepala: tekuk maks 20.8° (@1.20s, batas maks 70°)"],
-        [
-          "PASS",
-          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
-        ],
-        [
-          "PASS",
-          "foot sliding: 98 frame kontak, rata-rata 0.00 m/s, p95 0.00 m/s (maks 0.00 m/s @0.00s kaki , batas 0.25 m/s)"
-        ],
-        ["PASS", "root motion: 0.00 m horizontal dalam 1.60 s"],
-        ["PASS", "klaim durasi 1.60 s: terukur 1.60 s"],
-        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
-      ]
-    },
-    "kick_front": {
-      "fail": 0,
-      "warn": 0,
-      "lines": [
-        ["PASS", "kecepatan sudut maks 723 °/s (RightLeg @0.23s)"],
-        ["PASS", "percepatan sudut maks 16317 °/s² (RightLeg @0.23s)"],
-        [
-          "PASS",
-          "lutut: fleksi 10.2° (kanan @0.00s) sampai 98.8° (kanan @0.20s) (dalam batas -5..160°)"
-        ],
-        ["PASS", "siku: tekuk maks 90.0° (kiri @0.37s, batas maks 165°)"],
-        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
-        [
-          "PASS",
-          "lantai: toe kanan terendah -0.009 m dari lantai di t=0.77s (penetrasi 0.009 m, batas maks 0.04 m)"
-        ],
-        ["PASS", "root motion: 0.00 m horizontal dalam 0.85 s"],
-        ["PASS", "klaim durasi 0.85 s: terukur 0.85 s"],
-        ["PASS", "jendela hitbox [0.32, 0.45] valid"],
-        ["PASS", "jendela cancel [0.6, 0.85] valid"],
-        ["PASS", "urutan: cancel (0.60) dimulai setelah hitbox selesai (0.45)"],
-        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
-      ]
-    },
-    "kick_roundhouse": {
-      "fail": 0,
-      "warn": 0,
-      "lines": [
-        ["PASS", "kecepatan sudut maks 613 °/s (RightLeg @0.13s)"],
-        ["PASS", "percepatan sudut maks 8295 °/s² (RightLeg @0.23s)"],
-        [
-          "PASS",
-          "lutut: fleksi 10.2° (kanan @0.00s) sampai 98.1° (kanan @0.23s) (dalam batas -5..160°)"
-        ],
-        ["PASS", "siku: tekuk maks 95.0° (kiri @0.43s, batas maks 165°)"],
-        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
-        [
-          "PASS",
-          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.90s (penetrasi 0.005 m, batas maks 0.04 m)"
-        ],
-        ["PASS", "root motion: 0.35 m horizontal dalam 0.95 s"],
-        ["PASS", "kecepatan root maks 1.8 m/s @0.33s"],
-        ["PASS", "klaim jarak 0.35 m (±10%): terukur 0.35 m"],
-        ["PASS", "klaim durasi 0.95 s: terukur 0.95 s"],
-        ["PASS", "jendela hitbox [0.36, 0.5] valid"],
-        ["PASS", "jendela cancel [0.65, 0.95] valid"],
-        ["PASS", "urutan: cancel (0.65) dimulai setelah hitbox selesai (0.50)"],
-        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
-      ]
-    },
-    "kick_side": {
-      "fail": 0,
-      "warn": 0,
-      "lines": [
-        ["PASS", "kecepatan sudut maks 667 °/s (RightLeg @0.33s)"],
-        ["PASS", "percepatan sudut maks 9665 °/s² (RightLeg @0.43s)"],
-        [
-          "PASS",
-          "lutut: fleksi 7.6° (kanan @0.43s) sampai 99.3° (kanan @0.23s) (dalam batas -5..160°)"
-        ],
-        ["PASS", "siku: tekuk maks 84.9° (kiri @0.43s, batas maks 165°)"],
-        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
-        [
-          "PASS",
-          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
-        ],
-        ["PASS", "root motion: 0.00 m horizontal dalam 0.90 s"],
-        ["PASS", "klaim durasi 0.90 s: terukur 0.90 s"],
-        ["PASS", "jendela hitbox [0.35, 0.48] valid"],
-        ["PASS", "jendela cancel [0.62, 0.9] valid"],
-        ["PASS", "urutan: cancel (0.62) dimulai setelah hitbox selesai (0.48)"],
-        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
-      ]
-    },
-    "kick_low": {
-      "fail": 0,
-      "warn": 0,
-      "lines": [
-        ["PASS", "kecepatan sudut maks 495 °/s (Hips @0.30s)"],
-        ["PASS", "percepatan sudut maks 6892 °/s² (Hips @0.27s)"],
-        [
-          "PASS",
-          "lutut: fleksi 10.2° (kanan @0.00s) sampai 42.3° (kanan @0.20s) (dalam batas -5..160°)"
-        ],
-        ["PASS", "siku: tekuk maks 80.0° (kiri @0.40s, batas maks 165°)"],
-        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
-        [
-          "PASS",
-          "lantai: toe kanan terendah -0.008 m dari lantai di t=0.03s (penetrasi 0.008 m, batas maks 0.04 m)"
-        ],
-        ["PASS", "root motion: 0.00 m horizontal dalam 0.80 s"],
-        ["PASS", "klaim durasi 0.80 s: terukur 0.80 s"],
-        ["PASS", "jendela hitbox [0.32, 0.45] valid"],
-        ["PASS", "jendela cancel [0.55, 0.8] valid"],
-        ["PASS", "urutan: cancel (0.55) dimulai setelah hitbox selesai (0.45)"],
         ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
       ]
     },
@@ -698,29 +521,206 @@
         ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
       ]
     },
-    "hands_eyes_jaw": {
+    "kick_front": {
       "fail": 0,
       "warn": 0,
       "lines": [
-        ["PASS", "kecepatan sudut maks 242 °/s (RightHandMiddle2 @0.03s)"],
-        ["PASS", "percepatan sudut maks 3610 °/s² (RightHandPinky1 @2.23s)"],
+        ["PASS", "kecepatan sudut maks 723 °/s (RightLeg @0.23s)"],
+        ["PASS", "percepatan sudut maks 16317 °/s² (RightLeg @0.23s)"],
+        [
+          "PASS",
+          "lutut: fleksi 10.2° (kanan @0.00s) sampai 98.8° (kanan @0.20s) (dalam batas -5..160°)"
+        ],
+        ["PASS", "siku: tekuk maks 90.0° (kiri @0.37s, batas maks 165°)"],
+        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
+        [
+          "PASS",
+          "lantai: toe kanan terendah -0.009 m dari lantai di t=0.77s (penetrasi 0.009 m, batas maks 0.04 m)"
+        ],
+        ["PASS", "root motion: 0.00 m horizontal dalam 0.85 s"],
+        ["PASS", "klaim durasi 0.85 s: terukur 0.85 s"],
+        ["PASS", "jendela hitbox [0.32, 0.45] valid"],
+        ["PASS", "jendela cancel [0.6, 0.85] valid"],
+        ["PASS", "urutan: cancel (0.60) dimulai setelah hitbox selesai (0.45)"],
+        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
+      ]
+    },
+    "kick_low": {
+      "fail": 0,
+      "warn": 0,
+      "lines": [
+        ["PASS", "kecepatan sudut maks 495 °/s (Hips @0.30s)"],
+        ["PASS", "percepatan sudut maks 6892 °/s² (Hips @0.27s)"],
+        [
+          "PASS",
+          "lutut: fleksi 10.2° (kanan @0.00s) sampai 42.3° (kanan @0.20s) (dalam batas -5..160°)"
+        ],
+        ["PASS", "siku: tekuk maks 80.0° (kiri @0.40s, batas maks 165°)"],
+        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
+        [
+          "PASS",
+          "lantai: toe kanan terendah -0.008 m dari lantai di t=0.03s (penetrasi 0.008 m, batas maks 0.04 m)"
+        ],
+        ["PASS", "root motion: 0.00 m horizontal dalam 0.80 s"],
+        ["PASS", "klaim durasi 0.80 s: terukur 0.80 s"],
+        ["PASS", "jendela hitbox [0.32, 0.45] valid"],
+        ["PASS", "jendela cancel [0.55, 0.8] valid"],
+        ["PASS", "urutan: cancel (0.55) dimulai setelah hitbox selesai (0.45)"],
+        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
+      ]
+    },
+    "kick_roundhouse": {
+      "fail": 0,
+      "warn": 0,
+      "lines": [
+        ["PASS", "kecepatan sudut maks 613 °/s (RightLeg @0.13s)"],
+        ["PASS", "percepatan sudut maks 8295 °/s² (RightLeg @0.23s)"],
+        [
+          "PASS",
+          "lutut: fleksi 10.2° (kanan @0.00s) sampai 98.1° (kanan @0.23s) (dalam batas -5..160°)"
+        ],
+        ["PASS", "siku: tekuk maks 95.0° (kiri @0.43s, batas maks 165°)"],
+        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
+        [
+          "PASS",
+          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.90s (penetrasi 0.005 m, batas maks 0.04 m)"
+        ],
+        ["PASS", "root motion: 0.35 m horizontal dalam 0.95 s"],
+        ["PASS", "kecepatan root maks 1.8 m/s @0.33s"],
+        ["PASS", "klaim jarak 0.35 m (±10%): terukur 0.35 m"],
+        ["PASS", "klaim durasi 0.95 s: terukur 0.95 s"],
+        ["PASS", "jendela hitbox [0.36, 0.5] valid"],
+        ["PASS", "jendela cancel [0.65, 0.95] valid"],
+        ["PASS", "urutan: cancel (0.65) dimulai setelah hitbox selesai (0.50)"],
+        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
+      ]
+    },
+    "kick_side": {
+      "fail": 0,
+      "warn": 0,
+      "lines": [
+        ["PASS", "kecepatan sudut maks 667 °/s (RightLeg @0.33s)"],
+        ["PASS", "percepatan sudut maks 9665 °/s² (RightLeg @0.43s)"],
+        [
+          "PASS",
+          "lutut: fleksi 7.6° (kanan @0.43s) sampai 99.3° (kanan @0.23s) (dalam batas -5..160°)"
+        ],
+        ["PASS", "siku: tekuk maks 84.9° (kiri @0.43s, batas maks 165°)"],
+        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
+        [
+          "PASS",
+          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
+        ],
+        ["PASS", "root motion: 0.00 m horizontal dalam 0.90 s"],
+        ["PASS", "klaim durasi 0.90 s: terukur 0.90 s"],
+        ["PASS", "jendela hitbox [0.35, 0.48] valid"],
+        ["PASS", "jendela cancel [0.62, 0.9] valid"],
+        ["PASS", "urutan: cancel (0.62) dimulai setelah hitbox selesai (0.48)"],
+        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
+      ]
+    },
+    "parry": {
+      "fail": 0,
+      "warn": 1,
+      "lines": [
+        ["PASS", "kecepatan sudut maks 1027 °/s (RightArm @0.10s)"],
+        ["PASS", "percepatan sudut maks 30222 °/s² (RightForeArm @0.07s)"],
+        [
+          "PASS",
+          "lutut: fleksi 10.2° (kanan @0.00s) sampai 41.9° (kiri @0.17s) (dalam batas -5..160°)"
+        ],
+        ["PASS", "siku: tekuk maks 95.0° (kanan @0.17s, batas maks 165°)"],
+        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
+        [
+          "PASS",
+          "lantai: toe kiri terendah -0.007 m dari lantai di t=0.47s (penetrasi 0.007 m, batas maks 0.04 m)"
+        ],
+        [
+          "WARN",
+          "foot sliding: 38 frame kontak, rata-rata 0.10 m/s, p95 0.33 m/s (maks 0.33 m/s @0.00s kaki kiri, batas 0.25 m/s)"
+        ],
+        ["PASS", "root motion: 0.00 m horizontal dalam 0.60 s"],
+        ["PASS", "klaim durasi 0.60 s: terukur 0.60 s"],
+        ["PASS", "jendela parry [0.16, 0.32] valid"],
+        ["PASS", "jendela cancel [0.42, 0.6] valid"],
+        ["PASS", "versi v3, format 1, changelog 3 entri konsisten"]
+      ]
+    },
+    "slash": {
+      "fail": 0,
+      "warn": 1,
+      "lines": [
+        ["PASS", "kecepatan sudut maks 1046 °/s (RightArm @0.43s)"],
+        ["PASS", "percepatan sudut maks 15492 °/s² (RightArm @0.50s)"],
+        [
+          "PASS",
+          "lutut: fleksi 7.2° (kanan @0.47s) sampai 76.8° (kiri @0.30s) (dalam batas -5..160°)"
+        ],
+        ["PASS", "siku: tekuk maks 89.6° (kanan @0.23s, batas maks 165°)"],
+        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
+        [
+          "PASS",
+          "lantai: toe kiri terendah -0.018 m dari lantai di t=0.70s (penetrasi 0.018 m, batas maks 0.04 m)"
+        ],
+        [
+          "WARN",
+          "foot sliding: 45 frame kontak, rata-rata 0.78 m/s, p95 1.42 m/s (maks 2.69 m/s @0.17s kaki kiri, batas 0.25 m/s)"
+        ],
+        ["PASS", "root motion: 0.00 m horizontal dalam 0.90 s"],
+        ["PASS", "klaim durasi 0.90 s: terukur 0.90 s"],
+        ["PASS", "jendela hitbox [0.36, 0.47] valid"],
+        ["PASS", "jendela cancel [0.6, 0.9] valid"],
+        ["PASS", "urutan: cancel (0.60) dimulai setelah hitbox selesai (0.47)"],
+        ["PASS", "versi v2, format 1, changelog 2 entri konsisten"]
+      ]
+    },
+    "walk": {
+      "fail": 0,
+      "warn": 0,
+      "lines": [
+        ["PASS", "kecepatan sudut maks 249 °/s (LeftLeg @1.00s)"],
+        ["PASS", "percepatan sudut maks 7251 °/s² (RightLeg @0.53s)"],
+        ["PASS", "loop: selisih pose awal-akhir maks 0.0° ()"],
+        [
+          "PASS",
+          "lutut: fleksi 15.1° (kanan @0.50s) sampai 54.7° (kanan @0.23s) (dalam batas -5..160°)"
+        ],
+        ["PASS", "siku: tekuk maks 30.0° (kanan @0.00s, batas maks 165°)"],
+        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
+        [
+          "PASS",
+          "lantai: toe kanan terendah 0.001 m dari lantai di t=0.77s (penetrasi 0.000 m, batas maks 0.04 m)"
+        ],
+        ["PASS", "root motion: 1.30 m horizontal dalam 1.00 s"],
+        ["PASS", "kecepatan root maks 1.3 m/s @0.77s"],
+        ["PASS", "klaim jarak 1.30 m (±10%): terukur 1.30 m"],
+        ["PASS", "klaim durasi 1.00 s: terukur 1.00 s"],
+        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
+      ]
+    },
+    "wave": {
+      "fail": 0,
+      "warn": 0,
+      "lines": [
+        ["PASS", "kecepatan sudut maks 701 °/s (RightArm @0.03s)"],
+        ["PASS", "percepatan sudut maks 5988 °/s² (RightArm @1.37s)"],
         ["PASS", "loop: selisih pose awal-akhir maks 0.0° ()"],
         [
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 10.2° (kiri @0.00s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 16.0° (kiri @1.00s, batas maks 165°)"],
-        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
+        ["PASS", "siku: tekuk maks 105.0° (kanan @0.80s, batas maks 165°)"],
+        ["PASS", "leher-kepala: tekuk maks 20.8° (@1.20s, batas maks 70°)"],
         [
           "PASS",
           "lantai: toe kanan terendah -0.005 m dari lantai di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
         ],
         [
           "PASS",
-          "foot sliding: 182 frame kontak, rata-rata 0.00 m/s, p95 0.00 m/s (maks 0.00 m/s @0.00s kaki , batas 0.25 m/s)"
+          "foot sliding: 98 frame kontak, rata-rata 0.00 m/s, p95 0.00 m/s (maks 0.00 m/s @0.00s kaki , batas 0.25 m/s)"
         ],
-        ["PASS", "root motion: 0.00 m horizontal dalam 3.00 s"],
-        ["PASS", "klaim durasi 3.00 s: terukur 3.00 s"],
+        ["PASS", "root motion: 0.00 m horizontal dalam 1.60 s"],
+        ["PASS", "klaim durasi 1.60 s: terukur 1.60 s"],
         ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
       ]
     }
@@ -755,59 +755,30 @@
         ["PASS", "versi v2, format 1, changelog 2 entri konsisten"]
       ]
     },
-    "slash": {
+    "hands_eyes_jaw": {
       "fail": 0,
-      "warn": 1,
+      "warn": 0,
       "lines": [
-        ["PASS", "kecepatan sudut maks 1046 °/s (RightArm @0.43s)"],
-        ["PASS", "percepatan sudut maks 15492 °/s² (RightArm @0.50s)"],
+        ["PASS", "kecepatan sudut maks 242 °/s (RightHandMiddle2 @0.03s)"],
+        ["PASS", "percepatan sudut maks 3610 °/s² (RightHandPinky1 @2.23s)"],
+        ["PASS", "loop: selisih pose awal-akhir maks 0.0° ()"],
         [
           "PASS",
-          "lutut: fleksi 7.2° (kanan @0.47s) sampai 76.8° (kiri @0.30s) (dalam batas -5..160°)"
+          "lutut: fleksi 10.2° (kanan @0.00s) sampai 10.2° (kiri @0.00s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 89.6° (kanan @0.23s, batas maks 165°)"],
+        ["PASS", "siku: tekuk maks 16.0° (kiri @1.00s, batas maks 165°)"],
         ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
         [
           "PASS",
-          "lantai: toe kiri terendah -0.018 m dari lantai di t=0.70s (penetrasi 0.018 m, batas maks 0.04 m)"
+          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
         ],
-        [
-          "WARN",
-          "foot sliding: 45 frame kontak, rata-rata 0.78 m/s, p95 1.42 m/s (maks 2.69 m/s @0.17s kaki kiri, batas 0.25 m/s)"
-        ],
-        ["PASS", "root motion: 0.00 m horizontal dalam 0.90 s"],
-        ["PASS", "klaim durasi 0.90 s: terukur 0.90 s"],
-        ["PASS", "jendela hitbox [0.36, 0.47] valid"],
-        ["PASS", "jendela cancel [0.6, 0.9] valid"],
-        ["PASS", "urutan: cancel (0.60) dimulai setelah hitbox selesai (0.47)"],
-        ["PASS", "versi v2, format 1, changelog 2 entri konsisten"]
-      ]
-    },
-    "parry": {
-      "fail": 0,
-      "warn": 1,
-      "lines": [
-        ["PASS", "kecepatan sudut maks 1027 °/s (RightArm @0.10s)"],
-        ["PASS", "percepatan sudut maks 30222 °/s² (RightForeArm @0.07s)"],
         [
           "PASS",
-          "lutut: fleksi 10.2° (kanan @0.00s) sampai 41.9° (kiri @0.17s) (dalam batas -5..160°)"
+          "foot sliding: 182 frame kontak, rata-rata 0.00 m/s, p95 0.00 m/s (maks 0.00 m/s @0.00s kaki , batas 0.25 m/s)"
         ],
-        ["PASS", "siku: tekuk maks 95.0° (kanan @0.17s, batas maks 165°)"],
-        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
-        [
-          "PASS",
-          "lantai: toe kiri terendah -0.007 m dari lantai di t=0.47s (penetrasi 0.007 m, batas maks 0.04 m)"
-        ],
-        [
-          "WARN",
-          "foot sliding: 38 frame kontak, rata-rata 0.10 m/s, p95 0.33 m/s (maks 0.33 m/s @0.00s kaki kiri, batas 0.25 m/s)"
-        ],
-        ["PASS", "root motion: 0.00 m horizontal dalam 0.60 s"],
-        ["PASS", "klaim durasi 0.60 s: terukur 0.60 s"],
-        ["PASS", "jendela parry [0.16, 0.32] valid"],
-        ["PASS", "jendela cancel [0.42, 0.6] valid"],
-        ["PASS", "versi v3, format 1, changelog 3 entri konsisten"]
+        ["PASS", "root motion: 0.00 m horizontal dalam 3.00 s"],
+        ["PASS", "klaim durasi 3.00 s: terukur 3.00 s"],
+        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
       ]
     },
     "idle": {
@@ -836,30 +807,6 @@
         ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
       ]
     },
-    "walk": {
-      "fail": 0,
-      "warn": 0,
-      "lines": [
-        ["PASS", "kecepatan sudut maks 249 °/s (LeftLeg @1.00s)"],
-        ["PASS", "percepatan sudut maks 7251 °/s² (RightLeg @0.53s)"],
-        ["PASS", "loop: selisih pose awal-akhir maks 0.0° ()"],
-        [
-          "PASS",
-          "lutut: fleksi 15.1° (kanan @0.50s) sampai 54.7° (kanan @0.23s) (dalam batas -5..160°)"
-        ],
-        ["PASS", "siku: tekuk maks 30.0° (kanan @0.00s, batas maks 165°)"],
-        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
-        [
-          "PASS",
-          "lantai: toe kanan terendah 0.001 m dari lantai di t=0.77s (penetrasi 0.000 m, batas maks 0.04 m)"
-        ],
-        ["PASS", "root motion: 1.30 m horizontal dalam 1.00 s"],
-        ["PASS", "kecepatan root maks 1.3 m/s @0.77s"],
-        ["PASS", "klaim jarak 1.30 m (±10%): terukur 1.30 m"],
-        ["PASS", "klaim durasi 1.00 s: terukur 1.00 s"],
-        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
-      ]
-    },
     "jump": {
       "fail": 0,
       "warn": 1,
@@ -884,130 +831,6 @@
         ["PASS", "kecepatan root maks 4.4 m/s @0.47s"],
         ["PASS", "klaim jarak 1.50 m (±10%): terukur 1.50 m"],
         ["PASS", "klaim durasi 0.90 s: terukur 0.90 s"],
-        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
-      ]
-    },
-    "wave": {
-      "fail": 0,
-      "warn": 0,
-      "lines": [
-        ["PASS", "kecepatan sudut maks 701 °/s (RightArm @0.03s)"],
-        ["PASS", "percepatan sudut maks 5988 °/s² (RightArm @1.37s)"],
-        ["PASS", "loop: selisih pose awal-akhir maks 0.0° ()"],
-        [
-          "PASS",
-          "lutut: fleksi 10.2° (kanan @0.00s) sampai 10.2° (kiri @0.00s) (dalam batas -5..160°)"
-        ],
-        ["PASS", "siku: tekuk maks 105.0° (kanan @0.80s, batas maks 165°)"],
-        ["PASS", "leher-kepala: tekuk maks 20.8° (@1.20s, batas maks 70°)"],
-        [
-          "PASS",
-          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
-        ],
-        [
-          "PASS",
-          "foot sliding: 98 frame kontak, rata-rata 0.00 m/s, p95 0.00 m/s (maks 0.00 m/s @0.00s kaki , batas 0.25 m/s)"
-        ],
-        ["PASS", "root motion: 0.00 m horizontal dalam 1.60 s"],
-        ["PASS", "klaim durasi 1.60 s: terukur 1.60 s"],
-        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
-      ]
-    },
-    "kick_front": {
-      "fail": 0,
-      "warn": 0,
-      "lines": [
-        ["PASS", "kecepatan sudut maks 723 °/s (RightLeg @0.23s)"],
-        ["PASS", "percepatan sudut maks 16317 °/s² (RightLeg @0.23s)"],
-        [
-          "PASS",
-          "lutut: fleksi 10.2° (kanan @0.00s) sampai 98.8° (kanan @0.20s) (dalam batas -5..160°)"
-        ],
-        ["PASS", "siku: tekuk maks 90.0° (kiri @0.37s, batas maks 165°)"],
-        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
-        [
-          "PASS",
-          "lantai: toe kanan terendah -0.009 m dari lantai di t=0.77s (penetrasi 0.009 m, batas maks 0.04 m)"
-        ],
-        ["PASS", "root motion: 0.00 m horizontal dalam 0.85 s"],
-        ["PASS", "klaim durasi 0.85 s: terukur 0.85 s"],
-        ["PASS", "jendela hitbox [0.32, 0.45] valid"],
-        ["PASS", "jendela cancel [0.6, 0.85] valid"],
-        ["PASS", "urutan: cancel (0.60) dimulai setelah hitbox selesai (0.45)"],
-        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
-      ]
-    },
-    "kick_roundhouse": {
-      "fail": 0,
-      "warn": 0,
-      "lines": [
-        ["PASS", "kecepatan sudut maks 613 °/s (RightLeg @0.13s)"],
-        ["PASS", "percepatan sudut maks 8295 °/s² (RightLeg @0.23s)"],
-        [
-          "PASS",
-          "lutut: fleksi 10.2° (kanan @0.00s) sampai 98.1° (kanan @0.23s) (dalam batas -5..160°)"
-        ],
-        ["PASS", "siku: tekuk maks 95.0° (kiri @0.43s, batas maks 165°)"],
-        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
-        [
-          "PASS",
-          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.90s (penetrasi 0.005 m, batas maks 0.04 m)"
-        ],
-        ["PASS", "root motion: 0.35 m horizontal dalam 0.95 s"],
-        ["PASS", "kecepatan root maks 1.8 m/s @0.33s"],
-        ["PASS", "klaim jarak 0.35 m (±10%): terukur 0.35 m"],
-        ["PASS", "klaim durasi 0.95 s: terukur 0.95 s"],
-        ["PASS", "jendela hitbox [0.36, 0.5] valid"],
-        ["PASS", "jendela cancel [0.65, 0.95] valid"],
-        ["PASS", "urutan: cancel (0.65) dimulai setelah hitbox selesai (0.50)"],
-        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
-      ]
-    },
-    "kick_side": {
-      "fail": 0,
-      "warn": 0,
-      "lines": [
-        ["PASS", "kecepatan sudut maks 667 °/s (RightLeg @0.33s)"],
-        ["PASS", "percepatan sudut maks 9665 °/s² (RightLeg @0.43s)"],
-        [
-          "PASS",
-          "lutut: fleksi 7.6° (kanan @0.43s) sampai 99.3° (kanan @0.23s) (dalam batas -5..160°)"
-        ],
-        ["PASS", "siku: tekuk maks 84.9° (kiri @0.43s, batas maks 165°)"],
-        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
-        [
-          "PASS",
-          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
-        ],
-        ["PASS", "root motion: 0.00 m horizontal dalam 0.90 s"],
-        ["PASS", "klaim durasi 0.90 s: terukur 0.90 s"],
-        ["PASS", "jendela hitbox [0.35, 0.48] valid"],
-        ["PASS", "jendela cancel [0.62, 0.9] valid"],
-        ["PASS", "urutan: cancel (0.62) dimulai setelah hitbox selesai (0.48)"],
-        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
-      ]
-    },
-    "kick_low": {
-      "fail": 0,
-      "warn": 0,
-      "lines": [
-        ["PASS", "kecepatan sudut maks 495 °/s (Hips @0.30s)"],
-        ["PASS", "percepatan sudut maks 6892 °/s² (Hips @0.27s)"],
-        [
-          "PASS",
-          "lutut: fleksi 10.2° (kanan @0.00s) sampai 42.3° (kanan @0.20s) (dalam batas -5..160°)"
-        ],
-        ["PASS", "siku: tekuk maks 80.0° (kiri @0.40s, batas maks 165°)"],
-        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
-        [
-          "PASS",
-          "lantai: toe kanan terendah -0.008 m dari lantai di t=0.03s (penetrasi 0.008 m, batas maks 0.04 m)"
-        ],
-        ["PASS", "root motion: 0.00 m horizontal dalam 0.80 s"],
-        ["PASS", "klaim durasi 0.80 s: terukur 0.80 s"],
-        ["PASS", "jendela hitbox [0.32, 0.45] valid"],
-        ["PASS", "jendela cancel [0.55, 0.8] valid"],
-        ["PASS", "urutan: cancel (0.55) dimulai setelah hitbox selesai (0.45)"],
         ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
       ]
     },
@@ -1061,29 +884,206 @@
         ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
       ]
     },
-    "hands_eyes_jaw": {
+    "kick_front": {
       "fail": 0,
       "warn": 0,
       "lines": [
-        ["PASS", "kecepatan sudut maks 242 °/s (RightHandMiddle2 @0.03s)"],
-        ["PASS", "percepatan sudut maks 3610 °/s² (RightHandPinky1 @2.23s)"],
+        ["PASS", "kecepatan sudut maks 723 °/s (RightLeg @0.23s)"],
+        ["PASS", "percepatan sudut maks 16317 °/s² (RightLeg @0.23s)"],
+        [
+          "PASS",
+          "lutut: fleksi 10.2° (kanan @0.00s) sampai 98.8° (kanan @0.20s) (dalam batas -5..160°)"
+        ],
+        ["PASS", "siku: tekuk maks 90.0° (kiri @0.37s, batas maks 165°)"],
+        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
+        [
+          "PASS",
+          "lantai: toe kanan terendah -0.009 m dari lantai di t=0.77s (penetrasi 0.009 m, batas maks 0.04 m)"
+        ],
+        ["PASS", "root motion: 0.00 m horizontal dalam 0.85 s"],
+        ["PASS", "klaim durasi 0.85 s: terukur 0.85 s"],
+        ["PASS", "jendela hitbox [0.32, 0.45] valid"],
+        ["PASS", "jendela cancel [0.6, 0.85] valid"],
+        ["PASS", "urutan: cancel (0.60) dimulai setelah hitbox selesai (0.45)"],
+        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
+      ]
+    },
+    "kick_low": {
+      "fail": 0,
+      "warn": 0,
+      "lines": [
+        ["PASS", "kecepatan sudut maks 495 °/s (Hips @0.30s)"],
+        ["PASS", "percepatan sudut maks 6892 °/s² (Hips @0.27s)"],
+        [
+          "PASS",
+          "lutut: fleksi 10.2° (kanan @0.00s) sampai 42.3° (kanan @0.20s) (dalam batas -5..160°)"
+        ],
+        ["PASS", "siku: tekuk maks 80.0° (kiri @0.40s, batas maks 165°)"],
+        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
+        [
+          "PASS",
+          "lantai: toe kanan terendah -0.008 m dari lantai di t=0.03s (penetrasi 0.008 m, batas maks 0.04 m)"
+        ],
+        ["PASS", "root motion: 0.00 m horizontal dalam 0.80 s"],
+        ["PASS", "klaim durasi 0.80 s: terukur 0.80 s"],
+        ["PASS", "jendela hitbox [0.32, 0.45] valid"],
+        ["PASS", "jendela cancel [0.55, 0.8] valid"],
+        ["PASS", "urutan: cancel (0.55) dimulai setelah hitbox selesai (0.45)"],
+        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
+      ]
+    },
+    "kick_roundhouse": {
+      "fail": 0,
+      "warn": 0,
+      "lines": [
+        ["PASS", "kecepatan sudut maks 613 °/s (RightLeg @0.13s)"],
+        ["PASS", "percepatan sudut maks 8295 °/s² (RightLeg @0.23s)"],
+        [
+          "PASS",
+          "lutut: fleksi 10.2° (kanan @0.00s) sampai 98.1° (kanan @0.23s) (dalam batas -5..160°)"
+        ],
+        ["PASS", "siku: tekuk maks 95.0° (kiri @0.43s, batas maks 165°)"],
+        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
+        [
+          "PASS",
+          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.90s (penetrasi 0.005 m, batas maks 0.04 m)"
+        ],
+        ["PASS", "root motion: 0.35 m horizontal dalam 0.95 s"],
+        ["PASS", "kecepatan root maks 1.8 m/s @0.33s"],
+        ["PASS", "klaim jarak 0.35 m (±10%): terukur 0.35 m"],
+        ["PASS", "klaim durasi 0.95 s: terukur 0.95 s"],
+        ["PASS", "jendela hitbox [0.36, 0.5] valid"],
+        ["PASS", "jendela cancel [0.65, 0.95] valid"],
+        ["PASS", "urutan: cancel (0.65) dimulai setelah hitbox selesai (0.50)"],
+        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
+      ]
+    },
+    "kick_side": {
+      "fail": 0,
+      "warn": 0,
+      "lines": [
+        ["PASS", "kecepatan sudut maks 667 °/s (RightLeg @0.33s)"],
+        ["PASS", "percepatan sudut maks 9665 °/s² (RightLeg @0.43s)"],
+        [
+          "PASS",
+          "lutut: fleksi 7.6° (kanan @0.43s) sampai 99.3° (kanan @0.23s) (dalam batas -5..160°)"
+        ],
+        ["PASS", "siku: tekuk maks 84.9° (kiri @0.43s, batas maks 165°)"],
+        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
+        [
+          "PASS",
+          "lantai: toe kanan terendah -0.005 m dari lantai di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
+        ],
+        ["PASS", "root motion: 0.00 m horizontal dalam 0.90 s"],
+        ["PASS", "klaim durasi 0.90 s: terukur 0.90 s"],
+        ["PASS", "jendela hitbox [0.35, 0.48] valid"],
+        ["PASS", "jendela cancel [0.62, 0.9] valid"],
+        ["PASS", "urutan: cancel (0.62) dimulai setelah hitbox selesai (0.48)"],
+        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
+      ]
+    },
+    "parry": {
+      "fail": 0,
+      "warn": 1,
+      "lines": [
+        ["PASS", "kecepatan sudut maks 1027 °/s (RightArm @0.10s)"],
+        ["PASS", "percepatan sudut maks 30222 °/s² (RightForeArm @0.07s)"],
+        [
+          "PASS",
+          "lutut: fleksi 10.2° (kanan @0.00s) sampai 41.9° (kiri @0.17s) (dalam batas -5..160°)"
+        ],
+        ["PASS", "siku: tekuk maks 95.0° (kanan @0.17s, batas maks 165°)"],
+        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
+        [
+          "PASS",
+          "lantai: toe kiri terendah -0.007 m dari lantai di t=0.47s (penetrasi 0.007 m, batas maks 0.04 m)"
+        ],
+        [
+          "WARN",
+          "foot sliding: 38 frame kontak, rata-rata 0.10 m/s, p95 0.33 m/s (maks 0.33 m/s @0.00s kaki kiri, batas 0.25 m/s)"
+        ],
+        ["PASS", "root motion: 0.00 m horizontal dalam 0.60 s"],
+        ["PASS", "klaim durasi 0.60 s: terukur 0.60 s"],
+        ["PASS", "jendela parry [0.16, 0.32] valid"],
+        ["PASS", "jendela cancel [0.42, 0.6] valid"],
+        ["PASS", "versi v3, format 1, changelog 3 entri konsisten"]
+      ]
+    },
+    "slash": {
+      "fail": 0,
+      "warn": 1,
+      "lines": [
+        ["PASS", "kecepatan sudut maks 1046 °/s (RightArm @0.43s)"],
+        ["PASS", "percepatan sudut maks 15492 °/s² (RightArm @0.50s)"],
+        [
+          "PASS",
+          "lutut: fleksi 7.2° (kanan @0.47s) sampai 76.8° (kiri @0.30s) (dalam batas -5..160°)"
+        ],
+        ["PASS", "siku: tekuk maks 89.6° (kanan @0.23s, batas maks 165°)"],
+        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
+        [
+          "PASS",
+          "lantai: toe kiri terendah -0.018 m dari lantai di t=0.70s (penetrasi 0.018 m, batas maks 0.04 m)"
+        ],
+        [
+          "WARN",
+          "foot sliding: 45 frame kontak, rata-rata 0.78 m/s, p95 1.42 m/s (maks 2.69 m/s @0.17s kaki kiri, batas 0.25 m/s)"
+        ],
+        ["PASS", "root motion: 0.00 m horizontal dalam 0.90 s"],
+        ["PASS", "klaim durasi 0.90 s: terukur 0.90 s"],
+        ["PASS", "jendela hitbox [0.36, 0.47] valid"],
+        ["PASS", "jendela cancel [0.6, 0.9] valid"],
+        ["PASS", "urutan: cancel (0.60) dimulai setelah hitbox selesai (0.47)"],
+        ["PASS", "versi v2, format 1, changelog 2 entri konsisten"]
+      ]
+    },
+    "walk": {
+      "fail": 0,
+      "warn": 0,
+      "lines": [
+        ["PASS", "kecepatan sudut maks 249 °/s (LeftLeg @1.00s)"],
+        ["PASS", "percepatan sudut maks 7251 °/s² (RightLeg @0.53s)"],
+        ["PASS", "loop: selisih pose awal-akhir maks 0.0° ()"],
+        [
+          "PASS",
+          "lutut: fleksi 15.1° (kanan @0.50s) sampai 54.7° (kanan @0.23s) (dalam batas -5..160°)"
+        ],
+        ["PASS", "siku: tekuk maks 30.0° (kanan @0.00s, batas maks 165°)"],
+        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
+        [
+          "PASS",
+          "lantai: toe kanan terendah 0.001 m dari lantai di t=0.77s (penetrasi 0.000 m, batas maks 0.04 m)"
+        ],
+        ["PASS", "root motion: 1.30 m horizontal dalam 1.00 s"],
+        ["PASS", "kecepatan root maks 1.3 m/s @0.77s"],
+        ["PASS", "klaim jarak 1.30 m (±10%): terukur 1.30 m"],
+        ["PASS", "klaim durasi 1.00 s: terukur 1.00 s"],
+        ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
+      ]
+    },
+    "wave": {
+      "fail": 0,
+      "warn": 0,
+      "lines": [
+        ["PASS", "kecepatan sudut maks 701 °/s (RightArm @0.03s)"],
+        ["PASS", "percepatan sudut maks 5988 °/s² (RightArm @1.37s)"],
         ["PASS", "loop: selisih pose awal-akhir maks 0.0° ()"],
         [
           "PASS",
           "lutut: fleksi 10.2° (kanan @0.00s) sampai 10.2° (kiri @0.00s) (dalam batas -5..160°)"
         ],
-        ["PASS", "siku: tekuk maks 16.0° (kiri @1.00s, batas maks 165°)"],
-        ["PASS", "leher-kepala: tekuk maks 20.0° (@0.00s, batas maks 70°)"],
+        ["PASS", "siku: tekuk maks 105.0° (kanan @0.80s, batas maks 165°)"],
+        ["PASS", "leher-kepala: tekuk maks 20.8° (@1.20s, batas maks 70°)"],
         [
           "PASS",
           "lantai: toe kanan terendah -0.005 m dari lantai di t=0.00s (penetrasi 0.005 m, batas maks 0.04 m)"
         ],
         [
           "PASS",
-          "foot sliding: 182 frame kontak, rata-rata 0.00 m/s, p95 0.00 m/s (maks 0.00 m/s @0.00s kaki , batas 0.25 m/s)"
+          "foot sliding: 98 frame kontak, rata-rata 0.00 m/s, p95 0.00 m/s (maks 0.00 m/s @0.00s kaki , batas 0.25 m/s)"
         ],
-        ["PASS", "root motion: 0.00 m horizontal dalam 3.00 s"],
-        ["PASS", "klaim durasi 3.00 s: terukur 3.00 s"],
+        ["PASS", "root motion: 0.00 m horizontal dalam 1.60 s"],
+        ["PASS", "klaim durasi 1.60 s: terukur 1.60 s"],
         ["PASS", "versi v1, format 1, changelog 1 entri konsisten"]
       ]
     }

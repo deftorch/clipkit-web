@@ -368,6 +368,58 @@ describe('ClipKit Agent CLI (cli.js)', () => {
     expect(composed.channels.armR_elev).toBeDefined();
   });
 
+  it('samples 3D world joint positions using clipkit pose --json', async () => {
+    const logs = [];
+    const origLog = console.log;
+    console.log = (msg) => logs.push(msg);
+
+    const code = await main(['pose', 'src/data/clips/slash.json', '--t', '0.3', '--json']);
+    console.log = origLog;
+
+    expect(code).toBe(0);
+    const parsed = JSON.parse(logs[0]);
+    expect(parsed.clip).toBe('slash');
+    expect(parsed.t).toBe(0.3);
+    expect(parsed.joints.Head).toBeDefined();
+    expect(parsed.joints.LeftFoot).toBeDefined();
+    expect(parsed.joints.RightHand).toBeDefined();
+    expect(parsed.joints.Head.length).toBe(3);
+  });
+
+  it('measures anatomical clearances and stance using clipkit measure --json', async () => {
+    const logs = [];
+    const origLog = console.log;
+    console.log = (msg) => logs.push(msg);
+
+    const code = await main(['measure', 'src/data/clips/slash.json', '--t', '0.3', '--json']);
+    console.log = origLog;
+
+    expect(code).toBe(0);
+    const parsed = JSON.parse(logs[0]);
+    expect(parsed.clip).toBe('slash');
+    expect(parsed.heel_height_m).toBeDefined();
+    expect(parsed.toe_height_m).toBeDefined();
+    expect(parsed.hand_head_dist_m).toBeDefined();
+    expect(parsed.stance.width_m).toBeGreaterThan(0);
+    expect(parsed.com.inside_base_of_support).toBe(true);
+  });
+
+  it('calculates fighting-game combat frame data in check command', async () => {
+    const logs = [];
+    const origLog = console.log;
+    console.log = (msg) => logs.push(msg);
+
+    const code = await main(['check', 'src/data/clips/slash.json', '--json']);
+    console.log = origLog;
+
+    expect(code).toBe(0);
+    const parsed = JSON.parse(logs[0]);
+    expect(parsed.combat).toBeDefined();
+    expect(parsed.combat.frameData.startup).toBeGreaterThan(0);
+    expect(parsed.combat.frameData.active).toBeGreaterThan(0);
+    expect(parsed.combat.hitboxAnchor.peakSpeed_ms).toBeGreaterThan(5);
+  });
+
   it('returns code 2 for unknown commands and missing arguments', async () => {
     expect(await main(['non_existent_command'])).toBe(2);
     expect(await main(['validate'])).toBe(3); // Usage error caught

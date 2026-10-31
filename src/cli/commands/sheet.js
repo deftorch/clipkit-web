@@ -33,9 +33,25 @@ export function runSheet(args, options = {}) {
   const baseName =
     inputPath === '-' ? clip.name || 'clip' : path.basename(inputPath, path.extname(inputPath));
 
-  const targetDir = options.dir || '.';
-  const svgFilename = options.out || path.join(targetDir, `${baseName}_sheet.svg`);
-  const metaFilename = path.join(targetDir, `${baseName}_sheet.json`);
+  let targetDir = options.dir || '.';
+  let svgFilename;
+  let metaFilename;
+
+  if (options.out) {
+    if (options.out.endsWith('.svg')) {
+      svgFilename = options.out;
+      targetDir = path.dirname(options.out);
+      const outBase = path.basename(options.out, '.svg');
+      metaFilename = path.join(targetDir, `${outBase}_sheet.json`);
+    } else {
+      targetDir = options.out;
+      svgFilename = path.join(targetDir, `${baseName}_sheet.svg`);
+      metaFilename = path.join(targetDir, `${baseName}_sheet.json`);
+    }
+  } else {
+    svgFilename = path.join(targetDir, `${baseName}_sheet.svg`);
+    metaFilename = path.join(targetDir, `${baseName}_sheet.json`);
+  }
 
   try {
     const safeSvgPath = resolveSafeOutputPath(svgFilename, {

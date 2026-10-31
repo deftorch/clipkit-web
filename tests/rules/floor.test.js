@@ -96,4 +96,68 @@ describe('Rule: floor', () => {
     expect(res.lines[1][0]).toBe('PASS');
     expect(res.lines[1][1]).toContain('tidak ada frame kontak');
   });
+
+  it('detects FOOT_FLOATING when a stance clip has feet floating above floor', () => {
+    const clip = {
+      name: 'boxing_stance',
+      claims: { type: 'stance' },
+      duration: 1.0,
+    };
+    const frames = 30;
+    const tAt = (f) => f / 30;
+    // Poses floating 5cm (0.05m) above floor
+    const poses = Array.from({ length: frames + 1 }, () => ({
+      pos: {
+        [I.LeftToeBase]: [0.2, floorY + 0.05, 0],
+        [I.RightToeBase]: [-0.2, floorY + 0.05, 0],
+      },
+    }));
+
+    const res = check({
+      ctx,
+      limits,
+      clip,
+      poses,
+      floorY,
+      tAt,
+      FPS: 30,
+    });
+
+    const floatIssue = res.issues.find((i) => i.rule === 'FOOT_FLOATING');
+    expect(floatIssue).toBeDefined();
+    expect(floatIssue.value).toBeCloseTo(0.05, 2);
+    expect(res.lines.some((l) => l[0] === 'WARN' || l[0] === 'FAIL')).toBe(true);
+  });
+
+  it('detects FOOT_FLOATING during declared planted window', () => {
+    const clip = {
+      name: 'walk_floating_foot',
+      duration: 1.0,
+      validate: { check_floating: true },
+      windows: { planted_L: [0.0, 0.5] },
+    };
+    const frames = 30;
+    const tAt = (f) => f / 30;
+    // Left foot floating 6cm during planted window
+    const poses = Array.from({ length: frames + 1 }, () => ({
+      pos: {
+        [I.LeftToeBase]: [0.2, floorY + 0.06, 0],
+        [I.RightToeBase]: [-0.2, floorY, 0],
+      },
+    }));
+
+    const res = check({
+      ctx,
+      limits,
+      clip,
+      poses,
+      floorY,
+      tAt,
+      FPS: 30,
+    });
+
+    const floatIssue = res.issues.find((i) => i.rule === 'FOOT_FLOATING');
+    expect(floatIssue).toBeDefined();
+    expect(floatIssue.joint).toBe('LeftToeBase');
+  });
 });

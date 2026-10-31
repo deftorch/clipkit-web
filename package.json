@@ -29,6 +29,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:update-baseline": "node scripts/update-baseline.js",
     "lint": "biome lint --diagnostic-level=error .",
     "format": "biome format --write .",
     "check": "biome check --diagnostic-level=error ."

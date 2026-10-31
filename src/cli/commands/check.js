@@ -3,6 +3,7 @@ import path from 'node:path';
 import limitsData from '../../data/limits.json';
 import { loadRigs } from '../../data/load-rigs.js';
 import partsData from '../../data/parts.json';
+import { computeCombatFrameData } from '../../domain/animation/combat-analytics.js';
 import { makeCtx } from '../../domain/rig/rig-context.js';
 import { validateSchema } from '../../domain/validation/schema-validator.js';
 import { validate } from '../../domain/validation/validator.js';
@@ -100,6 +101,11 @@ export function runCheck(args, options = {}) {
     }
   }
 
+  // Step 4: Optional Combat Frame Data
+  const combatData = computeCombatFrameData(motus, ctx, clip, {
+    force: !!options.combat,
+  });
+
   // Output formatting
   let displayIssues = valRes.issues;
   if (options.maxIssues && options.maxIssues > 0) {
@@ -117,6 +123,7 @@ export function runCheck(args, options = {}) {
         issueCount: valRes.issues.length,
         issues: displayIssues,
         sheet: sheetInfo,
+        combat: combatData || undefined,
       }),
     );
   } else {
@@ -124,6 +131,15 @@ export function runCheck(args, options = {}) {
     console.log(
       `${status}: ${inputPath} [${style}] — ${fails.length} failure(s), ${warns.length} warning(s)`,
     );
+
+    if (combatData) {
+      console.log(
+        `Combat Frame Data (60 FPS): [Startup: ${combatData.frameData.startup}f | Active: ${combatData.frameData.active}f | Recovery: ${combatData.frameData.recovery}f] (Total: ${combatData.totalFrames}f / ${combatData.durationSec}s)`,
+      );
+      console.log(
+        `Hitbox Anchor: ${combatData.hitboxAnchor.joint} (Peak Speed: ${combatData.hitboxAnchor.peakSpeed_ms} m/s @t=${combatData.hitboxAnchor.peakSpeed_t}s)`,
+      );
+    }
 
     if (sheetInfo) {
       console.log(`Contact sheet: ${sheetInfo.imagePath}`);

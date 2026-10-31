@@ -207,11 +207,27 @@ export function applyFootIK(rig, ctx, clip, options = {}) {
   }
 
   // Determine planted intervals for Left and Right legs
+  const explicitContacts = options.contacts || clip.contacts;
+  const autoPlanted = options.autoPlanted ?? true;
+
   const detected = findPlantedWindows(clip, poses, ctx, floorY);
-  const plantedL = clip.windows?.planted_L || (options.autoPlanted ? detected.left : null);
-  const plantedR = clip.windows?.planted_R || (options.autoPlanted ? detected.right : null);
+  const plantedL =
+    explicitContacts?.left ||
+    explicitContacts?.L ||
+    clip.windows?.planted_L ||
+    (autoPlanted ? detected.left : null);
+  const plantedR =
+    explicitContacts?.right ||
+    explicitContacts?.R ||
+    clip.windows?.planted_R ||
+    (autoPlanted ? detected.right : null);
 
   if (!plantedL && !plantedR) {
+    if (typeof options.onWarning === 'function') {
+      options.onWarning(
+        'Foot IK: No ground contact frames or planted intervals detected. Use --contacts left:0-0.5,right:0-0.5 or declare clip.windows.planted_L/R to specify contact periods.',
+      );
+    }
     return JSON.parse(JSON.stringify(clip));
   }
 

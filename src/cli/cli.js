@@ -5,6 +5,8 @@ import { runCompose } from './commands/compose.js';
 import { runEdit } from './commands/edit.js';
 import { runExport } from './commands/export.js';
 import { runImport } from './commands/import.js';
+import { runMeasure } from './commands/measure.js';
+import { runPose } from './commands/pose.js';
 import { runPoses } from './commands/poses.js';
 import { runRules } from './commands/rules.js';
 import { runSchema } from './commands/schema.js';
@@ -53,6 +55,10 @@ export function parseArgs(rawArgs) {
           'freq',
           'template',
           'epsilon',
+          't',
+          'joint',
+          'metrics',
+          'contacts',
         ].includes(key)
       ) {
         options[camelCase(key)] = rawArgs[++i];
@@ -217,6 +223,39 @@ Example:
     return;
   }
 
+  if (command === 'pose') {
+    console.log(`clipkit pose <clip-file> [options]
+
+Evaluates Forward Kinematics and extracts 3D world joint positions and transforms at timestamp t.
+
+Options:
+  --t <seconds>            Timestamp in seconds to sample (default: 0)
+  --joint <name>           Inspect a specific joint (e.g. Head, LeftHand, LeftFoot)
+  --json                   Output machine-readable JSON containing all 55 joint positions
+
+Example:
+  clipkit pose src/data/clips/slash.json --t 0.3 --json
+  clipkit pose src/data/clips/slash.json --t 0.3 --joint RightHand
+`);
+    return;
+  }
+
+  if (command === 'measure') {
+    console.log(`clipkit measure <clip-file> [options]
+
+Measures key anatomical clearances, heel/toe floor heights, stance width/stagger, hand-to-head metrics, and Center of Mass stability.
+
+Options:
+  --t <seconds>            Timestamp in seconds to sample (default: 0)
+  --json                   Output machine-readable JSON metrics
+
+Example:
+  clipkit measure src/data/clips/slash.json --t 0.3
+  clipkit measure src/data/clips/walk.json --t 0.4 --json
+`);
+    return;
+  }
+
   if (command === 'compose') {
     console.log(`clipkit compose <clip-file> [options]
 
@@ -345,6 +384,8 @@ Commands:
   import <file>            Ingest and decompile .vrma, .glb, or .bvh into ClipKit JSON
   sheet <clip>             Render headless annotated contact sheet (SVG + JSON sidecar)
   poses <subcommand>       Browse pose library (list | show <name>)
+  pose <clip>              Sample world joint positions at timestamp t (e.g. --t 0.5)
+  measure <clip>           Measure anatomical clearances, stance, and hand/head metrics
   compose <clip>           Flatten layer clip into a normal clip
   edit <op> <clip>         Deterministic edit operations (mirror | retime | scale-amplitude | close-loop)
   compare <a> <b>          Compare kinematics and render side-by-side contact sheet
@@ -395,6 +436,10 @@ export async function main(argv = process.argv.slice(2)) {
         return await runSheet(commandArgs, options);
       case 'poses':
         return await runPoses(commandArgs, options);
+      case 'pose':
+        return await runPose(commandArgs, options);
+      case 'measure':
+        return await runMeasure(commandArgs, options);
       case 'compose':
         return await runCompose(commandArgs, options);
       case 'edit':

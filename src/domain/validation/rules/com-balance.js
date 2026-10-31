@@ -122,7 +122,12 @@ export function isPointInPolygon2D(pt, poly, margin = 0.03) {
  */
 export function check({ ctx, limits, clip, poses, floorY, tAt, FPS = 30 }) {
   const vm = clip.validate || {};
-  const isExplicit = vm.com_balance === true || vm.balance === true;
+  const isStance =
+    clip.name?.includes('stance') ||
+    clip.tags?.includes('stance') ||
+    clip.claims?.type === 'stance' ||
+    vm.stance === true;
+  const isExplicit = vm.com_balance === true || vm.balance === true || isStance;
 
   // Preserve exact baseline reproduction if com_balance is not requested
   if (!isExplicit) {
@@ -189,10 +194,29 @@ export function check({ ctx, limits, clip, poses, floorY, tAt, FPS = 30 }) {
 
   const isStable = maxInstability <= maxInstabilityLimit;
   if (totalFramesChecked === 0) {
-    lines.push([
-      'PASS',
-      'keseimbangan CoM: tidak ada frame tumpuan statis (fase melayang/dinamis)',
-    ]);
+    if (isStance) {
+      lines.push([
+        'WARN',
+        'keseimbangan CoM: tidak ada frame tumpuan statis pada klip bertipe stance (kaki melayang atau di udara)',
+      ]);
+      issues.push(
+        createIssue({
+          level: 'WARN',
+          rule: RULE_CODES.COM_BALANCE_UNSTABLE,
+          joint: 'Hips',
+          t: 0,
+          value: null,
+          limit: maxInstabilityLimit,
+          unit: 'm',
+          hint: 'Ensure feet contact the ground to establish a Base of Support polygon for the stance.',
+        }),
+      );
+    } else {
+      lines.push([
+        'PASS',
+        'keseimbangan CoM: tidak ada frame tumpuan statis (fase melayang/dinamis)',
+      ]);
+    }
   } else if (isStable) {
     lines.push([
       'PASS',

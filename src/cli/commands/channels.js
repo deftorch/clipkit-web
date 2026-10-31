@@ -27,29 +27,32 @@ export function runChannels(_args, options = {}) {
       continue;
     }
 
+    const range = def.range || [def.min ?? -180, def.max ?? 180];
     results.push({
       name,
       part,
       bone: def.bone || null,
       type: def.type || 'rot',
-      min: def.min ?? -180,
-      max: def.max ?? 180,
+      min: range[0],
+      max: range[1],
       default: def.default ?? 0,
     });
   }
 
   // Also include aims and expressions if applicable
   if (!partFilter || partFilter === 'arms') {
-    for (const a of Object.keys(motus.aims || {})) {
+    for (const [a, aimDef] of Object.entries(motus.aims || {})) {
       for (const k of ['elev', 'azim', 'roll']) {
+        const aimRange = aimDef.range?.[k] || [-180, 180];
+        const defaultVal = aimDef.default?.[k] ?? 0;
         results.push({
           name: `${a}_${k}`,
           part: 'arms',
           bone: a,
           type: 'aim',
-          min: -180,
-          max: 180,
-          default: 0,
+          min: aimRange[0],
+          max: aimRange[1],
+          default: defaultVal,
         });
       }
     }

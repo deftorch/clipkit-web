@@ -132,27 +132,30 @@ function runChannels(_args, options = {}) {
     if (partFilter && part2 !== partFilter) {
       continue;
     }
+    const range = def.range || [def.min ?? -180, def.max ?? 180];
     results.push({
       name: name2,
       part: part2,
       bone: def.bone || null,
       type: def.type || "rot",
-      min: def.min ?? -180,
-      max: def.max ?? 180,
+      min: range[0],
+      max: range[1],
       default: def.default ?? 0
     });
   }
   if (!partFilter || partFilter === "arms") {
-    for (const a of Object.keys(motus2.aims || {})) {
+    for (const [a, aimDef] of Object.entries(motus2.aims || {})) {
       for (const k of ["elev", "azim", "roll"]) {
+        const aimRange = aimDef.range?.[k] || [-180, 180];
+        const defaultVal = aimDef.default?.[k] ?? 0;
         results.push({
           name: `${a}_${k}`,
           part: "arms",
           bone: a,
           type: "aim",
-          min: -180,
-          max: 180,
-          default: 0
+          min: aimRange[0],
+          max: aimRange[1],
+          default: defaultVal
         });
       }
     }
@@ -172,12 +175,26 @@ function runChannels(_args, options = {}) {
 }
 const styles = { "realistic": { "ang_speed_warn": 720, "ang_speed_fail": 1200, "ang_accel_warn": 6e4, "loop_pose_diff_deg": 8, "root_speed_warn": 8, "root_speed_fail": 12 }, "stylized": { "ang_speed_warn": 1200, "ang_speed_fail": 2e3, "ang_accel_warn": 12e4, "loop_pose_diff_deg": 10, "root_speed_warn": 10, "root_speed_fail": 15 }, "exaggerated": { "ang_speed_warn": 1800, "ang_speed_fail": 3e3, "ang_accel_warn": 24e4, "loop_pose_diff_deg": 15, "root_speed_warn": 14, "root_speed_fail": 22 } };
 const anatomy = { "knee_flex_min": -5, "knee_flex_max": 160, "elbow_flex_max": 165, "neck_bend_max": 70 };
-const floor = { "penetration_fail_m": 0.04, "contact_height_m": 0.03, "slide_warn_ms": 0.25 };
+const floor = { "penetration_fail_m": 0.04, "contact_height_m": 0.03, "floating_warn_m": 0.035, "floating_fail_m": 0.08, "slide_warn_ms": 0.25 };
 const limitsData = {
   styles,
   anatomy,
   floor
 };
+const vadd = (a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
+const vsub = (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+const vdot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+const vcross = (a, b) => [
+  a[1] * b[2] - a[2] * b[1],
+  a[2] * b[0] - a[0] * b[2],
+  a[0] * b[1] - a[1] * b[0]
+];
+const vlen = (a) => Math.hypot(a[0], a[1], a[2]);
+const vnorm = (a) => {
+  const l = vlen(a) || 1;
+  return [a[0] / l, a[1] / l, a[2] / l];
+};
+const vscale = (a, s) => [a[0] * s, a[1] * s, a[2] * s];
 const EASING_REGISTRY = /* @__PURE__ */ new Map([
   ["linear", (u) => u],
   ["hold", (u) => u < 1 ? 0 : 1],
@@ -217,6 +234,55 @@ const EASINGS = [
   "inOutSine",
   "outBack"
 ];
+function rootMotion(clip, t) {
+  if (!clip.move) return [0, 0, 0];
+  if (Array.isArray(clip.move) && typeof clip.move[0] === "number") {
+    const u = Math.min(1, Math.max(0, t / (clip.duration || 1)));
+    return [clip.move[0] * u, (clip.move[1] || 0) * u, (clip.move[2] || 0) * u];
+  }
+  const segs = Array.isArray(clip.move) ? clip.move : [clip.move];
+  let tot = [0, 0, 0];
+  for (const s of segs) {
+    if (!s || typeof s !== "object" || !s.dir) continue;
+    const d = vnorm(s.dir), t0 = s.t0 ?? 0, t1 = s.t1 ?? clip.duration;
+    const u = Math.min(1, Math.max(0, (t - t0) / Math.max(t1 - t0, 1e-6)));
+    tot = vadd(tot, vscale(d, (s.distance || 0) * ease(s.ease || "linear", u)));
+  }
+  return tot;
+}
+const D2R = Math.PI / 180;
+const R2D = 180 / Math.PI;
+const qmul = (a, b) => [
+  a[3] * b[0] + a[0] * b[3] + a[1] * b[2] - a[2] * b[1],
+  a[3] * b[1] - a[0] * b[2] + a[1] * b[3] + a[2] * b[0],
+  a[3] * b[2] + a[0] * b[1] - a[1] * b[0] + a[2] * b[3],
+  a[3] * b[3] - a[0] * b[0] - a[1] * b[1] - a[2] * b[2]
+];
+const qinv = (q) => [-q[0], -q[1], -q[2], q[3]];
+const qnorm = (q) => {
+  const l = Math.hypot(q[0], q[1], q[2], q[3]) || 1;
+  return [q[0] / l, q[1] / l, q[2] / l, q[3] / l];
+};
+const qaxis = (ax, ang) => {
+  const l = Math.hypot(ax[0], ax[1], ax[2]) || 1;
+  const s = Math.sin(ang / 2) / l;
+  return [ax[0] * s, ax[1] * s, ax[2] * s, Math.cos(ang / 2)];
+};
+const qrot = (q, v) => {
+  const t = vscale(vcross([q[0], q[1], q[2]], v), 2);
+  return vadd(vadd(v, vscale(t, q[3])), vcross([q[0], q[1], q[2]], t));
+};
+const qarc = (v0, v1) => {
+  const d = vdot(v0, v1);
+  if (d < -0.999999) {
+    let ax = vcross([1, 0, 0], v0);
+    if (vlen(ax) < 1e-6) ax = vcross([0, 1, 0], v0);
+    return qaxis(vnorm(ax), Math.PI);
+  }
+  const c = vcross(v0, v1);
+  return qnorm([c[0], c[1], c[2], 1 + d]);
+};
+const qangle = (a, b) => 2 * Math.acos(Math.min(1, Math.abs(a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3])));
 function sampleKeys(keys, t) {
   if (!keys || !keys.length) return 0;
   if (t <= keys[0][0]) return +keys[0][1];
@@ -232,20 +298,14 @@ function sampleKeys(keys, t) {
   }
   return +last[1];
 }
-const vadd = (a, b) => [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
-const vsub = (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
-const vdot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
-const vcross = (a, b) => [
-  a[1] * b[2] - a[2] * b[1],
-  a[2] * b[0] - a[0] * b[2],
-  a[0] * b[1] - a[1] * b[0]
-];
-const vlen = (a) => Math.hypot(a[0], a[1], a[2]);
-const vnorm = (a) => {
-  const l = vlen(a) || 1;
-  return [a[0] / l, a[1] / l, a[2] / l];
-};
-const vscale = (a, s) => [a[0] * s, a[1] * s, a[2] * s];
+function evalExpressions(clip, t) {
+  const o = {};
+  const ex = clip.expressions || {};
+  for (const k of Object.keys(ex)) {
+    o[k] = sampleKeys(ex[k], t);
+  }
+  return o;
+}
 function allChannelNames(rig) {
   const n = Object.keys(rig.channels);
   for (const a of Object.keys(rig.aims || {})) {
@@ -332,6 +392,121 @@ function restPositions(ctx) {
   }
   return pos;
 }
+const OP_EVALUATORS = {
+  axis: (op, gp, cv, qd) => {
+    return qmul(qaxis(vnorm(qrot(gp, op.axis)), cv[op.ch] * D2R * op.w), qd);
+  },
+  aim: (op, gp, cv, qd) => {
+    const el = cv[op.name + "_elev"] * D2R, az = cv[op.name + "_azim"] * D2R, ro = cv[op.name + "_roll"] * D2R;
+    const d = [
+      op.lateral[0] * Math.cos(el) * Math.cos(az),
+      Math.sin(el),
+      Math.cos(el) * Math.sin(az)
+    ];
+    const dc = vnorm(qrot(gp, d)), rc = vnorm(qrot(gp, op.rest_dir));
+    return qmul(qaxis(dc, ro), qmul(qarc(rc, dc), qd));
+  }
+};
+function evalPose(rig, ctx, clip, t) {
+  const cv = evalChannels(rig, ctx, clip, t), n = ctx.n;
+  const G = new Array(n), local = new Array(n), pos = new Array(n);
+  let hips = ctx.offsets[0].slice();
+  const ps = ctx.posScale;
+  for (const po of ctx.posOps) {
+    hips = vadd(hips, vscale(po.axis, cv[po.ch] * ps));
+  }
+  const root2 = rootMotion(clip, t);
+  for (let i = 0; i < n; i++) {
+    const p = ctx.parents[i];
+    const gp = p < 0 ? [0, 0, 0, 1] : G[p];
+    let qd = [0, 0, 0, 1];
+    for (const op of ctx.ops[i]) {
+      const evaluator = OP_EVALUATORS[op.kind];
+      if (evaluator) {
+        qd = evaluator(op, gp, cv, qd);
+      }
+    }
+    G[i] = qnorm(qmul(qd, gp));
+    local[i] = qnorm(qmul(qinv(gp), qmul(qd, gp)));
+    pos[i] = p < 0 ? vadd(root2, hips) : vadd(pos[p], qrot(gp, ctx.offsets[i]));
+  }
+  return { pos, delta: G, local, root: root2, hips, cv, expr: evalExpressions(clip, t) };
+}
+function computeCombatFrameData(rig, ctx, clip, options = {}) {
+  const fps = options.fps || 60;
+  const dur = clip.duration || 1;
+  const totalFrames = Math.round(dur * fps);
+  const wins = clip.windows || {};
+  const activeWin = wins.hitbox || wins.active;
+  if (!activeWin && !options.force && !clip.claims?.combat) {
+    return null;
+  }
+  const [t0, t1] = activeWin || [0, dur];
+  const startupFrames = Math.max(0, Math.round(t0 * fps));
+  const activeFrames = Math.max(1, Math.round((t1 - t0) * fps));
+  const recoveryFrames = Math.max(0, totalFrames - startupFrames - activeFrames);
+  let anchor = clip.hitbox_joint || clip.claims?.hitbox_bone;
+  if (!anchor) {
+    const ch = clip.channels || {};
+    if (ch.elbowR || ch.armR_elev || ch.armR_azim) {
+      anchor = "RightHand";
+    } else if (ch.elbowL || ch.armL_elev || ch.armL_azim) {
+      anchor = "LeftHand";
+    } else if (ch.kneeR || ch.legR_swing) {
+      anchor = "RightFoot";
+    } else if (ch.kneeL || ch.legL_swing) {
+      anchor = "LeftFoot";
+    } else {
+      anchor = "RightHand";
+    }
+  }
+  const anchorIdx = ctx.idx[anchor];
+  let peakSpeed = 0;
+  let peakSpeedT = t0;
+  if (anchorIdx != null) {
+    const sampleFps = 60;
+    const sampleStep = 1 / sampleFps;
+    const endT = Math.min(dur, t1);
+    for (let t = t0; t <= endT; t += sampleStep) {
+      const p1 = evalPose(rig, ctx, clip, t);
+      const nextT = Math.min(t + sampleStep, dur);
+      if (nextT <= t) break;
+      const p2 = evalPose(rig, ctx, clip, nextT);
+      const pos1 = p1.pos[anchorIdx];
+      const pos2 = p2.pos[anchorIdx];
+      if (pos1 && pos2) {
+        const dist = Math.hypot(pos2[0] - pos1[0], pos2[1] - pos1[1], pos2[2] - pos1[2]);
+        const speed = dist / (nextT - t);
+        if (speed > peakSpeed) {
+          peakSpeed = speed;
+          peakSpeedT = t;
+        }
+      }
+    }
+  }
+  return {
+    fps,
+    totalFrames,
+    durationSec: Number(dur.toFixed(3)),
+    frameData: {
+      startup: startupFrames,
+      active: activeFrames,
+      recovery: recoveryFrames,
+      notation: `${startupFrames}-${activeFrames}-${recoveryFrames}`
+    },
+    windows: {
+      hitbox: activeWin || null,
+      cancel: wins.cancel || null,
+      parry: wins.parry || null,
+      invulnerable: wins.inv || null
+    },
+    hitboxAnchor: {
+      joint: anchor,
+      peakSpeed_ms: Number(peakSpeed.toFixed(2)),
+      peakSpeed_t: Number(peakSpeedT.toFixed(3))
+    }
+  };
+}
 const RULE_CODES = {
   SPEED_LIMIT: "SPEED_LIMIT",
   ACCEL_LIMIT: "ACCEL_LIMIT",
@@ -339,6 +514,7 @@ const RULE_CODES = {
   ANATOMY_ELBOW: "ANATOMY_ELBOW",
   ANATOMY_NECK: "ANATOMY_NECK",
   FLOOR_PENETRATION: "FLOOR_PENETRATION",
+  FOOT_FLOATING: "FOOT_FLOATING",
   FOOT_SLIDE: "FOOT_SLIDE",
   ROOT_MOTION_SPEED: "ROOT_MOTION_SPEED",
   ROOT_MOTION_CLAIM_DIST: "ROOT_MOTION_CLAIM_DIST",
@@ -1190,103 +1366,6 @@ function composeClips(baseClip, layers = [], options = {}) {
     warnings
   };
 }
-function rootMotion(clip, t) {
-  if (!clip.move) return [0, 0, 0];
-  if (Array.isArray(clip.move) && typeof clip.move[0] === "number") {
-    const u = Math.min(1, Math.max(0, t / (clip.duration || 1)));
-    return [clip.move[0] * u, (clip.move[1] || 0) * u, (clip.move[2] || 0) * u];
-  }
-  const segs = Array.isArray(clip.move) ? clip.move : [clip.move];
-  let tot = [0, 0, 0];
-  for (const s of segs) {
-    if (!s || typeof s !== "object" || !s.dir) continue;
-    const d = vnorm(s.dir), t0 = s.t0 ?? 0, t1 = s.t1 ?? clip.duration;
-    const u = Math.min(1, Math.max(0, (t - t0) / Math.max(t1 - t0, 1e-6)));
-    tot = vadd(tot, vscale(d, (s.distance || 0) * ease(s.ease || "linear", u)));
-  }
-  return tot;
-}
-const D2R = Math.PI / 180;
-const R2D = 180 / Math.PI;
-const qmul = (a, b) => [
-  a[3] * b[0] + a[0] * b[3] + a[1] * b[2] - a[2] * b[1],
-  a[3] * b[1] - a[0] * b[2] + a[1] * b[3] + a[2] * b[0],
-  a[3] * b[2] + a[0] * b[1] - a[1] * b[0] + a[2] * b[3],
-  a[3] * b[3] - a[0] * b[0] - a[1] * b[1] - a[2] * b[2]
-];
-const qinv = (q) => [-q[0], -q[1], -q[2], q[3]];
-const qnorm = (q) => {
-  const l = Math.hypot(q[0], q[1], q[2], q[3]) || 1;
-  return [q[0] / l, q[1] / l, q[2] / l, q[3] / l];
-};
-const qaxis = (ax, ang) => {
-  const l = Math.hypot(ax[0], ax[1], ax[2]) || 1;
-  const s = Math.sin(ang / 2) / l;
-  return [ax[0] * s, ax[1] * s, ax[2] * s, Math.cos(ang / 2)];
-};
-const qrot = (q, v) => {
-  const t = vscale(vcross([q[0], q[1], q[2]], v), 2);
-  return vadd(vadd(v, vscale(t, q[3])), vcross([q[0], q[1], q[2]], t));
-};
-const qarc = (v0, v1) => {
-  const d = vdot(v0, v1);
-  if (d < -0.999999) {
-    let ax = vcross([1, 0, 0], v0);
-    if (vlen(ax) < 1e-6) ax = vcross([0, 1, 0], v0);
-    return qaxis(vnorm(ax), Math.PI);
-  }
-  const c = vcross(v0, v1);
-  return qnorm([c[0], c[1], c[2], 1 + d]);
-};
-const qangle = (a, b) => 2 * Math.acos(Math.min(1, Math.abs(a[0] * b[0] + a[1] * b[1] + a[2] * b[2] + a[3] * b[3])));
-function evalExpressions(clip, t) {
-  const o = {};
-  const ex = clip.expressions || {};
-  for (const k of Object.keys(ex)) {
-    o[k] = sampleKeys(ex[k], t);
-  }
-  return o;
-}
-const OP_EVALUATORS = {
-  axis: (op, gp, cv, qd) => {
-    return qmul(qaxis(vnorm(qrot(gp, op.axis)), cv[op.ch] * D2R * op.w), qd);
-  },
-  aim: (op, gp, cv, qd) => {
-    const el = cv[op.name + "_elev"] * D2R, az = cv[op.name + "_azim"] * D2R, ro = cv[op.name + "_roll"] * D2R;
-    const d = [
-      op.lateral[0] * Math.cos(el) * Math.cos(az),
-      Math.sin(el),
-      Math.cos(el) * Math.sin(az)
-    ];
-    const dc = vnorm(qrot(gp, d)), rc = vnorm(qrot(gp, op.rest_dir));
-    return qmul(qaxis(dc, ro), qmul(qarc(rc, dc), qd));
-  }
-};
-function evalPose(rig, ctx, clip, t) {
-  const cv = evalChannels(rig, ctx, clip, t), n = ctx.n;
-  const G = new Array(n), local = new Array(n), pos = new Array(n);
-  let hips = ctx.offsets[0].slice();
-  const ps = ctx.posScale;
-  for (const po of ctx.posOps) {
-    hips = vadd(hips, vscale(po.axis, cv[po.ch] * ps));
-  }
-  const root2 = rootMotion(clip, t);
-  for (let i = 0; i < n; i++) {
-    const p = ctx.parents[i];
-    const gp = p < 0 ? [0, 0, 0, 1] : G[p];
-    let qd = [0, 0, 0, 1];
-    for (const op of ctx.ops[i]) {
-      const evaluator = OP_EVALUATORS[op.kind];
-      if (evaluator) {
-        qd = evaluator(op, gp, cv, qd);
-      }
-    }
-    G[i] = qnorm(qmul(qd, gp));
-    local[i] = qnorm(qmul(qinv(gp), qmul(qd, gp)));
-    pos[i] = p < 0 ? vadd(root2, hips) : vadd(pos[p], qrot(gp, ctx.offsets[i]));
-  }
-  return { pos, delta: G, local, root: root2, hips, cv, expr: evalExpressions(clip, t) };
-}
 function check$8({ ctx, limits, poses, tAt }) {
   const an = limits.anatomy;
   const I = ctx.idx;
@@ -1664,10 +1743,17 @@ function applyFootIK(rig, ctx, clip, options = {}) {
     const t = Math.min(f / FPS2, dur);
     poses.push(evalPose(rig, ctx, clip, t));
   }
+  const explicitContacts = options.contacts || clip.contacts;
+  const autoPlanted = options.autoPlanted ?? true;
   const detected = findPlantedWindows(clip, poses, ctx, floorY2);
-  const plantedL = clip.windows?.planted_L || (options.autoPlanted ? detected.left : null);
-  const plantedR = clip.windows?.planted_R || (options.autoPlanted ? detected.right : null);
+  const plantedL = explicitContacts?.left || explicitContacts?.L || clip.windows?.planted_L || (autoPlanted ? detected.left : null);
+  const plantedR = explicitContacts?.right || explicitContacts?.R || clip.windows?.planted_R || (autoPlanted ? detected.right : null);
   if (!plantedL && !plantedR) {
+    if (typeof options.onWarning === "function") {
+      options.onWarning(
+        "Foot IK: No ground contact frames or planted intervals detected. Use --contacts left:0-0.5,right:0-0.5 or declare clip.windows.planted_L/R to specify contact periods."
+      );
+    }
     return JSON.parse(JSON.stringify(clip));
   }
   const leftHipIdx = I.LeftUpLeg;
@@ -1845,7 +1931,8 @@ function isPointInPolygon2D(pt, poly, margin = 0.03) {
 }
 function check$5({ ctx, limits, clip, poses, floorY: floorY2, tAt, FPS: FPS2 = 30 }) {
   const vm = clip.validate || {};
-  const isExplicit = vm.com_balance === true || vm.balance === true;
+  const isStance = clip.name?.includes("stance") || clip.tags?.includes("stance") || clip.claims?.type === "stance" || vm.stance === true;
+  const isExplicit = vm.com_balance === true || vm.balance === true || isStance;
   if (!isExplicit) {
     return { lines: [], issues: [] };
   }
@@ -1895,10 +1982,29 @@ function check$5({ ctx, limits, clip, poses, floorY: floorY2, tAt, FPS: FPS2 = 3
   }
   const isStable = maxInstability <= maxInstabilityLimit;
   if (totalFramesChecked === 0) {
-    lines.push([
-      "PASS",
-      "keseimbangan CoM: tidak ada frame tumpuan statis (fase melayang/dinamis)"
-    ]);
+    if (isStance) {
+      lines.push([
+        "WARN",
+        "keseimbangan CoM: tidak ada frame tumpuan statis pada klip bertipe stance (kaki melayang atau di udara)"
+      ]);
+      issues.push(
+        createIssue({
+          level: "WARN",
+          rule: RULE_CODES.COM_BALANCE_UNSTABLE,
+          joint: "Hips",
+          t: 0,
+          value: null,
+          limit: maxInstabilityLimit,
+          unit: "m",
+          hint: "Ensure feet contact the ground to establish a Base of Support polygon for the stance."
+        })
+      );
+    } else {
+      lines.push([
+        "PASS",
+        "keseimbangan CoM: tidak ada frame tumpuan statis (fase melayang/dinamis)"
+      ]);
+    }
   } else if (isStable) {
     lines.push([
       "PASS",
@@ -1997,6 +2103,64 @@ function check$4({ ctx, limits, clip, poses, floorY: floorY2, tAt, FPS: FPS2 = 3
           hint: `Raise hip_y/root by at least ${(pen - fl.penetration_fail_m).toFixed(3)}m or adjust foot flexion.`
         })
       );
+    }
+  }
+  const isStance = clip.name?.includes("stance") || clip.tags?.includes("stance") || clip.claims?.type === "stance" || vm.stance === true || vm.check_floating === true || vm.grounded === true;
+  const floatingWarn = fl.floating_warn_m || 0.035;
+  fl.floating_fail_m || 0.08;
+  if (isStance) {
+    if (contact === 0) {
+      const floatDist = minToe - floorY2;
+      lines.push([
+        "FAIL",
+        `kaki melayang: klip bertipe stance tetapi tidak ada kaki yang menapak lantai (${floatDist.toFixed(3)} m di atas lantai)`
+      ]);
+      issues.push(
+        createIssue({
+          level: "FAIL",
+          rule: RULE_CODES.FOOT_FLOATING,
+          joint: minToeSide === "kiri" ? "LeftToeBase" : "RightToeBase",
+          t: minToeT,
+          value: floatDist,
+          limit: floatingWarn,
+          unit: "m",
+          hint: "Lower hip_y or adjust leg channels to ensure feet touch the ground plane in a stance."
+        })
+      );
+    } else {
+      let maxFloat = 0;
+      let maxFloatSide = "";
+      let maxFloatT = 0;
+      for (let f = 0; f < poses.length; f++) {
+        const t = tAt(f);
+        for (const s of ["Left", "Right"]) {
+          const ti = I[s + "ToeBase"];
+          const height = poses[f].pos[ti][1] - floorY2;
+          if (height > floatingWarn && height > maxFloat) {
+            maxFloat = height;
+            maxFloatSide = s === "Left" ? "kiri" : "kanan";
+            maxFloatT = t;
+          }
+        }
+      }
+      if (maxFloat > 0) {
+        lines.push([
+          "WARN",
+          `kaki melayang: toe ${maxFloatSide} melayang ${(maxFloat * 100).toFixed(1)} cm di atas lantai di t=${maxFloatT.toFixed(2)}s (batas maks ${(floatingWarn * 100).toFixed(1)} cm)`
+        ]);
+        issues.push(
+          createIssue({
+            level: "WARN",
+            rule: RULE_CODES.FOOT_FLOATING,
+            joint: maxFloatSide === "kiri" ? "LeftToeBase" : "RightToeBase",
+            t: maxFloatT,
+            value: maxFloat,
+            limit: floatingWarn,
+            unit: "m",
+            hint: `Lower hip_y or adjust foot flexion so foot firmly contacts the floor (max ${(floatingWarn * 100).toFixed(1)} cm clearance).`
+          })
+        );
+      }
     }
   }
   if (vm.foot_slide !== false || clip.windows?.planted_L || clip.windows?.planted_R) {
@@ -3308,6 +3472,9 @@ function runCheck(args, options = {}) {
       console.error(`Warning: Failed to write contact sheet: ${err.message}`);
     }
   }
+  const combatData = computeCombatFrameData(motus2, ctx, clip, {
+    force: !!options.combat
+  });
   let displayIssues = valRes.issues;
   if (options.maxIssues && options.maxIssues > 0) {
     displayIssues = displayIssues.slice(0, Number(options.maxIssues));
@@ -3322,7 +3489,8 @@ function runCheck(args, options = {}) {
         warnCount: warns.length,
         issueCount: valRes.issues.length,
         issues: displayIssues,
-        sheet: sheetInfo
+        sheet: sheetInfo,
+        combat: combatData || void 0
       })
     );
   } else {
@@ -3330,6 +3498,14 @@ function runCheck(args, options = {}) {
     console.log(
       `${status}: ${inputPath} [${style}] — ${fails.length} failure(s), ${warns.length} warning(s)`
     );
+    if (combatData) {
+      console.log(
+        `Combat Frame Data (60 FPS): [Startup: ${combatData.frameData.startup}f | Active: ${combatData.frameData.active}f | Recovery: ${combatData.frameData.recovery}f] (Total: ${combatData.totalFrames}f / ${combatData.durationSec}s)`
+      );
+      console.log(
+        `Hitbox Anchor: ${combatData.hitboxAnchor.joint} (Peak Speed: ${combatData.hitboxAnchor.peakSpeed_ms} m/s @t=${combatData.hitboxAnchor.peakSpeed_t}s)`
+      );
+    }
     if (sheetInfo) {
       console.log(`Contact sheet: ${sheetInfo.imagePath}`);
     }
@@ -4491,7 +4667,28 @@ async function runEdit(args, options = {}) {
     const { motus: motus2 } = loadRigs();
     const ctx = makeCtx(motus2);
     const blendWindow = options["blend-window"] != null ? Number(options["blend-window"]) : void 0;
-    result = applyFootIK(motus2, ctx, clip, { blendWindow });
+    let contacts;
+    if (options.contacts) {
+      contacts = {};
+      const parts = String(options.contacts).split(",");
+      for (const p of parts) {
+        if (p.includes(":")) {
+          const [side, range] = p.split(":");
+          const [start, end] = range.split("-").map(Number);
+          if (side.toLowerCase().startsWith("l")) contacts.left = [start, end];
+          if (side.toLowerCase().startsWith("r")) contacts.right = [start, end];
+        } else if (p.includes("-")) {
+          const [start, end] = p.split("-").map(Number);
+          contacts.left = [start, end];
+          contacts.right = [start, end];
+        }
+      }
+    }
+    result = applyFootIK(motus2, ctx, clip, {
+      blendWindow,
+      contacts,
+      onWarning: (msg) => console.warn(`Warning: ${msg}`)
+    });
   } else if (operation === "micro-dynamics") {
     const breathing = options.breathing !== "false" && options["no-breathing"] !== true;
     const weightShift = options.sway !== "false" && options["no-sway"] !== true;
@@ -5661,6 +5858,244 @@ async function runImport(args, options = {}) {
   }
   return 0;
 }
+function dist3D(a, b) {
+  if (!a || !b) return 0;
+  return Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+}
+async function runMeasure(args, options = {}) {
+  const target = args[0];
+  if (!target) {
+    console.error('Error: "clipkit measure" requires a clip path or clip name.');
+    console.error("Example: clipkit measure src/data/clips/slash.json --t 0.5 --json");
+    return 2;
+  }
+  let clip;
+  if (defaultClips[target]) {
+    clip = JSON.parse(JSON.stringify(defaultClips[target]));
+  } else {
+    try {
+      const raw = await readInput(target);
+      clip = JSON.parse(raw);
+    } catch (e) {
+      console.error(`Error reading clip '${target}': ${e.message}`);
+      return 2;
+    }
+  }
+  const { motus: motus2, vrm_sample } = loadRigs();
+  const rig = options.rig === "vrm_sample" ? vrm_sample.rig : motus2;
+  const ctx = makeCtx(rig);
+  const t = options.t != null ? Number(options.t) : 0;
+  if (Number.isNaN(t)) {
+    console.error(`Error: Invalid timestamp '--t ${options.t}'. Must be a number.`);
+    return 2;
+  }
+  const I = ctx.idx;
+  const restPos = restPositions(ctx);
+  const floorY2 = Math.min(restPos[I.LeftToeBase][1], restPos[I.RightToeBase][1]);
+  const pose = evalPose(rig, ctx, clip, t);
+  const leftFoot = pose.pos[I.LeftFoot];
+  const rightFoot = pose.pos[I.RightFoot];
+  const leftToe = pose.pos[I.LeftToeBase];
+  const rightToe = pose.pos[I.RightToeBase];
+  const head = pose.pos[I.Head];
+  const leftHand = pose.pos[I.LeftHand];
+  const rightHand = pose.pos[I.RightHand];
+  const heelHeight = {
+    left_m: Number((leftFoot[1] - floorY2).toFixed(4)),
+    right_m: Number((rightFoot[1] - floorY2).toFixed(4))
+  };
+  const toeHeight = {
+    left_m: Number((leftToe[1] - floorY2).toFixed(4)),
+    right_m: Number((rightToe[1] - floorY2).toFixed(4))
+  };
+  const handHeadDist = {
+    left_m: Number(dist3D(leftHand, head).toFixed(4)),
+    right_m: Number(dist3D(rightHand, head).toFixed(4))
+  };
+  const handHeightRelHead = {
+    left_m: Number((leftHand[1] - head[1]).toFixed(4)),
+    right_m: Number((rightHand[1] - head[1]).toFixed(4))
+  };
+  const stanceWidth = Number(Math.abs(leftFoot[0] - rightFoot[0]).toFixed(4));
+  const stanceStagger = Number(Math.abs(leftFoot[2] - rightFoot[2]).toFixed(4));
+  const com = computeCenterOfMass(pose, ctx);
+  const supportPoly = [
+    [leftFoot[0], leftFoot[2]],
+    [leftToe[0], leftToe[2]],
+    [rightToe[0], rightToe[2]],
+    [rightFoot[0], rightFoot[2]]
+  ];
+  const com2D = [com[0], com[2]];
+  const balance = isPointInPolygon2D(com2D, supportPoly, 0.04);
+  const result = {
+    clip: clip.name || target,
+    t: Number(t.toFixed(3)),
+    floorY: Number(floorY2.toFixed(4)),
+    heel_height_m: heelHeight,
+    toe_height_m: toeHeight,
+    hand_head_dist_m: handHeadDist,
+    hand_height_rel_head_m: handHeightRelHead,
+    stance: {
+      width_m: stanceWidth,
+      stagger_m: stanceStagger
+    },
+    com: {
+      position_m: [Number(com[0].toFixed(4)), Number(com[1].toFixed(4)), Number(com[2].toFixed(4))],
+      inside_base_of_support: balance.inside,
+      deviation_m: Number(balance.distance.toFixed(4))
+    },
+    torso_rotations_deg: {
+      lean: pose.cv.lean || 0,
+      side_lean: pose.cv.side_lean || 0,
+      twist: pose.cv.twist || 0,
+      hip_pitch: pose.cv.hip_pitch || 0,
+      hip_twist: pose.cv.hip_twist || 0,
+      hip_roll: pose.cv.hip_roll || 0
+    }
+  };
+  if (options.json) {
+    console.log(formatDeterministicJson(result));
+    return 0;
+  }
+  console.log(`
+Kinematic & Anatomical Measurements for '${result.clip}' at t=${result.t}s:`);
+  console.log("------------------------------------------------------------");
+  console.log(`Feet & Floor Clearance (floorY = ${result.floorY}m):`);
+  console.log(
+    `  Heel Height (m)       : Left: ${(heelHeight.left_m * 100).toFixed(1)} cm | Right: ${(heelHeight.right_m * 100).toFixed(1)} cm`
+  );
+  console.log(
+    `  Toe Height (m)        : Left: ${(toeHeight.left_m * 100).toFixed(1)} cm | Right: ${(toeHeight.right_m * 100).toFixed(1)} cm`
+  );
+  console.log(`Stance Geometry:`);
+  console.log(`  Stance Width (lateral): ${(stanceWidth * 100).toFixed(1)} cm`);
+  console.log(`  Stance Stagger (depth): ${(stanceStagger * 100).toFixed(1)} cm`);
+  console.log(`Hands Relative to Head:`);
+  console.log(
+    `  Distance to Head      : Left: ${(handHeadDist.left_m * 100).toFixed(1)} cm | Right: ${(handHeadDist.right_m * 100).toFixed(1)} cm`
+  );
+  console.log(
+    `  Height rel to Head    : Left: ${handHeightRelHead.left_m >= 0 ? "+" : ""}${(handHeightRelHead.left_m * 100).toFixed(1)} cm | Right: ${handHeightRelHead.right_m >= 0 ? "+" : ""}${(handHeightRelHead.right_m * 100).toFixed(1)} cm`
+  );
+  console.log(`Center of Mass (CoM):`);
+  console.log(
+    `  Position              : [${result.com.position_m.map((v) => v.toFixed(3)).join(", ")}] m`
+  );
+  console.log(
+    `  Support Polygon Check : ${balance.inside ? "STABLE (inside base of support)" : `UNSTABLE (${(balance.distance * 100).toFixed(1)} cm outside)`}`
+  );
+  console.log(`Torso Rotations:`);
+  console.log(
+    `  Torso Twist / Lean    : twist: ${result.torso_rotations_deg.twist}°, lean: ${result.torso_rotations_deg.lean}°, side_lean: ${result.torso_rotations_deg.side_lean}°`
+  );
+  console.log(
+    `  Pelvis Twist / Pitch  : hip_twist: ${result.torso_rotations_deg.hip_twist}°, hip_pitch: ${result.torso_rotations_deg.hip_pitch}°`
+  );
+  console.log("");
+  return 0;
+}
+async function runPose(args, options = {}) {
+  const target = args[0];
+  if (!target) {
+    console.error('Error: "clipkit pose" requires a clip path or clip name.');
+    console.error("Example: clipkit pose src/data/clips/slash.json --t 0.5 --json");
+    return 2;
+  }
+  let clip;
+  if (defaultClips[target]) {
+    clip = JSON.parse(JSON.stringify(defaultClips[target]));
+  } else {
+    try {
+      const raw = await readInput(target);
+      clip = JSON.parse(raw);
+    } catch (e) {
+      console.error(`Error reading clip '${target}': ${e.message}`);
+      return 2;
+    }
+  }
+  const { motus: motus2, vrm_sample } = loadRigs();
+  const rig = options.rig === "vrm_sample" ? vrm_sample.rig : motus2;
+  const ctx = makeCtx(rig);
+  const t = options.t != null ? Number(options.t) : 0;
+  if (Number.isNaN(t)) {
+    console.error(`Error: Invalid timestamp '--t ${options.t}'. Must be a number.`);
+    return 2;
+  }
+  const pose = evalPose(rig, ctx, clip, t);
+  const I = ctx.idx;
+  const jointPositions = {};
+  for (const [name2, idx] of Object.entries(I)) {
+    if (pose.pos[idx]) {
+      jointPositions[name2] = [
+        Number(pose.pos[idx][0].toFixed(4)),
+        Number(pose.pos[idx][1].toFixed(4)),
+        Number(pose.pos[idx][2].toFixed(4))
+      ];
+    }
+  }
+  const filterJoint = options.joint;
+  if (filterJoint) {
+    if (!jointPositions[filterJoint]) {
+      console.error(
+        `Error: Unknown joint '${filterJoint}'. Available joints: ${Object.keys(jointPositions).join(", ")}`
+      );
+      return 2;
+    }
+  }
+  const result = {
+    clip: clip.name || target,
+    t: Number(t.toFixed(3)),
+    duration: clip.duration || 1,
+    root: [
+      Number(pose.root[0].toFixed(4)),
+      Number(pose.root[1].toFixed(4)),
+      Number(pose.root[2].toFixed(4))
+    ],
+    hips: [
+      Number(pose.hips[0].toFixed(4)),
+      Number(pose.hips[1].toFixed(4)),
+      Number(pose.hips[2].toFixed(4))
+    ],
+    joints: filterJoint ? { [filterJoint]: jointPositions[filterJoint] } : jointPositions,
+    channels: pose.cv
+  };
+  if (options.json) {
+    console.log(formatDeterministicJson(result));
+    return 0;
+  }
+  console.log(`
+Pose for '${result.clip}' at t=${result.t}s (duration: ${result.duration}s):`);
+  console.log(`  Root: [${result.root.join(", ")}] m`);
+  console.log(`  Hips: [${result.hips.join(", ")}] m`);
+  if (filterJoint) {
+    console.log(`  Joint ${filterJoint}: [${jointPositions[filterJoint].join(", ")}] m
+`);
+  } else {
+    console.log("\nKey World Joint Positions [X (left), Y (up), Z (front)] (m):");
+    const keyJoints = [
+      "Head",
+      "LeftHand",
+      "RightHand",
+      "LeftFoot",
+      "RightFoot",
+      "LeftToeBase",
+      "RightToeBase"
+    ];
+    for (const kj of keyJoints) {
+      if (jointPositions[kj]) {
+        console.log(
+          `  - ${kj.padEnd(14)}: [${jointPositions[kj].map((v) => v.toFixed(3).padStart(6)).join(", ")}]`
+        );
+      }
+    }
+    console.log(
+      `
+Use '--joint <name>' to inspect a specific joint or '--json' for all 55 joints.
+`
+    );
+  }
+  return 0;
+}
 function runPoses(args, options = {}) {
   const sub = args[0];
   if (!sub || sub === "list") {
@@ -5823,9 +6258,24 @@ function runSheet(args, options = {}) {
     view: options.view || "perspective"
   });
   const baseName = inputPath === "-" ? clip.name || "clip" : path.basename(inputPath, path.extname(inputPath));
-  const targetDir = options.dir || ".";
-  const svgFilename = options.out || path.join(targetDir, `${baseName}_sheet.svg`);
-  const metaFilename = path.join(targetDir, `${baseName}_sheet.json`);
+  let targetDir = options.dir || ".";
+  let svgFilename;
+  let metaFilename;
+  if (options.out) {
+    if (options.out.endsWith(".svg")) {
+      svgFilename = options.out;
+      targetDir = path.dirname(options.out);
+      const outBase = path.basename(options.out, ".svg");
+      metaFilename = path.join(targetDir, `${outBase}_sheet.json`);
+    } else {
+      targetDir = options.out;
+      svgFilename = path.join(targetDir, `${baseName}_sheet.svg`);
+      metaFilename = path.join(targetDir, `${baseName}_sheet.json`);
+    }
+  } else {
+    svgFilename = path.join(targetDir, `${baseName}_sheet.svg`);
+    metaFilename = path.join(targetDir, `${baseName}_sheet.json`);
+  }
   try {
     const safeSvgPath = resolveSafeOutputPath(svgFilename, {
       force: options.force,
@@ -6054,7 +6504,11 @@ function parseArgs(rawArgs) {
         "overshoot",
         "freq",
         "template",
-        "epsilon"
+        "epsilon",
+        "t",
+        "joint",
+        "metrics",
+        "contacts"
       ].includes(key)) {
         options[camelCase(key)] = rawArgs[++i];
       } else {
@@ -6207,6 +6661,37 @@ Example:
 `);
     return;
   }
+  if (command === "pose") {
+    console.log(`clipkit pose <clip-file> [options]
+
+Evaluates Forward Kinematics and extracts 3D world joint positions and transforms at timestamp t.
+
+Options:
+  --t <seconds>            Timestamp in seconds to sample (default: 0)
+  --joint <name>           Inspect a specific joint (e.g. Head, LeftHand, LeftFoot)
+  --json                   Output machine-readable JSON containing all 55 joint positions
+
+Example:
+  clipkit pose src/data/clips/slash.json --t 0.3 --json
+  clipkit pose src/data/clips/slash.json --t 0.3 --joint RightHand
+`);
+    return;
+  }
+  if (command === "measure") {
+    console.log(`clipkit measure <clip-file> [options]
+
+Measures key anatomical clearances, heel/toe floor heights, stance width/stagger, hand-to-head metrics, and Center of Mass stability.
+
+Options:
+  --t <seconds>            Timestamp in seconds to sample (default: 0)
+  --json                   Output machine-readable JSON metrics
+
+Example:
+  clipkit measure src/data/clips/slash.json --t 0.3
+  clipkit measure src/data/clips/walk.json --t 0.4 --json
+`);
+    return;
+  }
   if (command === "compose") {
     console.log(`clipkit compose <clip-file> [options]
 
@@ -6330,6 +6815,8 @@ Commands:
   import <file>            Ingest and decompile .vrma, .glb, or .bvh into ClipKit JSON
   sheet <clip>             Render headless annotated contact sheet (SVG + JSON sidecar)
   poses <subcommand>       Browse pose library (list | show <name>)
+  pose <clip>              Sample world joint positions at timestamp t (e.g. --t 0.5)
+  measure <clip>           Measure anatomical clearances, stance, and hand/head metrics
   compose <clip>           Flatten layer clip into a normal clip
   edit <op> <clip>         Deterministic edit operations (mirror | retime | scale-amplitude | close-loop)
   compare <a> <b>          Compare kinematics and render side-by-side contact sheet
@@ -6375,6 +6862,10 @@ async function main(argv = process.argv.slice(2)) {
         return await runSheet(commandArgs, options);
       case "poses":
         return await runPoses(commandArgs, options);
+      case "pose":
+        return await runPose(commandArgs, options);
+      case "measure":
+        return await runMeasure(commandArgs, options);
       case "compose":
         return await runCompose(commandArgs, options);
       case "edit":

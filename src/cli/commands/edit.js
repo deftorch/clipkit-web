@@ -90,7 +90,28 @@ export async function runEdit(args, options = {}) {
     const ctx = makeCtx(motus);
     const blendWindow =
       options['blend-window'] != null ? Number(options['blend-window']) : undefined;
-    result = applyFootIK(motus, ctx, clip, { blendWindow });
+    let contacts;
+    if (options.contacts) {
+      contacts = {};
+      const parts = String(options.contacts).split(',');
+      for (const p of parts) {
+        if (p.includes(':')) {
+          const [side, range] = p.split(':');
+          const [start, end] = range.split('-').map(Number);
+          if (side.toLowerCase().startsWith('l')) contacts.left = [start, end];
+          if (side.toLowerCase().startsWith('r')) contacts.right = [start, end];
+        } else if (p.includes('-')) {
+          const [start, end] = p.split('-').map(Number);
+          contacts.left = [start, end];
+          contacts.right = [start, end];
+        }
+      }
+    }
+    result = applyFootIK(motus, ctx, clip, {
+      blendWindow,
+      contacts,
+      onWarning: (msg) => console.warn(`Warning: ${msg}`),
+    });
   } else if (operation === 'micro-dynamics') {
     const breathing = options.breathing !== 'false' && options['no-breathing'] !== true;
     const weightShift = options.sway !== 'false' && options['no-sway'] !== true;
